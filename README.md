@@ -9,3 +9,10 @@
 3. `python3 mfnf_edits.py`
 
 The fluentd log should now show some entries on stdout.
+
+## Notes
+
+- Aggregation von Logs in relationale DB
+- View auf Serlo-DB
+- Automatische Schema-Migration?
+- KPIs sind Views auf DB
