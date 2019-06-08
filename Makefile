@@ -1,5 +1,9 @@
 #
-# Makefile to automate the upload of current grafana dashboard
+# Makefile
+# 
+# Purpose:
+# - automate the upload and backup of current grafana dashboards
+# - run smoke tests agains local minikube cluster or gcloud dev/staging/production
 # 
 
 grafana_host ?= https://stats.dev.serlo.local
@@ -17,3 +21,6 @@ dashb-upload:
 	curl -X POST -u $(grafana_user):$(grafana_password) -k -H "Content-Type: application/json" --data-binary @./dashboards/author-activity.json "${grafana_host}/api/dashboards/db"
 	curl -X POST -u $(grafana_user):$(grafana_password) -k -H "Content-Type: application/json" --data-binary @./dashboards/registrations.json "${grafana_host}/api/dashboards/db"
 
+.PHONY: smoketest
+smoketest:
+	cd test && go run main.go
