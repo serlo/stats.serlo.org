@@ -12,8 +12,8 @@ grafana_password ?= admin
 
 .PHONY: dashb-backup
 dashb-backup:
-	curl -X GET -u $(grafana_user):$(grafana_password) -k "${grafana_host}/api/dashboards/db/author-activity" > dashboards/author-activity.json
-	curl -X GET -u $(grafana_user):$(grafana_password) -k "${grafana_host}/api/dashboards/db/registrations" > dashboards/registrations.json
+	curl -X GET -u $(grafana_user):$(grafana_password) -k "${grafana_host}/api/dashboards/db/author-activity" | python -m json.tool > dashboards/author-activity.json
+	curl -X GET -u $(grafana_user):$(grafana_password) -k "${grafana_host}/api/dashboards/db/registrations" | python -m json.tool > dashboards/registrations.json
 
 
 .PHONY: dashb-upload
