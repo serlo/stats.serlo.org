@@ -8,9 +8,9 @@ The KPI local project can be setup using infrastructure repository live/dev-kpi-
 
 The Makefile in this repository will support the upload of the current dashboards to the local environment and later also to the staging and production environment.
 
-## Upoad and Backup
+## Backup and Restore
 
-After creating a local minikube kpi deployment you need to use ```make dashb-upload``` to upload the current dashboards in dashbords folder.
+After creating a local minikube kpi deployment you need to use ```make dashb-restore``` to upload the current dashboards in dashbords folder.
 
 After the changes are done and you want to save them you need to run ```make dashb-backup``` to export the dashboards and save them in the dashboards folder.
 

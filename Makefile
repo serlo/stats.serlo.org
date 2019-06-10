@@ -7,19 +7,19 @@
 # 
 
 grafana_host ?= https://stats.dev.serlo.local
+export grafana_host
 grafana_user ?= admin
+export grafana_user
 grafana_password ?= admin
+export grafana_password
 
 .PHONY: dashb-backup
-dashb-backup:
-	curl -X GET -u $(grafana_user):$(grafana_password) -k "${grafana_host}/api/dashboards/db/author-activity" | python -m json.tool > dashboards/author-activity.json
-	curl -X GET -u $(grafana_user):$(grafana_password) -k "${grafana_host}/api/dashboards/db/registrations" | python -m json.tool > dashboards/registrations.json
+dashb-backup: 
+	bash scripts/backup-dashboard.sh author-activity registrations
 
-
-.PHONY: dashb-upload
-dashb-upload:
-	curl -X POST -u $(grafana_user):$(grafana_password) -k -H "Content-Type: application/json" --data-binary @./dashboards/author-activity.json "${grafana_host}/api/dashboards/db"
-	curl -X POST -u $(grafana_user):$(grafana_password) -k -H "Content-Type: application/json" --data-binary @./dashboards/registrations.json "${grafana_host}/api/dashboards/db"
+.PHONY: dashb-restore
+dashb-restore:
+	bash scripts/restore-dashboard.sh author-activity registrations
 
 .PHONY: smoketest
 smoketest:

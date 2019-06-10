@@ -496,14 +496,14 @@
         "timezone": "",
         "title": "Registrations",
         "uid": "eDpcWzWZk",
-        "version": 1
+        "version": 3
     },
     "meta": {
         "canAdmin": true,
         "canEdit": true,
         "canSave": true,
         "canStar": true,
-        "created": "2019-06-10T14:52:52Z",
+        "created": "2019-06-10T14:56:47Z",
         "createdBy": "admin",
         "expires": "0001-01-01T00:00:00Z",
         "folderId": 0,
@@ -515,9 +515,9 @@
         "provisionedExternalId": "",
         "slug": "registrations",
         "type": "db",
-        "updated": "2019-06-10T14:52:52Z",
+        "updated": "2019-06-10T15:55:02Z",
         "updatedBy": "admin",
         "url": "/d/eDpcWzWZk/registrations",
-        "version": 1
+        "version": 3
     }
 }
