@@ -1,16 +1,8 @@
-defaults: &defaults
-
-make_build: &make_build
-  name: make build
-  command: cd importer && make docker-build
-
 version: 2.1
 jobs:
   build:
-    <<: *make_build
+    machine: true
+    steps:
+      - checkout
+      - run: 'cd importer && make docker-build'
 
-workflows:
-  version: 2
-  workflow:
-    jobs:
-      - build:
