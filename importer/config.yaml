@@ -1,0 +1,6 @@
+Scheduler:
+        IntervalInMin: 10
+
+Logging:
+        Level: info
+        Truncate: true

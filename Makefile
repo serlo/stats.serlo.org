@@ -24,3 +24,6 @@ dashb-restore:
 .PHONY: smoketest
 smoketest:
 	cd test && go run main.go
+
+importer-run:
+	$(MAKE) -c importer run-once

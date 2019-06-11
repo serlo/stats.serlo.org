@@ -16,6 +16,27 @@ After the changes are done and you want to save them you need to run ```make das
 
 Please note the backup and upload does not use the import and export format but the Grafana API which uses a different format.
 
+## Importer
+
+The importer is a Golang application that loads data from mysql and inserts it into postgresql.
+Later it will also run aggregation queries to improve the query performance.
+
+The importer can be run in interval or once mode. In interval mode it will run every configured minute interval where in once mode it will terminate after completing one run.
+
+```importer run``` runs the interval mode
+```importer once``` runs the once mode
+
+importer requires a config.yaml file that configures some settings. A sample config is given below
+
+```yaml
+Scheduler:
+        IntervalInMin: 10
+
+Logging:
+        Level: info
+        Truncate: true
+```
+
 ## Development
 
 Proposed development life cycle for KPI project:

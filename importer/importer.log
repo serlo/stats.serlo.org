@@ -1,0 +1,6 @@
+{"level":"info","time":"2019-06-11T02:27:09+02:00","message":"run importer"}
+{"level":"info","time":"2019-06-11T02:27:09+02:00","message":"load uuid [0] records imported\n"}
+{"level":"info","time":"2019-06-11T02:27:09+02:00","message":"load metadata [0] records imported\n"}
+{"level":"info","time":"2019-06-11T02:27:09+02:00","message":"load user [0] records imported\n"}
+{"level":"info","time":"2019-06-11T02:27:09+02:00","message":"load event [0] records imported\n"}
+{"level":"info","time":"2019-06-11T02:27:09+02:00","message":"load event_log [0] records imported\n"}
