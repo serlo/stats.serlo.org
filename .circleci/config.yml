@@ -1,9 +1,9 @@
 version: 2.1
 jobs:
   build:
-#    machine: true
-    docker:
-      - image: "debian:stretch"
+    machine: true
+#    docker:
+#      - image: "debian:stretch"
     steps:
       - checkout
       - run:
