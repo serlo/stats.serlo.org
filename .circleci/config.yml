@@ -10,7 +10,8 @@ jobs:
           command: |
             apt update -y
             apt install -y lsb-release curl gnupg2 build-essential
-            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+            curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+            add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
             apt update -y
             apt install -y docker-ce
             export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
