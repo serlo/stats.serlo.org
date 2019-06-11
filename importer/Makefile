@@ -14,10 +14,11 @@ run-interval:
 .PHONY: docker-build
 docker-build:
 	docker build -t serlo/kpi-importer .
+	docker tag serlo/kpi-importer:latest eu.gcr.io/serlo-containers/kpi-importer:latest
 
 .PHONY: docker-push
 docker-push:
-	docker push  serlo/kpi-importer:latest
+	docker push eu.gcr.io/serlo-containers/kpi-importer:latest
 
 .PHONY: docker-run
 docker-run:
