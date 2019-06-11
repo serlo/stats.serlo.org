@@ -17,11 +17,11 @@ jobs:
             export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
             echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
             apt update -y && apt install google-cloud-sdk -y
+      - setup_remote_docker
       - run:
           command: |
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             gcloud auth configure-docker --quiet
-      - setup_remote_docker
       - run: 'cd importer && make docker-build'
       - run: 'cd importer && make docker-push'
 
