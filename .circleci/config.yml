@@ -1,7 +1,7 @@
 version: 2.1
 jobs:
   build:
-    machine: true
+#    machine: true
     steps:
       - checkout
       - run:
@@ -15,6 +15,7 @@ jobs:
           command: |
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             gcloud auth configure-docker --quiet
+      - setup_remote_docker
       - run: 'cd importer && make docker-build'
       - run: 'cd importer && make docker-push'
 
