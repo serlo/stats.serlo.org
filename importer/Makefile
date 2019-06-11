@@ -18,7 +18,8 @@ docker-build:
 
 .PHONY: docker-push
 docker-push:
-	gcloud docker -- push eu.gcr.io/serlo-containers/kpi-importer:latest
+	gcloud auth configure-docker
+	docker push eu.gcr.io/serlo-containers/kpi-importer:latest
 
 .PHONY: docker-run
 docker-run:
