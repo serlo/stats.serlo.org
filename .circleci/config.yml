@@ -1,7 +1,6 @@
 version: 2.1
 jobs:
   build:
-    context: serlo-containers
     machine: true
     steps:
       - checkout
@@ -19,4 +18,11 @@ jobs:
             gcloud auth configure-docker --quiet
       - run: 'cd importer && make docker-build'
       - run: 'cd importer && make docker-push'
+
+workflows:
+  version: 2
+  my-workflow:
+    jobs:
+      - build:
+          context: serlo-containers
 
