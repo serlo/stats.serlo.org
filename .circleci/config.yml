@@ -12,11 +12,11 @@ jobs:
 #            apt update -y
 #            apt install -y docker-ce
           command: |
-            apt update -y
-            apt install -y lsb-release curl gnupg2 build-essential software-properties-common apt-transport-https
+            sudo apt update -y
+            sudo apt install -y lsb-release curl gnupg2 build-essential software-properties-common apt-transport-https
             export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-            echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-            apt update -y && apt install google-cloud-sdk -y
+            echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+            sudo apt update -y && sudo apt install google-cloud-sdk -y
 #      - setup_remote_docker:
 #          docker_layer_caching: true
       - run:
