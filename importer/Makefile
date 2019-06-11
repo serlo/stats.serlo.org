@@ -18,8 +18,7 @@ docker-build:
 
 .PHONY: docker-push
 docker-push:
-	gcloud auth configure-docker
-	docker push eu.gcr.io/serlo-containers/kpi-importer:latest
+	docker --docker-host=$DOCKER_HOST -- --tlsverify --tlscacert $DOCKER_CERT_PATH/ca.pem --tlscert $DOCKER_CERT_PATH/cert.pem --tlskey $DOCKER_CERT_PATH/key.pem push eu.gcr.io/serlo-containers/kpi-importer:latest
 
 .PHONY: docker-run
 docker-run:
