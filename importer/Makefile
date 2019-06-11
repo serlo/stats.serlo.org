@@ -15,6 +15,10 @@ run-interval:
 docker-build:
 	docker build -t serlo/kpi-importer .
 
+.PHONY: docker-push
+docker-push:
+	docker push  serlo/kpi-importer:latest
+
 .PHONY: docker-run
 docker-run:
 	docker run --network=host -v $(CURDIR)/config.yaml:/app/config.yaml --rm serlo/kpi-importer -- once
