@@ -10,3 +10,11 @@ run-once:
 run-interval:
 	go run *.go -- run
 
+
+.PHONY: docker-build
+docker-build:
+	docker build -t serlo/kpi-importer .
+
+.PHONY: docker-run
+docker-run:
+	docker run --network=host -v $(CURDIR)/config.yaml:/app/config.yaml --rm serlo/kpi-importer -- once

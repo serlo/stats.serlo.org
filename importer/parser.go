@@ -102,7 +102,7 @@ func revisionCommand(c *cli.Context) error {
 	return nil
 }
 
-func setup() (error) {
+func setup() error {
 	config, err := readImporterConfig()
 	if err != nil {
 		return fmt.Errorf("config error [%s]", err.Error())

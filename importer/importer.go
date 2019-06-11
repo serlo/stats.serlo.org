@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	"time"
 )
 
@@ -21,10 +21,15 @@ func runImporter(periodInMin int) {
 }
 
 func runOnceImporter() {
+	config, err := readImporterConfig()
+	if err != nil {
+		fatal(err)
+	}
+
 	log.Logger.Info().Msgf("run importer")
-	sourceDB := openSourceDB()
+	sourceDB := openSourceDB(&config.Mysql)
 	defer sourceDB.Close()
-	targetDB := openTargetDB()
+	targetDB := openTargetDB(&config.Postgres)
 	defer targetDB.Close()
 
 	tables := []table{

@@ -4,3 +4,17 @@ Scheduler:
 Logging:
         Level: info
         Truncate: true
+
+Mysql:
+        Host: mysql.serlo.local
+        Port: 30000
+        User: root
+        Password: admin
+        DBName: serlo
+Postgres:
+        Host: postgres.serlo.local
+        Port: 30002
+        User: postgres
+        Password: admin
+        DBName: postgres
+        SSLMode: disable

@@ -13,14 +13,33 @@ type schedulerConfig struct {
 }
 
 type loggingConfig struct {
-	Level string `yaml:"Level"`
-	File  string `yaml:"File"`
-	Truncate bool `yaml:"Truncate"`
+	Level    string `yaml:"Level"`
+	File     string `yaml:"File"`
+	Truncate bool   `yaml:"Truncate"`
+}
+
+type mysqlConfig struct {
+	Host     string `yaml:"Host"`
+	Port     int    `yaml:"Port"`
+	User     string `yaml:"User"`
+	Password string `yaml:"Password"`
+	DBName   string `yaml:"DBName"`
+}
+
+type postgresConfig struct {
+	Host     string `yaml:"Host"`
+	Port     int    `yaml:"Port"`
+	User     string `yaml:"User"`
+	Password string `yaml:"Password"`
+	DBName   string `yaml:"DBName"`
+	SSLMode  string `yaml:"SSLMode"`
 }
 
 type importerConfig struct {
-	Logging         loggingConfig   `yaml:"Logging"`
-	Scheduler       schedulerConfig `yaml:"Scheduler"`
+	Logging   loggingConfig   `yaml:"Logging"`
+	Scheduler schedulerConfig `yaml:"Scheduler"`
+	Mysql     mysqlConfig     `yaml:"Mysql"`
+	Postgres  postgresConfig  `yaml:"Postgres"`
 }
 
 func readImporterConfig() (*importerConfig, error) {

@@ -11,8 +11,9 @@ type table interface {
 	load() error
 }
 
-func openSourceDB() *sql.DB {
-	db, err := sql.Open("mysql", "root:admin@tcp(mysql.serlo.local:30000)/serlo?parseTime=true")
+func openSourceDB(config *mysqlConfig) *sql.DB {
+	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%d)/serlo?parseTime=true", config.User, config.Password, config.Host, config.Port)
+	db, err := sql.Open("mysql", mysqlInfo)
 
 	if err != nil {
 		log.Logger.Error().Msgf("cannot open source database [%s]\n", err.Error())
@@ -21,8 +22,10 @@ func openSourceDB() *sql.DB {
 	return db
 }
 
-func openTargetDB() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=postgres.serlo.local port=30002 user=postgres password=admin dbname=postgres sslmode=disable")
+func openTargetDB(config *postgresConfig) *sql.DB {
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {

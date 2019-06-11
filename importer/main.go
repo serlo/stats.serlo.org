@@ -11,6 +11,7 @@ import (
 
 //Version the import version
 var Version string
+
 //Revision the git revision of the source code
 var Revision string
 
