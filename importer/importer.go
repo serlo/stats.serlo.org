@@ -29,15 +29,15 @@ func runOnceImporter() {
 	log.Logger.Info().Msgf("run importer")
 	sourceDB := openSourceDB(&config.Mysql)
 	defer sourceDB.Close()
-	targetDB := openTargetDB(&config.Postgres)
-	defer targetDB.Close()
+	kpiDB := openKPIDatabase(&config.Postgres)
+	defer kpiDB.Close()
 
 	tables := []table{
-		&uuidTable{SourceDB: sourceDB, TargetDB: targetDB, Name: "uuid"},
-		&metadataTable{SourceDB: sourceDB, TargetDB: targetDB, Name: "metadata"},
-		&userTable{SourceDB: sourceDB, TargetDB: targetDB, Name: "user"},
-		&eventTable{SourceDB: sourceDB, TargetDB: targetDB, Name: "event"},
-		&eventLogTable{SourceDB: sourceDB, TargetDB: targetDB, Name: "event_log"},
+		&uuidTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "uuid"},
+		&metadataTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "metadata"},
+		&userTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "user"},
+		&eventTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "event"},
+		&eventLogTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "event_log"},
 	}
 	for _, t := range tables {
 		err := t.create()

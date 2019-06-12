@@ -6,8 +6,7 @@ Logging:
         Truncate: true
 
 Mysql:
-        Host: mysql.serlo.local
-        Port: 30000
+        Host: mysql.serlo.local:30000
         User: root
         Password: admin
         DBName: serlo
@@ -16,5 +15,5 @@ Postgres:
         Port: 30002
         User: postgres
         Password: admin
-        DBName: postgres
+        DBName: kpi
         SSLMode: disable

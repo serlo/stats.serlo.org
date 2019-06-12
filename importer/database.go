@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"regexp"
 )
 
 type table interface {
@@ -12,7 +13,7 @@ type table interface {
 }
 
 func openSourceDB(config *mysqlConfig) *sql.DB {
-	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%d)/serlo?parseTime=true", config.User, config.Password, config.Host, config.Port)
+	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s)/serlo?parseTime=true", config.User, config.Password, config.Host)
 	db, err := sql.Open("mysql", mysqlInfo)
 
 	if err != nil {
@@ -22,18 +23,55 @@ func openSourceDB(config *mysqlConfig) *sql.DB {
 	return db
 }
 
-func openTargetDB(config *postgresConfig) *sql.DB {
-
+func openKPIDatabase(config *postgresConfig) *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
+		
+	db, err := sql.Open("postgres", psqlInfo)
+	err = db.Ping()
+
+	if err != nil  {
+		match, err := regexp.MatchString(".*database.*does not exist", err.Error())
+		if err != nil {
+			log.Logger.Error().Msgf("open kpi database error in match [%s]\n", err.Error())
+			os.Exit(1)
+		}
+		if match {
+			log.Logger.Info().Msgf("create %s database", config.DBName)
+			createKPIDatabase(config)
+			db, err = sql.Open("postgres", psqlInfo)
+			if err != nil  {
+				log.Logger.Error().Msgf("cannot open %s database after creating it [%s]", config.DBName, err.Error())
+				os.Exit(1)
+			}
+			return db
+		}
+		log.Logger.Error().Msgf("cannot open %s database [%s]\n", config.DBName, err.Error())
+		os.Exit(1)
+	}
+
+	log.Logger.Info().Msgf("open %s database successful", config.DBName)
+
+	return db
+}
+
+func createKPIDatabase(config *postgresConfig) {
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=%s",
+		config.Host, config.Port, config.User, config.Password, config.SSLMode)
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		log.Logger.Error().Msgf("cannot open target database [%s]\n", err.Error())
+		log.Logger.Error().Msgf("cannot open kpi database server [%s]\n", err.Error())
 		os.Exit(1)
 	}
-	return db
+
+	_, err = db.Exec("CREATE DATABASE kpi")
+	if err != nil {
+		log.Logger.Error().Msgf("cannot create kpi database [%s]\n", err.Error())
+	}
 }
+
+
 
 func isTableCreated(targetDB *sql.DB, name string) (bool, error) {
 	stmt := fmt.Sprintf(`SELECT EXISTS (
