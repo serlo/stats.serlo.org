@@ -16,7 +16,15 @@ After the changes are done and you want to save them you need to run ```make das
 
 Please note the backup and upload does not use the import and export format but the Grafana API which uses a different format.
 
-## Importer
+## Docker Images
+
+Minikube has its own docker registry. To push your local developer images that are not on docker hub run
+```eval $(minikube docker-env) && docker build -t ...```
+
+This will build the image in the minikube environment.
+The Makefile of MYSQL Importer has an own goal image-export to perform this action.
+
+## MYSQL Importer
 
 The importer is a Golang application that loads data from mysql and inserts it into postgresql.
 Later it will also run aggregation queries to improve the query performance.
@@ -34,14 +42,25 @@ Scheduler:
 
 Logging:
         Level: info
-        Truncate: true
-```
+
+Mysql:
+        Host: mysql.serlo.local:30000
+        User: root
+        Password: admin
+        DBName: serlo
+Postgres:
+        Host: postgres.serlo.local
+        Port: 30002
+        User: postgres
+        Password: admin
+        DBName: kpi
+        SSLMode: disable```
 
 ## Development
 
 Proposed development life cycle for KPI project:
 
 - development branch contains the dashboards which are under development
-- master branch contains the dashboards which are deployed to staging and production.
+- master branch contains the dashboards which can be deployed to staging and production.
 
 How to automatically upload the dashboards to staging and production still needs to be discussed.

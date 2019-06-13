@@ -21,9 +21,13 @@ dashb-backup:
 dashb-restore:
 	bash scripts/restore-dashboard.sh author-activity registrations
 
+image-export:
+	#push local development images to minikube
+	eval $$(minikube docker-env) && $(MAKE) -C mysql-importer docker-build
+
 .PHONY: smoketest
 smoketest:
-	cd test && go run main.go
+	cd smoketest && go run main.go
 
-importer-run:
+mysql-importer-run:
 	$(MAKE) -c importer run-once
