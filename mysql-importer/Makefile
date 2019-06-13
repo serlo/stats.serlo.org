@@ -13,12 +13,12 @@ run-interval:
 
 .PHONY: docker-build
 docker-build:
-	docker build -t serlo/kpi-importer .
+	docker build -t serlo/kpi-mysql-importer .
 
 .PHONY: docker-push
 docker-push:
-	docker tag serlo/kpi-importer:latest eu.gcr.io/seryylo-containers/kpi-importer:latest
-	docker push eu.gcr.io/serlo-containers/kpi-importer:latest
+	docker tag serlo/kpi-mysql-importer:latest eu.gcr.io/seryylo-containers/kpi-mysql-importer:latest
+	docker push eu.gcr.io/serlo-containers/kpi-mysql-importer:latest
 
 .PHONY: docker-run
 docker-run:
