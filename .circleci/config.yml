@@ -18,8 +18,8 @@ jobs:
           command: |
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             gcloud auth configure-docker --quiet
-      - run: 'cd importer && make docker-build'
-      - run: 'cd importer && make docker-push'
+      - run: 'cd mysql-importer && make docker-build'
+      - run: 'cd mysql-importer && make docker-push'
 
 workflows:
   version: 2
