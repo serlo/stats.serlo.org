@@ -17,7 +17,7 @@ docker-build:
 
 .PHONY: docker-push
 docker-push:
-	docker tag serlo/kpi-mysql-importer:latest eu.gcr.io/seryylo-containers/kpi-mysql-importer:latest
+	docker tag serlo/kpi-mysql-importer:latest eu.gcr.io/serlo-containers/kpi-mysql-importer:latest
 	docker push eu.gcr.io/serlo-containers/kpi-mysql-importer:latest
 
 .PHONY: docker-run
