@@ -8,6 +8,9 @@ func runImporter(periodInMin int) {
 	log.Logger.Info().Msgf("run importer in intervals of [%d] minutes", periodInMin)
 	importTicker := time.NewTicker(time.Duration(periodInMin) * time.Minute)
 
+	//start importer for the first time after that when the timer is due
+	runOnceImporter()
+
 	for {
 		select {
 		case <-importTicker.C:
@@ -21,6 +24,7 @@ func runImporter(periodInMin int) {
 }
 
 func runOnceImporter() {
+	log.Logger.Info().Msgf("run importer once")
 	config, err := readImporterConfig()
 	if err != nil {
 		fatal(err)
