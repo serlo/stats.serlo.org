@@ -19,8 +19,9 @@ type loggingConfig struct {
 }
 
 type mysqlConfig struct {
-	Host     string `yaml:"Host"`
+	URL     string `yaml:"Url"`
 	User     string `yaml:"User"`
+	Port 	 string `yaml:"Port"`
 	Password string `yaml:"Password"`
 	DBName   string `yaml:"DBName"`
 }
