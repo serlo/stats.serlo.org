@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
+	"time"
 )
 
 type table interface {
@@ -11,13 +12,22 @@ type table interface {
 	load() error
 }
 
-func openSourceDB(config *mysqlConfig) (*sql.DB, error) {
+func openAthene2DB(config *mysqlConfig) (*sql.DB, error) {
 	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s)/serlo?parseTime=true", config.User, config.Password, config.URL)
 	db, err := sql.Open("mysql", mysqlInfo)
 
 	if err != nil {
-		return nil, fmt.Errorf("cannot open source database [%s]", err.Error())
+		return nil, fmt.Errorf("cannot open athene2 database [%s]", err.Error())
 	}
+
+	err = db.Ping()
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("cannot ping athene2 database [%s", err.Error())
+	}
+
+	db.SetConnMaxLifetime(time.Second * 600)
+
 	return db, nil
 }
 
@@ -45,6 +55,7 @@ func openKPIDatabase(config *postgresConfig) (*sql.DB, error) {
 
 	err = db.Ping()
 	if err != nil {
+		db.Close()
 		if databaseDoesNotExist(err) {
 			log.Logger.Info().Msgf("create %s database", config.DBName)
 			db, err = createKPIDatabase(config)
@@ -58,6 +69,8 @@ func openKPIDatabase(config *postgresConfig) (*sql.DB, error) {
 	
 
 	log.Logger.Info().Msgf("open %s database successful", config.DBName)
+
+	db.SetConnMaxLifetime(time.Second * 600)
 
 	return db, nil
 }
@@ -92,6 +105,7 @@ func isTableCreated(targetDB *sql.DB, name string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
 	return result, nil
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -33,28 +34,68 @@ func runOnceImporter() error {
 	}
 
 	log.Logger.Info().Msgf("open athene2 database")
-	sourceDB, err := openSourceDB(&config.Mysql)
+	var athene2DB *sql.DB
+	for i := 0; i < 10; i++ {
+		athene2DB, err = openAthene2DB(&config.Mysql)
+		if err != nil {
+			log.Logger.Error().Msgf("run importer failed to open athene2 db [%s]", err.Error())
+			log.Logger.Info().Msgf("retrying in 30 seconds")
+			time.Sleep(time.Second * 30)
+			continue
+		}
+		break
+	}
 	if err != nil {
-		log.Logger.Error().Msgf("run importer failed to open athene2 db [%s]", err.Error())
+		// out of retries
 		return err
 	}
-	defer sourceDB.Close()
+
+	defer athene2DB.Close()
 
 	log.Logger.Info().Msgf("open kpi database")
-	kpiDB, err := openKPIDatabase(&config.Postgres)
+	var kpiDB *sql.DB
+	for i := 0; i < 10; i++ {
+		kpiDB, err = openKPIDatabase(&config.Postgres)
+		if err != nil {
+			log.Logger.Error().Msgf("run importer failed to open kpi db [%s]", err.Error())
+			log.Logger.Info().Msgf("retrying in 30 seconds")
+			time.Sleep(time.Second * 30)
+			continue
+		}
+		break
+	}
 	if err != nil {
-		log.Logger.Error().Msgf("run importer failed to open kpi db [%s]", err.Error())
+		// out of retries
 		return err
 	}
 	defer kpiDB.Close()
+	
+	for i := 0; i < 10; i++ {
+		err = importTables(athene2DB, kpiDB)
+		if err != nil {
+			log.Logger.Error().Msgf("import failed [%s]", err.Error())
+			log.Logger.Info().Msgf("retrying in 30 seconds")
+			time.Sleep(time.Second * 30)
+			continue
+		}
+		break
+	}
+	if err != nil {
+		// out of retries
+		return err
+	}
 
-	log.Logger.Info().Msgf("start import")
+	return nil
+}
+
+func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
+	log.Logger.Info().Msgf("start importing tables")
 	tables := []table{
-		&uuidTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "uuid"},
-		&metadataTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "metadata"},
-		&userTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "user"},
-		&eventTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "event"},
-		&eventLogTable{SourceDB: sourceDB, TargetDB: kpiDB, Name: "event_log"},
+		&uuidTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "uuid"},
+		&metadataTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "metadata"},
+		&userTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "user"},
+		&eventTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event"},
+		&eventLogTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event_log"},
 	}
 	for _, t := range tables {
 		err := t.create()
