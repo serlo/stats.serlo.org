@@ -1,5 +1,5 @@
 #!/bin/bash
-for dashboard in "author-activity registrations"
+for dashboard in ./dashboards/*.json;
 do
-  curl -X POST -u ${grafana_user}:${grafana_password} -k -H "Content-Type: application/json" --data-binary @./dashboards/${dashboard}.json "${grafana_host}/api/dashboards/db"
+  jq ".overwrite=true" ${dashboard} | curl -X POST -u ${grafana_user}:${grafana_password} -k -H "Content-Type: application/json" --data-binary @- "${grafana_host}/api/dashboards/db"
 done
