@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var grafanaURL = "https://stats.dev.serlo.local/login"
+var grafanaURL = "https://stats.serlo.local/login"
 
 var netClient *http.Client
 
@@ -38,8 +38,8 @@ func checkEtcHosts() {
 	if err != nil {
 		fail("cannot read /etc/hosts file", err)
 	}
-	if !strings.Contains(string(file), "stats.dev.serlo.local") {
-		fail("/etc/hosts does not contain host definition stats.dev.serlo.local please add", nil)
+	if !strings.Contains(string(file), "stats.serlo.local") {
+		fail("/etc/hosts does not contain host definition stats.serlo.local please add", nil)
 	}
 }
 

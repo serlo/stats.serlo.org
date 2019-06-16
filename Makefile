@@ -6,7 +6,7 @@
 # - run smoke tests agains local minikube cluster or gcloud dev/staging/production
 # 
 
-grafana_host ?= https://stats.dev.serlo.local
+grafana_host ?= https://stats.serlo.local
 export grafana_host
 grafana_user ?= admin
 export grafana_user
@@ -24,6 +24,7 @@ dashb-restore:
 image-export:
 	#push local development images to minikube
 	eval $$(minikube docker-env) && $(MAKE) -C mysql-importer docker-build
+	eval $$(minikube docker-env) && $(MAKE) -C athene2-content-provider docker-build
 
 .PHONY: smoketest
 smoketest:

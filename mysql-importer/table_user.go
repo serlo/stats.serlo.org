@@ -4,13 +4,16 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/lib/pq"
 	"github.com/go-sql-driver/mysql"
+	"fmt"
 )
 
 type userTable struct {
 	SourceDB *sql.DB
 	TargetDB *sql.DB
 	Name     string
+	ResultSet     []mysqlUser
 }
 
 type mysqlUser struct {
@@ -22,22 +25,67 @@ type mysqlUser struct {
 	LastLogin mysql.NullTime
 }
 
-func (t *userTable) insertData(data *mysqlUser) func() []interface{} {
-	return func() []interface{} {
-		return []interface{}{
-			(*data).ID, (*data).Date, (*data).Email, (*data).LastLogin, (*data).Logins, (*data).Username}
+func (t *userTable) load() error {
+	maxID, err := getMaxID(t.TargetDB, t.Name)
+	if err != nil {
+		return err
 	}
+	rows, err := t.SourceDB.Query("SELECT id, date, email, last_login, logins, username FROM user WHERE id > ?", maxID)
+	if err != nil {
+		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
+		return err
+	}
+	defer rows.Close()
+
+	t.ResultSet = make([]mysqlUser, 0)
+	count := 0
+	for rows.Next() {
+		rowSet := mysqlUser{}
+		count++
+		err = rows.Scan(&rowSet.ID, &rowSet.Date, &rowSet.Email, &rowSet.LastLogin, &rowSet.Logins, &rowSet.Username)
+		if err != nil {
+			return fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
+		}
+		t.ResultSet = append(t.ResultSet, rowSet)
+	}
+
+	log.Logger.Info().Msgf("load %s [%d] records imported\n", t.Name, count)
+	return nil
 }
 
-func (t *userTable) load() error {
-	data := mysqlUser{}
-	return loadTable(t.SourceDB,
-		t.TargetDB,
-		t.Name,
-		"SELECT id, date, email, last_login, logins, username FROM user WHERE id > ?",
-		[]interface{}{&data.ID, &data.Date, &data.Email, &data.LastLogin, &data.Logins, &data.Username},
-		"INSERT INTO public.user (id, date, email, last_login, logins, username) VALUES ($1, $2, $3, $4, $5, $6);",
-		t.insertData(&data))
+func (t *userTable) save() error {
+	tx, err := t.TargetDB.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(pq.CopyIn(t.Name, "id", "date", "email", "last_login", "logins", "username"))
+	if err != nil {
+		return err
+	}
+
+	for _, data := range t.ResultSet {
+		_, err := stmt.Exec(&data.ID, &data.Date, &data.Email, &data.LastLogin, &data.Logins, &data.Username)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = stmt.Exec()
+	if err != nil {
+		return err
+	}
+
+	err = stmt.Close()
+	if err != nil {
+		return err
+	}
+
+	tx.Commit()
+
+	// release resultSet
+	t.ResultSet= []mysqlUser{}
+	return nil
 }
 
 func (t *userTable) create() error {

@@ -2,12 +2,15 @@ package main
 
 import (
 	"database/sql"
+	"github.com/lib/pq"
+	"fmt"
 )
 
 type uuidTable struct {
 	SourceDB *sql.DB
 	TargetDB *sql.DB
 	Name     string
+	ResultSet     []mysqlUUID
 }
 
 // any reason we cannot join event_log and event?
@@ -16,22 +19,64 @@ type mysqlUUID struct {
 	Discriminator string
 }
 
-func (t *uuidTable) insertData(data *mysqlUUID) func() []interface{} {
-	return func() []interface{} {
-		return []interface{}{
-			(*data).ID, (*data).Discriminator}
+func (t *uuidTable) load() error {
+	maxID, err := getMaxID(t.TargetDB, t.Name)
+	if err != nil {
+		return err
 	}
+	rows, err := t.SourceDB.Query("SELECT id, discriminator FROM uuid WHERE id > ?", maxID)
+	if err != nil {
+		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
+		return err
+	}
+	defer rows.Close()
+
+	t.ResultSet = make([]mysqlUUID, 0)
+	count := 0
+	for rows.Next() {
+		rowSet := mysqlUUID{}
+		count++
+		err = rows.Scan(&rowSet.ID, &rowSet.Discriminator)
+		if err != nil {
+			return fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
+		}
+		t.ResultSet = append(t.ResultSet, rowSet)
+	}
+
+	log.Logger.Info().Msgf("load %s [%d] records imported\n", t.Name, count)
+	return nil
 }
 
-func (t *uuidTable) load() error {
-	data := mysqlUUID{}
-	return loadTable(t.SourceDB,
-		t.TargetDB,
-		t.Name,
-		"SELECT id, discriminator FROM uuid WHERE id > ?",
-		[]interface{}{&data.ID, &data.Discriminator},
-		"INSERT INTO public.uuid (id, discriminator) VALUES ($1, $2);",
-		t.insertData(&data))
+func (t *uuidTable) save() error {
+	tx, err := t.TargetDB.Begin()
+	if err != nil {
+		return err
+	}
+	stmt, err := tx.Prepare(pq.CopyIn(t.Name, "id", "discriminator"))
+	if err != nil {
+		return err
+	}
+	for _, uuid := range t.ResultSet {
+		_, err := stmt.Exec(int64(uuid.ID), uuid.Discriminator)
+		if err != nil {
+			return err
+		}
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		return err
+	}
+
+	err = stmt.Close()
+	if err != nil {
+		return err
+	}
+
+	tx.Commit()
+
+	// release resultSet
+	t.ResultSet = []mysqlUUID{}
+	return nil
 }
 
 func (t *uuidTable) create() error {

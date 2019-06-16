@@ -2,15 +2,17 @@ package main
 
 import (
 	"database/sql"
+	"github.com/lib/pq"
+	"fmt"
 )
 
 type metadataTable struct {
 	SourceDB *sql.DB
 	TargetDB *sql.DB
 	Name     string
+	ResultSet []mysqlMetadata
 }
 
-// any reason we cannot join event_log and event?
 type mysqlMetadata struct {
 	ID     int
 	UUIDID int
@@ -18,22 +20,65 @@ type mysqlMetadata struct {
 	KeyID  int
 }
 
-func (t *metadataTable) insertData(metadata *mysqlMetadata) func() []interface{} {
-	return func() []interface{} {
-		return []interface{}{
-			(*metadata).ID, (*metadata).UUIDID, (*metadata).Value, (*metadata).KeyID}
+func (t *metadataTable) load() error {
+	maxID, err := getMaxID(t.TargetDB, t.Name)
+	if err != nil {
+		return err
 	}
+	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ?", maxID)
+	if err != nil {
+		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
+		return err
+	}
+	defer rows.Close()
+
+	t.ResultSet = make([]mysqlMetadata, 0)
+	count := 0
+	for rows.Next() {
+		data := mysqlMetadata{}
+		count++
+		err = rows.Scan(&data.ID, &data.UUIDID, &data.Value, &data.KeyID)
+		if err != nil {
+			return fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
+		}
+		t.ResultSet = append(t.ResultSet, data)
+	}
+
+	log.Logger.Info().Msgf("load %s [%d] records imported\n", t.Name, count)
+	return nil
 }
 
-func (t *metadataTable) load() error {
-	data := mysqlMetadata{}
-	return loadTable(t.SourceDB,
-		t.TargetDB,
-		t.Name,
-		"SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ?",
-		[]interface{}{&data.ID, &data.UUIDID, &data.Value, &data.KeyID},
-		"INSERT INTO public.metadata (id, uuid_id, value, key_id) VALUES ($1, $2, $3, $4);",
-		t.insertData(&data))
+func (t *metadataTable) save() error {
+	tx, err := t.TargetDB.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(pq.CopyIn(t.Name, "id", "uuid_id", "value", "key_id"))
+	if err != nil {
+		return err
+	}
+	for _, data := range t.ResultSet {
+		_, err := stmt.Exec(&data.ID, &data.UUIDID, &data.Value, &data.KeyID)
+		if err != nil {
+			return err
+		}
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		return err
+	}
+
+	err = stmt.Close()
+	if err != nil {
+		return err
+	}
+
+	tx.Commit()
+
+	// release resultSet
+	t.ResultSet= []mysqlMetadata{}
+	return nil
 }
 
 func (t *metadataTable) create() error {

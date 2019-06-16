@@ -106,6 +106,10 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
 		if err != nil {
 			return err
 		}
+		err = t.save()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

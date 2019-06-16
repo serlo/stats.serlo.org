@@ -10,6 +10,7 @@ import (
 type table interface {
 	create() error
 	load() error
+	save() error
 }
 
 func openAthene2DB(config *mysqlConfig) (*sql.DB, error) {
