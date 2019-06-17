@@ -19,7 +19,7 @@ terraform_init:
 # deploy the KPI infrastructure to the minikube cluster
 .PHONY: terraform_apply
 terraform_apply: build_image_mysql-importer build_image_athene2-content-provider terraform_init
-	(cd $(infrastructure_repository)/minikube/kpi && terraform apply)
+	(cd $(infrastructure_repository)/minikube/kpi && terraform apply $(terraform_auto_approve))
 
 # build docker images for local dependencies in the cluster
 .PHONY: build_image_%

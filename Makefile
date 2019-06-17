@@ -10,6 +10,6 @@ include mk/test.mk
 include mk/deploy.mk
 
 .PHONY: deploy
-deploy: provide_athene2_content restore_dashboards
+deploy: terraform_apply provide_athene2_content restore_dashboards
 
 include mk/dev.mk

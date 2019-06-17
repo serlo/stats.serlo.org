@@ -1,5 +1,10 @@
 #!/bin/bash
 set -e
+echo "wait for grafana to be ready"
+until curl --fail -k "${grafana_host}/login" > /dev/null -s
+do
+  sleep 5
+done
 
 for dashboard in ./dashboards/*.json;
 do
