@@ -4,15 +4,15 @@ Repository contains the current grafana dashboard sources used to develop the KP
 
 ## Getting Started
 
-The KPI local project can be setup using infrastructure repository live/dev-kpi-local environment.
+The KPI project can be deployed locally to a minikube cluster. Such a cluster can be created using using the makefile provided in `<infrastructur repository>/minikube/Makefile` by the target `minikube_start`.
 
-The Makefile in this repository will support the upload of the current dashboards to the local environment and later also to the staging and production environment.
+Once a cluster is running, the KPI project can be deployed with the makefile provided in this project. Run `env_name=minikube make launch` to set up the necessary infrastructure and launch grafana. Make sure the `infrastructure_repository`-variable in `Makefile` is set to the path to the infrastructure repository!
 
 ## Backup and Restore
 
-After creating a local minikube kpi deployment you need to use ```make dashb-restore``` to upload the current dashboards in dashbords folder.
+After creating a local minikube kpi deployment you need to use ```make restore_dashboards``` to upload the current dashboards in dashbords folder.
 
-After the changes are done and you want to save them you need to run ```make dashb-backup``` to export the dashboards and save them in the dashboards folder.
+After the changes are done and you want to save them you need to run ```make backup_dashboards``` to export the dashboards and save them in the dashboards folder.
 
 Please note the backup and upload does not use the import and export format but the Grafana API which uses a different format.
 
