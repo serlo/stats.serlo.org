@@ -10,10 +10,10 @@ export grafana_host
 export grafana_user
 export grafana_password
 
-.PHONY: dashb-backup
-dashb-backup: 
+.PHONY: backup_dashboards
+backup_dashboards: 
 	bash scripts/backup-dashboard.sh author-activity registrations
 
-.PHONY: dashb-restore
-dashb-restore:
+.PHONY: restore_dashboards
+restore_dashboards:
 	bash scripts/restore-dashboard.sh author-activity registrations

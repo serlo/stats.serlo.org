@@ -48,3 +48,4 @@ tmp/dump.sql: tmp/dump.zip
 provide_athene2_content: tmp/dump.sql
 	bash scripts/provide-athene2-content.sh
 
+.NOTPARALLEL:
