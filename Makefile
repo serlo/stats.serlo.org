@@ -12,6 +12,4 @@ include mk/deploy.mk
 .PHONY: deploy
 deploy: provide_athene2_content restore_dashboards
 
-.PHONY: launch
-launch: deploy
-	xdg-open $(grafana_host)/login 2>/dev/null >/dev/null &
+include mk/dev.mk
