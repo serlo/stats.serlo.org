@@ -28,7 +28,7 @@ func (t *eventLogTable) load() error {
 	if err != nil {
 		return err
 	}
-	rows, err := t.SourceDB.Query("select id, actor_id, event_id, date, uuid_id from event_log WHERE id > ?", maxID)
+	rows, err := t.SourceDB.Query("select id, actor_id, event_id, uuid_id, date from event_log WHERE id > ?", maxID)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
 		return err
