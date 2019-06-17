@@ -7,11 +7,16 @@
 launch: deploy
 	xdg-open $(grafana_host)/login 2>/dev/null >/dev/null &
 
+# start a minikube cluster
+.PHONY: start_minikube
+start_minikube:
+	$(MAKE) -C $(infrastructure_repository)/minikube minikube_start
+
+start_minikube:
 .PHONY: init
 # initialize a minikube cluster and deploy this project,
 # all in one target.
-init: 
-	$(MAKE) -C $(infrastructure_repository)/minikube minikube_start
+init: start_minikube	
 	terraform_auto_approve=-auto-approve $(MAKE) launch
 
 # show the log for a specific container
