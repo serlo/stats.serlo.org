@@ -28,3 +28,11 @@ container_log_%:
 kpi-mysql-importer-log: container_log_mysql-importer
 .PHONY: kpi-athene2-content-provider-log
 kpi-athene2-content-provider-log: container_log_athene2-content-provider
+
+
+# open a postgres shell
+.PHONY: postgres_shell
+.ONESHELL:
+postgres_shell:
+	pod=$$(kubectl get pods --namespace=kpi | grep postgres | awk '{ print $$1 }')
+	kubectl exec -it $$pod --namespace=kpi -- su - postgres -c psql
