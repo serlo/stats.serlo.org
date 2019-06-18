@@ -7,6 +7,15 @@ infrastructure_repository ?= ../infrastructure/
 
 ifeq ($(env_name),minikube)
 	include mk/minikube.mk
+	export terraform_auto_approve=-auto-approve
+else
+ifeq ($(env_name),dev)
+	include mk/gcloud.mk
+	#no auto approve in gcloud dev environment
+	export terraform_auto_approve=
+else
+$(error only env_name [minikube,dev] are supported)
+endif
 endif
 
 include mk/grafana.mk
@@ -15,7 +24,7 @@ include mk/deploy.mk
 
 .PHONY: project_deploy
 project_deploy: 
-	terraform_auto_approve=-auto-approve $(MAKE) terraform_apply
+	$(MAKE) terraform_apply
 	$(MAKE) provide_athene2_content restore_dashboards
 
 .PHONY: project_launch
