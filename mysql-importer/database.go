@@ -14,20 +14,24 @@ type table interface {
 }
 
 func openAthene2DB(config *mysqlConfig) (*sql.DB, error) {
-	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s)/serlo?parseTime=true", config.User, config.Password, config.URL)
-	db, err := sql.Open("mysql", mysqlInfo)
+	dbConnect := fmt.Sprintf("%s:%s@tcp(%s)/serlo?parseTime=true", config.User, config.Password, config.URL)
+
+	log.Logger.Info().Msgf("open database [%s]", config.URL)
+	db, err := sql.Open("mysql", dbConnect)
 
 	if err != nil {
-		return nil, fmt.Errorf("cannot open athene2 database [%s]", err.Error())
+		return nil, fmt.Errorf("open database [%s] error [%s]", config.URL, err.Error())
 	}
 
 	err = db.Ping()
 	if err != nil {
 		db.Close()
-		return nil, fmt.Errorf("cannot ping athene2 database [%s", err.Error())
+		return nil, fmt.Errorf("open database [%s] ping error [%s]", config.URL, err.Error())
 	}
 
 	db.SetConnMaxLifetime(time.Second * 600)
+
+	log.Logger.Info().Msgf("open database [%s] successful", config.URL)
 
 	return db, nil
 }
@@ -38,38 +42,36 @@ func databaseDoesNotExist(err error) bool {
 }
 
 func openKPIDatabase(config *postgresConfig) (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+	dbConnect := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
-		
-	db, err := sql.Open("postgres", psqlInfo)
+	
+	log.Logger.Info().Msgf("open database [%s] [%s]", config.Host, config.DBName)
+	db, err := sql.Open("postgres", dbConnect)
 	if err != nil {
 		if databaseDoesNotExist(err) {
-			log.Logger.Info().Msgf("create %s database", config.DBName)
 			db, err = createKPIDatabase(config)
 			if err != nil {
 				return nil, err
 			}
 			return db, nil
 		}
-		return nil, fmt.Errorf("cannot open %s database [%s]", config.DBName, err.Error())
+		return nil, fmt.Errorf("open database [%s] [%s] error [%s]", config.Host, config.DBName, err.Error())
 	}
 
 	err = db.Ping()
 	if err != nil {
 		db.Close()
 		if databaseDoesNotExist(err) {
-			log.Logger.Info().Msgf("create %s database", config.DBName)
 			db, err = createKPIDatabase(config)
 			if err != nil {
 				return nil, err
 			}
 			return db, nil
 		}
-		return nil, fmt.Errorf("cannot open %s database [%s]", config.DBName, err.Error())
+		return nil, fmt.Errorf("open database [%s] [%s] ping error [%s]", config.Host, config.DBName, err.Error())
 	}
-	
 
-	log.Logger.Info().Msgf("open %s database successful", config.DBName)
+	log.Logger.Info().Msgf("open database [%s] [%s] successful", config.Host, config.DBName)
 
 	db.SetConnMaxLifetime(time.Second * 600)
 
@@ -77,17 +79,29 @@ func openKPIDatabase(config *postgresConfig) (*sql.DB, error) {
 }
 
 func createKPIDatabase(config *postgresConfig) (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=%s",
+	log.Logger.Info().Msgf("create database [%s] [%s]", config.Host, config.DBName)
+	serverConnect := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.SSLMode)
-	db, err := sql.Open("postgres", psqlInfo)
+	log.Logger.Info().Msgf("open server connection [%s]", config.Host)
+	server, err := sql.Open("postgres", serverConnect)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open kpi database server [%s]", err.Error())
+		return nil, fmt.Errorf("create database cannot connect to server [%s] error [%s]", config.Host, err.Error())
 	}
 
-	_, err = db.Exec("CREATE DATABASE kpi")
+	defer server.Close()
+
+	_, err = server.Exec("CREATE DATABASE %s", config.DBName)
 	if err != nil {
-		return nil, fmt.Errorf("cannot create kpi database [%s]", err.Error())
+		return nil, fmt.Errorf("cannot create kpi database [%s] on postgres server [%s] error [%s]", config.DBName, config.Host, err.Error())
 	}
+	server.Close()
+
+	//open kpi database
+	kpiDBConnect := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+	config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
+
+	log.Logger.Info().Msgf("open database [%s] [%s]", config.DBName, config.Host)
+	db, err := sql.Open("postgres", kpiDBConnect)
 	return db, nil
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 //Version the import version
-var Version string
+var Version = "1.0.0"
 
 //Revision the git revision of the source code
 var Revision string

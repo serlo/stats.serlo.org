@@ -6,7 +6,8 @@ import (
 )
 
 func runImporter(periodInMin int) {
-	log.Logger.Info().Msgf("run importer scheduler in intervals of [%d] minutes", periodInMin)
+	log.Logger.Info().Msgf("run importer version [%s] revision [%s]", Version, Revision)
+	log.Logger.Info().Msgf("scheduled every [%d] minutes", periodInMin)
 	importTicker := time.NewTicker(time.Duration(periodInMin) * time.Minute)
 
 	//start importer for the first time after that when the timer is due

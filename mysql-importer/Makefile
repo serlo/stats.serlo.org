@@ -12,8 +12,9 @@ run-interval:
 
 
 .PHONY: docker-build
+.ONE_SHELL:
 docker-build:
-	docker build -t serlo/kpi-mysql-importer .
+	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') -t serlo/kpi-mysql-importer .
 
 .PHONY: docker-push
 docker-push:
