@@ -4,32 +4,79 @@ Repository contains the current grafana dashboard sources used to develop the KP
 
 ## Getting Started
 
-The KPI project can be deployed locally to a minikube cluster. Such a cluster can be created using using the makefile provided in `<infrastructur repository>/minikube/Makefile` by the target `minikube_start`.
+If you want to setup a local KPI project environment set the environment variable ```env_name=minikube```.
 
-Once a cluster is running, the KPI project can be deployed with the makefile provided in this project. Run `env_name=minikube make launch` to set up the necessary infrastructure and launch grafana. Make sure the `infrastructure_repository`-variable in `Makefile` is set to the path to the infrastructure repository!
+To run the minikube cluster check the Prerequisite section which depends on the OS and the virtualizer.
 
-## Backup and Restore
+We use a project make to simplify the tasks like building the project images or creating a project cluster.
+If you want to setup a new project cluster the following make call will be helpful:
 
-After creating a local minikube kpi deployment you need to use ```make restore_dashboards``` to upload the current dashboards in dashbords folder.
+```make project_delete project_create project_deploy project_launch```
 
-After the changes are done and you want to save them you need to run ```make backup_dashboards``` to export the dashboards and save them in the dashboards folder.
+The will delete an existing cluster, create a new cluster, upload the dashboards and provision the test database and finally launches  grafana UI in the web browser.
+
+## Prerequisites
+
+Currently only MacOS and Linux as OS are supported and KVM and Virtualbox as virtualizer.
+Two make the cluster behave as if it is deployed in some domain you also may need dnsmasq setup.
+
+FIXME add more instructions for setup or refer to a common documentation
+
+## Project Make
+
+The KPI project follows a project pattern implemented with Make.
+Building, deployment and also testing can be controlled using make goals.
+
+The environment in which the make operates can be set using the env variable env_name.
+
+```env_name=minikube``` will operate with a local minikube cluster.
+```env_name=dev``` will operate with the google cloud dev environment.
+
+Goals follow some naming conventions.
+
+All goals starting with ```project``` are usually standardized accross projects.
+
+```project_create``` creates the environment in case of minikube in dev it will have no effect.
+
+```project_delete``` deletes the environment but has only an effect in minikube environment.
+
+```project_start```  starts the cluster but has only an effect in minikube environment.
+
+```project_deploy``` provisions the project into the kubernetes cluster
+
+```project_launch``` starts the browser with the project start page if it exists
+
+```project_smoketest``` runs a short smoketest to verify if the project is working properly
+
+All goals starting with ```tools``` provide some helper to debug or change some pods and are project specific.
+
+All goals starting with ```build``` take care of building images in the project repository.
+
+```build_images``` only builds them if they are not already in the minikube cluster.
+
+```build_images_forced``` forces a re-build of the images and pushes them to the minikube cluster.
+
+All goals starting with ```terraform```  handle the terraform provisioning
+
+The KPI project depends on the infrastructure repository and it is recommended to keep both repositories in the same workspace folder level.
+
+## Dashboard Backup and Restore
+
+After selecting the environment you can upload the dashboard with ```make restore_dashboards```.
+
+After changes in Grafana you can save them with ```make backup_dashboards``` to the dashboards folder.
 
 Please note the backup and upload does not use the import and export format but the Grafana API which uses a different format.
 
-## Docker Images
+## Build
 
-Minikube has its own docker registry. To push your local developer images that are not on docker hub run
-```eval $(minikube docker-env) && docker build -t ...```
+KPI project has currently two images that are build using make ```build_images```.
 
-This will build the image in the minikube environment.
-The Makefile of MYSQL Importer has an own goal image-export to perform this action.
-
-## MYSQL Importer
+### MYSQL Importer
 
 The importer is a Golang application that loads data from mysql and inserts it into postgresql.
-Later it will also run aggregation queries to improve the query performance.
 
-The importer can be run in interval or once mode. In interval mode it will run every configured minute interval where in once mode it will terminate after completing one run.
+The importer will run periodically or once.
 
 ```importer run``` runs the interval mode
 ```importer once``` runs the once mode
@@ -44,23 +91,15 @@ Logging:
         Level: info
 
 Mysql:
-        Host: mysql.serlo.local:30000
+        Host: mysql.serlo.local:30020
         User: root
         Password: admin
         DBName: serlo
 Postgres:
         Host: postgres.serlo.local
-        Port: 30002
+        Port: 30021
         User: postgres
         Password: admin
         DBName: kpi
-        SSLMode: disable```
-
-## Development
-
-Proposed development life cycle for KPI project:
-
-- development branch contains the dashboards which are under development
-- master branch contains the dashboards which can be deployed to staging and production.
-
-How to automatically upload the dashboards to staging and production still needs to be discussed.
+        SSLMode: disable
+```

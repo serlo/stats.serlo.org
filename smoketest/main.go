@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"strings"
 	"time"
 )
 
@@ -17,7 +16,6 @@ var netClient *http.Client
 
 func main() {
 	setupHTTPCLient()
-	checkEtcHosts()
 	validateGrafanaLoginPage()
 	fmt.Printf("tests successful\n")
 }
@@ -29,17 +27,6 @@ func setupHTTPCLient() {
 	netClient = &http.Client{
 		Timeout:   time.Second * 10,
 		Transport: tr,
-	}
-}
-
-func checkEtcHosts() {
-	fmt.Printf("check etc hosts\n")
-	file, err := ioutil.ReadFile("/etc/hosts")
-	if err != nil {
-		fail("cannot read /etc/hosts file", err)
-	}
-	if !strings.Contains(string(file), "stats.serlo.local") {
-		fail("/etc/hosts does not contain host definition stats.serlo.local please add", nil)
 	}
 }
 

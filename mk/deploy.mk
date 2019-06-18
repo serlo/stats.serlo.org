@@ -18,19 +18,27 @@ terraform_init:
 
 # deploy the KPI infrastructure to the minikube cluster
 .PHONY: terraform_apply
-terraform_apply: build_image_mysql-importer build_image_athene2-content-provider terraform_init
+terraform_apply: build_images build_images terraform_init
 	(cd $(infrastructure_repository)/minikube/kpi && terraform apply $(terraform_auto_approve))
 
 # build docker images for local dependencies in the cluster
-.PHONY: build_image_%
+.PHONY: build_images
 .ONESHELL:
-build_image_%:
+build_images:
 	@eval "$(DOCKER_ENV)"
 	if (docker images | grep kpi-$* -q) ; then
-		echo "image for $* already exists! (use docker rmi serlo/kpi-$* to force a new build)"
+		echo "image for $* already exists! (use make build_images_forced for a new build)"
 	else
-		$(MAKE) -C $* docker-build
+		$(MAKE) build_images_forced
 	fi
+
+# build docker images for local dependencies in the cluster
+.PHONY: build_images_forced
+.ONESHELL:
+build_images_forced:
+	@eval "$(DOCKER_ENV)"
+	$(MAKE) -C mysql-importer docker-build
+	$(MAKE) -C athene2-content-provider docker-build
 
 # download the database dump
 tmp/dump.zip:

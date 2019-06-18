@@ -9,6 +9,8 @@ exit_script() {
 
 trap exit_script SIGINT SIGTERM
 
+echo athene2 content provider revision $GIT_REVISION
+
 connect="-h $ATHENE2_DATABASE_HOST --port $ATHENE2_DATABASE_PORT -u $ATHENE2_DATABASE_USER -p$ATHENE2_DATABASE_PASSWORD"
 
 while true; do
