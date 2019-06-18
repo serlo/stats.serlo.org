@@ -1,8 +1,9 @@
 #!/bin/sh
 
 echo "initial importer run"
-./goapp
+cd /app
+./run
 
 echo "start cronjob with cron pattern [${CRON_PATTERN}]"
 
-/bin/sh -c "echo \"${CRON_PATTERN} /tmp/run\" | crontab - && crond -f -L /dev/stdout"
+/bin/sh -c "echo \"${CRON_PATTERN} /app/run\" | crontab - && crond -f -L /dev/stdout"
