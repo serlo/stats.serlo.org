@@ -9,3 +9,9 @@ project_create: project_deploy project_launch
 project_start: 
 	$(MAKE) -C $(infrastructure_repository)/live/dev kubectl-use-context
 	$(MAKE) project_launch
+
+gcloud_dashboard:
+	xdg-open https://console.cloud.google.com/kubernetes/workload?project=serlo-dev&workload_list_tablesize=50 2>/dev/null >/dev/null &
+	
+tools_run_postgres_cloud_sql_proxy:
+	$(MAKE) -C $(infrastructure_repository)/live/dev run-postgres-cloud-sql-proxy
