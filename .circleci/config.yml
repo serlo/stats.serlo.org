@@ -22,6 +22,8 @@ jobs:
       - run: 'cd mysql-importer && make docker-push'
       - run: 'cd athene2-content-provider && make docker-build'
       - run: 'cd athene2-content-provider && make docker-push'
+      - run: 'cd aggregator && make docker-build'
+      - run: 'cd aggregator && make docker-push'
 
 workflows:
   version: 2
