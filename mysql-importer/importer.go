@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"time"
+	"fmt"
 )
 
 func runImporter(periodInMin int) {
@@ -28,6 +29,16 @@ func runImporter(periodInMin int) {
 }
 
 func runOnceImporter() error {
+	var err error
+    defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = fmt.Errorf("pkg: %v", r)
+			}
+        }
+    }()
 	log.Logger.Info().Msgf("run importer")
 	config, err := readImporterConfig()
 	if err != nil {
@@ -86,10 +97,12 @@ func runOnceImporter() error {
 		return err
 	}
 
-	return nil
+	return err
 }
 
 func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
+	rowLimit := 10000
+
 	log.Logger.Info().Msgf("start importing tables")
 	tables := []table{
 		&uuidTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "uuid"},
@@ -103,13 +116,19 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
 		if err != nil {
 			return err
 		}
-		err = t.load()
-		if err != nil {
-			return err
-		}
-		err = t.save()
-		if err != nil {
-			return err
+
+		for {
+			rowCount, err := t.load(rowLimit)
+			if err != nil {
+				return err
+			}
+			err = t.save()
+			if err != nil {
+				return err
+			}
+			if rowCount != rowLimit {
+				break
+			}
 		}
 	}
 	return nil
