@@ -21,17 +21,17 @@ endif
 # initialize terraform in the infrastructure repository
 .PHONY: terraform_init
 terraform_init:
-	$(MAKE) -C $(infrastructure_repository)/$(env_folder) tf-init
+	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_init
 
 # plan the terraform provisioning in the cluster
 .PHONY: terraform_plan
 terraform_plan: build_images terraform_init
-	$(MAKE) -C $(infrastructure_repository)/$(env_folder) tf-plan
+	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_plan
 
 # apply the terraform provisoining in the cluster
 .PHONY: terraform_apply
 terraform_apply: build_images terraform_init
-	$(MAKE) -C $(infrastructure_repository)/$(env_folder) tf-apply
+	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_apply
 
 # build docker images for local dependencies in the cluster
 .PHONY: build_images

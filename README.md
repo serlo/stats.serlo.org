@@ -11,9 +11,15 @@ To run the minikube cluster check the Prerequisite section which depends on the 
 We use a project make to simplify the tasks like building the project images or creating a project cluster.
 If you want to setup a new project cluster the following make call will be helpful:
 
-```make minikube_delete project_create project_deploy project_launch```
+```make minikube_delete project_create```
 
-The will delete an existing cluster, create a new cluster, upload the dashboards and provision the test database and finally launches  grafana UI in the web browser.
+In case you already have a cluster and just restarted your machine.
+
+```make minikube_start project_launch```
+
+In case you already want to change dashboards or you changed some terraform scripts.
+
+```make project_deploy```
 
 ## Prerequisites
 
