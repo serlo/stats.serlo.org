@@ -3,7 +3,7 @@
 # 
 
 
-infrastructure_repository ?= ../infrastructure/
+infrastructure_repository ?= ../infrastructure
 
 ifeq ($(env_name),minikube)
 	include mk/minikube.mk

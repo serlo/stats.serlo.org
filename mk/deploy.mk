@@ -7,11 +7,11 @@ export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 # set the appropriate docker environment
 ifeq ($(env_name),minikube)
 	DOCKER_ENV ?= $(shell minikube docker-env)
-	env_folder = "minikube/kpi"
+	env_folder = minikube/kpi
 else
 ifeq ($(env_name),dev)
 	DOCKER_ENV ?= ""
-	env_folder = "live/dev"
+	env_folder = live/dev
 else
 $(error non-minikube environment is not implemented, yet!)
 endif
@@ -25,13 +25,13 @@ terraform_init:
 
 # plan the terraform provisioning in the cluster
 .PHONY: terraform_plan
-terraform_plan: build_images build_images terraform_init
+terraform_plan: build_images terraform_init
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) tf-plan
 
 # apply the terraform provisoining in the cluster
 .PHONY: terraform_apply
-terraform_apply: build_images build_images terraform_init
-	$(MAKE) -C $(infrastructure_repository)/$(env_folder) tf-apply $(terraform_auto_approve)
+terraform_apply: build_images terraform_init
+	$(MAKE) -C $(infrastructure_repository)/$(env_folder) tf-apply
 
 # build docker images for local dependencies in the cluster
 .PHONY: build_images
