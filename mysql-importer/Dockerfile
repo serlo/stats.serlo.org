@@ -15,6 +15,8 @@ COPY ./run.sh /app/run
 RUN chmod a+x /app/run
 COPY ./cron.sh /app/cron.sh
 RUN chmod a+x /app/cron.sh
+ARG git_revision
+ENV GIT_REVISION $git_revision
 ARG cron_pattern
 ENV CRON_PATTERN $cron_pattern
 CMD ["/app/cron.sh"]

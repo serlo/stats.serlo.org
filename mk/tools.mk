@@ -8,6 +8,9 @@
 tools_container_log_%:
 	kubectl logs $$(kubectl get pods --namespace kpi | grep $* | awk '{ print $$1 }') -c $* --namespace kpi --follow
 
+.PHONY: tools_aggregator_log
+tools_aggregator_log: tools_container_log_aggregator
+
 .PHONY: tools_importer_log
 tools_importer_log: tools_container_log_mysql-importer
 
