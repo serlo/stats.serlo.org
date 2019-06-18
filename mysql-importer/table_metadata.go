@@ -20,15 +20,17 @@ type mysqlMetadata struct {
 	KeyID  int
 }
 
-func (t *metadataTable) load() error {
+func (t *metadataTable) load(rowLimit int) (int, error) {
 	maxID, err := getMaxID(t.TargetDB, t.Name)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ?", maxID)
+	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
+
+	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ? LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
-		return err
+		return 0, err
 	}
 	defer rows.Close()
 
@@ -39,13 +41,13 @@ func (t *metadataTable) load() error {
 		count++
 		err = rows.Scan(&data.ID, &data.UUIDID, &data.Value, &data.KeyID)
 		if err != nil {
-			return fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
+			return 0, fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
 		}
 		t.ResultSet = append(t.ResultSet, data)
 	}
 
 	log.Logger.Info().Msgf("load %s [%d] records imported\n", t.Name, count)
-	return nil
+	return count, nil
 }
 
 func (t *metadataTable) save() error {

@@ -19,15 +19,17 @@ type mysqlUUID struct {
 	Discriminator string
 }
 
-func (t *uuidTable) load() error {
+func (t *uuidTable) load(rowLimit int) (int, error) {
 	maxID, err := getMaxID(t.TargetDB, t.Name)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	rows, err := t.SourceDB.Query("SELECT id, discriminator FROM uuid WHERE id > ?", maxID)
+	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
+
+	rows, err := t.SourceDB.Query("SELECT id, discriminator FROM uuid WHERE id > ? LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
-		return err
+		return 0, err
 	}
 	defer rows.Close()
 
@@ -38,13 +40,13 @@ func (t *uuidTable) load() error {
 		count++
 		err = rows.Scan(&rowSet.ID, &rowSet.Discriminator)
 		if err != nil {
-			return fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
+			return 0, fmt.Errorf("select %s table error [%s]", t.Name, err.Error())
 		}
 		t.ResultSet = append(t.ResultSet, rowSet)
 	}
 
 	log.Logger.Info().Msgf("load %s [%d] records imported\n", t.Name, count)
-	return nil
+	return count, nil
 }
 
 func (t *uuidTable) save() error {

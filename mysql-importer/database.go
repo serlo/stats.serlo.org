@@ -9,7 +9,7 @@ import (
 
 type table interface {
 	create() error
-	load() error
+	load(rowLimit int) (int, error)
 	save() error
 }
 
@@ -90,7 +90,7 @@ func createKPIDatabase(config *postgresConfig) (*sql.DB, error) {
 
 	defer server.Close()
 
-	_, err = server.Exec("CREATE DATABASE %s", config.DBName)
+	_, err = server.Exec(fmt.Sprintf("CREATE DATABASE %s", config.DBName))
 	if err != nil {
 		return nil, fmt.Errorf("cannot create kpi database [%s] on postgres server [%s] error [%s]", config.DBName, config.Host, err.Error())
 	}
@@ -125,16 +125,21 @@ func isTableCreated(targetDB *sql.DB, name string) (bool, error) {
 }
 
 func getMaxID(targetDB *sql.DB, name string) (int, error) {
-	row := targetDB.QueryRow(fmt.Sprintf("SELECT id FROM public.%s WHERE id=(SELECT max(id) FROM public.%s)", name, name))
-	var id int
-	switch err := row.Scan(&id); err {
-	case sql.ErrNoRows:
-		return 0, nil
-	case nil:
-		return id, nil
-	default:
-		return -1, fmt.Errorf("cannot get max id from table %s [%s]", name, err.Error())
+	rows, err := targetDB.Query(fmt.Sprintf("SELECT COALESCE(max(id), 0) FROM public.%s", name))
+	if err != nil {
+		return 0, fmt.Errorf("cannot get max id from table %s [%s]", name, err.Error())
 	}
+	defer rows.Close()
+
+	for rows.Next() {
+		id := 0
+		err = rows.Scan(&id)
+		if err != nil {
+			return 0, fmt.Errorf("cannot get max id from table %s [%s]", name, err.Error())
+		}
+		return int(id), nil
+	}
+	return 0, fmt.Errorf("did not get the max(id) from table %s [%s]", name, err.Error())
 }
 
 func createTable(db *sql.DB, name string, statements []string) error {
