@@ -3,12 +3,12 @@ Logging:
         Truncate: true
 
 Mysql:
-        Url: MINIKUBE_IP:30020
+        Url: 192.168.99.251:30020
         User: root
         Password: admin
         DBName: serlo
 Postgres:
-        Host: MINIKUBE_IP
+        Host: 192.168.99.251
         Port: 30021
         User: postgres
         Password: admin

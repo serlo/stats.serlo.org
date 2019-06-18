@@ -7,11 +7,6 @@ import (
 	"github.com/go-yaml/yaml"
 )
 
-type schedulerConfig struct {
-	IntervalInMin  int `yaml:"IntervalInMin"`
-	DelayTimeInSec int `yaml:"DelayTimeInSec"`
-}
-
 type loggingConfig struct {
 	Level    string `yaml:"Level"`
 	File     string `yaml:"File"`
@@ -37,7 +32,6 @@ type postgresConfig struct {
 
 type importerConfig struct {
 	Logging   loggingConfig   `yaml:"Logging"`
-	Scheduler schedulerConfig `yaml:"Scheduler"`
 	Mysql     mysqlConfig     `yaml:"Mysql"`
 	Postgres  postgresConfig  `yaml:"Postgres"`
 }
@@ -55,13 +49,5 @@ func readImporterConfig() (*importerConfig, error) {
 			err.Error())
 	}
 
-	err = validateImporterConfig(config)
 	return config, err
-}
-
-func validateImporterConfig(config *importerConfig) error {
-	if config.Scheduler.IntervalInMin < 10 {
-		return fmt.Errorf("Scheduler.IntervalInMin not set or lower then 10 minutes")
-	}
-	return nil
 }

@@ -6,7 +6,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
-	"github.com/urfave/cli"
 )
 
 //Version the import version
@@ -18,24 +17,23 @@ var Revision string
 var log *logType
 
 var importerConfigPath string
-var app *cli.App
 var shutdown = make(chan bool)
 var logFile *os.File
 
 func main() {
-	app = cli.NewApp()
-	initCliParser()
-	err := app.Run(os.Args)
+	importerConfigPath = "config.yaml"
+	config, err := readImporterConfig()
 	if err != nil {
-		if log == nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(1)
-		}
-		fatal(err)
+		fmt.Printf("cannot find config.yaml file [%s]", err.Error())
+		os.Exit(1)
 	}
-}
 
-func fatal(err error) {
-	log.Logger.Fatal().Msg(err.Error())
-	os.Exit(1)
+	log = newLogger(config.Logging)
+	err = log.init()
+	if err != nil {
+		fmt.Printf("cannot inialize logger")
+		os.Exit(1)
+	}
+
+	runOnceImporter()
 }

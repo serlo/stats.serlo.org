@@ -10,17 +10,20 @@ run-once:
 run-interval:
 	go run *.go -- run
 
+image=kpi-mysql-importer
+cron_pattern=*/15 * * * *
 
 .PHONY: docker-build
 .ONE_SHELL:
 docker-build:
-	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') -t serlo/kpi-mysql-importer .
+	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') --build-arg cron_pattern="$(cron_pattern)" -t serlo/$(image) .
 
 .PHONY: docker-push
 docker-push:
-	docker tag serlo/kpi-mysql-importer:latest eu.gcr.io/serlo-containers/kpi-mysql-importer:latest
-	docker push eu.gcr.io/serlo-containers/kpi-mysql-importer:latest
+	docker tag serlo/$(image):latest eu.gcr.io/serlo-containers/$(image):latest
+	docker push eu.gcr.io/serlo-containers/$(image):latest
 
 .PHONY: docker-run
 docker-run:
-	docker run --network=host -v $(CURDIR)/config.yaml:/app/config.yaml --rm serlo/kpi-importer -- once
+	sed "s/MINIKUBE_IP/$(shell minikube ip)/" config.yaml >config-minikube.yaml
+	docker run --network=host -v $(CURDIR)/config-minikube.yaml:/app/config.yaml --rm serlo/$(image)

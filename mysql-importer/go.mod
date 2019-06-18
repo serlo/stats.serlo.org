@@ -7,5 +7,4 @@ require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/lib/pq v1.1.1
 	github.com/rs/zerolog v1.14.3
-	github.com/urfave/cli v1.20.0
 )

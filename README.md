@@ -74,32 +74,4 @@ KPI project has currently two images that are build using make ```build_images``
 
 ### MYSQL Importer
 
-The importer is a Golang application that loads data from mysql and inserts it into postgresql.
-
-The importer will run periodically or once.
-
-```importer run``` runs the interval mode
-```importer once``` runs the once mode
-
-importer requires a config.yaml file that configures some settings. A sample config is given below
-
-```yaml
-Scheduler:
-        IntervalInMin: 10
-
-Logging:
-        Level: info
-
-Mysql:
-        Host: mysql.serlo.local:30020
-        User: root
-        Password: admin
-        DBName: serlo
-Postgres:
-        Host: postgres.serlo.local
-        Port: 30021
-        User: postgres
-        Password: admin
-        DBName: kpi
-        SSLMode: disable
-```
+See README.md in mysql-importer folder.
