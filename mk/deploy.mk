@@ -2,6 +2,7 @@
 # Describes deployment to the serlo cluster.
 #
 
+# location of the current serlo database dump
 export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 
 # set the appropriate docker environment

@@ -2,13 +2,19 @@
 # Makefile for local development for the serlo KPI project.
 #
 
+### Environment ###
+
+# the environment type. use minikube for development
+env_name ?=
+# path to the serlo infrastructure repository
+infrastructure_repository ?= ../infrastructure
+
+
 .PHONY: _help
 # print help as the default target. 
 # since hte actual help recipe is quite long, it is moved
 # to the bottom of this makefile.
 _help: help
-
-infrastructure_repository ?= ../infrastructure
 
 ifeq ($(env_name),minikube)
 	include mk/minikube.mk
@@ -25,6 +31,7 @@ else
     endif
 endif
 
+include mk/help.mk
 include mk/grafana.mk
 include mk/test.mk
 include mk/deploy.mk
@@ -44,52 +51,10 @@ project_deploy: terraform_apply provide_athene2_content restore_dashboards
 project_launch:
 	xdg-open $(grafana_host)/login 2>/dev/null >/dev/null &
 
-
-.PHONY: help
-# print a list of goals
-help:
-	@echo ''
-	@echo 'Usage:'
-	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
-	@echo ''
-	@echo 'Targets:'
-	@awk '/^[a-zA-Z\-0-9\%/][a-zA-Z\-\_0-9\%/\.]*:/ { \
-		helpMessage = match(lastLine, /^# (.*)/); \
-		if (helpMessage) { \
-			helpMessage = substr(lastLine, RSTART + 2, RLENGTH); \
-		} else { \
-			helpMessage = "<not documented>"; \
-		} \
-		if (helpMessage) { \
-			helpCommand = substr($$1, 0, index($$1, ":")-1); \
-			if (match(helpCommand, /[\%]/)) {
-				helpCommand = "$(DIM)"helpCommand;
-			}
-			printf "    ${YELLOW}%-$(TARGET_MAX_CHAR_NUM)s${RESET} ${GREEN}%s${RESET}\n", helpCommand, helpMessage; \
-		} \
-	} \
-	{ lastLine = $$0 } \
-	FNR==1 { \
-		printf "\n $(WHITE)%s$(RESET):\n", FILENAME; \
-		header=1; \
-	} \
-	/^#/ { \
-		if (header) { \
-			match($$0, /^# (.*)/);
-			documentation = substr($$0, RSTART + 2, RLENGTH); \
-			if (documentation) { \
-				printf "  "documentation"\n"; \
-			} \
-		} \
-	} \
-	/^[^#]/ { header=0; } \
-	/^$$/ { header=0; } \
-	\
-	' $(MAKEFILE_LIST)
-
 # COLORS
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
+BLUE   := $(shell tput -Txterm setaf 4)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
 DIM  := $(shell tput -Txterm dim)
