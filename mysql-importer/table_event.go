@@ -59,7 +59,7 @@ func (t *eventTable) save() error {
 		return err
 	}
 	for _, data := range t.ResultSet {
-		_, err := stmt.Exec(&data.ID, &data.Name)
+		_, err := stmt.Exec(data.ID, data.Name)
 		if err != nil {
 			return err
 		}

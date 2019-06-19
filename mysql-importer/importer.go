@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"time"
-	"fmt"
 )
 
 func runImporter(periodInMin int) {
@@ -29,16 +28,6 @@ func runImporter(periodInMin int) {
 }
 
 func runOnceImporter() error {
-	var err error
-    defer func() {
-		if r := recover(); r != nil {
-			var ok bool
-			err, ok = r.(error)
-			if !ok {
-				err = fmt.Errorf("pkg: %v", r)
-			}
-        }
-    }()
 	log.Logger.Info().Msgf("run importer")
 	config, err := readImporterConfig()
 	if err != nil {
@@ -97,7 +86,7 @@ func runOnceImporter() error {
 		return err
 	}
 
-	return err
+	return nil
 }
 
 func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {

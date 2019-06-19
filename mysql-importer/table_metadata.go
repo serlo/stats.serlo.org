@@ -27,7 +27,7 @@ func (t *metadataTable) load(rowLimit int) (int, error) {
 	}
 	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
 
-	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ? LIMIT ?", maxID, rowLimit)
+	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ? ORDER BY id ASC LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
 		return 0, err
@@ -61,7 +61,7 @@ func (t *metadataTable) save() error {
 		return err
 	}
 	for _, data := range t.ResultSet {
-		_, err := stmt.Exec(&data.ID, &data.UUIDID, &data.Value, &data.KeyID)
+		_, err := stmt.Exec(data.ID, data.UUIDID, data.Value, data.KeyID)
 		if err != nil {
 			return err
 		}
@@ -80,6 +80,7 @@ func (t *metadataTable) save() error {
 
 	// release resultSet
 	t.ResultSet= []mysqlMetadata{}
+
 	return nil
 }
 

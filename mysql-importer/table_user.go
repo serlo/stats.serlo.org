@@ -67,7 +67,7 @@ func (t *userTable) save() error {
 	}
 
 	for _, data := range t.ResultSet {
-		_, err := stmt.Exec(&data.ID, &data.Date, &data.Email, &data.LastLogin, &data.Logins, &data.Username)
+		_, err := stmt.Exec(data.ID, data.Date, data.Email, data.LastLogin, data.Logins, data.Username)
 		if err != nil {
 			return err
 		}

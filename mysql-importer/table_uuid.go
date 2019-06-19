@@ -26,7 +26,7 @@ func (t *uuidTable) load(rowLimit int) (int, error) {
 	}
 	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
 
-	rows, err := t.SourceDB.Query("SELECT id, discriminator FROM uuid WHERE id > ? LIMIT ?", maxID, rowLimit)
+	rows, err := t.SourceDB.Query("SELECT id, discriminator FROM uuid WHERE id > ? ORDER BY id ASC LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
 		return 0, err
@@ -59,7 +59,7 @@ func (t *uuidTable) save() error {
 		return err
 	}
 	for _, uuid := range t.ResultSet {
-		_, err := stmt.Exec(int64(uuid.ID), uuid.Discriminator)
+		_, err := stmt.Exec(uuid.ID, uuid.Discriminator)
 		if err != nil {
 			return err
 		}
@@ -78,6 +78,7 @@ func (t *uuidTable) save() error {
 
 	// release resultSet
 	t.ResultSet = []mysqlUUID{}
+
 	return nil
 }
 

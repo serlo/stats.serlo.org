@@ -73,7 +73,7 @@ func openKPIDatabase(config *postgresConfig) (*sql.DB, error) {
 
 	log.Logger.Info().Msgf("open database [%s] [%s] successful", config.Host, config.DBName)
 
-	db.SetConnMaxLifetime(time.Second * 600)
+	db.SetConnMaxLifetime(time.Second * 3600)
 
 	return db, nil
 }
