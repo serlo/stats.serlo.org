@@ -9,12 +9,14 @@ ifeq ($(env_name),minikube)
 	DOCKER_ENV ?= $(shell minikube docker-env)
 	env_folder = minikube/kpi
 else
-ifeq ($(env_name),dev)
-	DOCKER_ENV ?= ""
-	env_folder = live/dev
-else
-$(error non-minikube environment is not implemented, yet!)
-endif
+    ifeq ($(env_name),dev)
+    	DOCKER_ENV ?= ""
+    	env_folder = live/dev
+    else
+        ifneq ($(subst help,,$(MAKECMDGOALS)),)
+    		$(error only env_name [minikube,dev] are supported)
+        endif
+    endif
 endif
 
 
