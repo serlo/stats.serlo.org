@@ -1,13 +1,16 @@
+TARGET_MAX_CHAR_NUM := 25
+MAX_VAR_VALUE_CHAR_NUM := 20
 define HELP_AWK = 
 # catch target definitions (targets starting with underscore are ignored)
 /^[a-zA-Z\-0-9\%/][a-zA-Z\-\_0-9\%/\.]*:/ {
 	helpMessage = get_help_message();
 	if (helpMessage) {
 		helpCommand = substr($$1, 0, index($$1, ":")-1);
+        prefix = "$(YELLOW)";
 		if (match(helpCommand, /[\%]/)) {
-			helpCommand = "$(DIM)"helpCommand;
+			prefix = prefix"$(DIM)";
 		}
-		printf "    $(YELLOW)%-$(TARGET_MAX_CHAR_NUM)s$(RESET): $(GREEN)%s$(RESET)\n", helpCommand, helpMessage;
+		printf "    %s%-$(TARGET_MAX_CHAR_NUM)s$(RESET) $(GREEN)%s$(RESET)\n", prefix, helpCommand, helpMessage;
 	}
 }
 # extract the help message from the last line
@@ -29,8 +32,8 @@ function get_help_message() {
         if (groups[2]) {
             doc = groups[2];
             # limit displayed default value length
-            if (length(doc) > 20) {
-                doc = substr(doc, 0, 20)"...";
+            if (length(doc) > $(MAX_VAR_VALUE_CHAR_NUM)) {
+                doc = substr(doc, 0, $(MAX_VAR_VALUE_CHAR_NUM) - 3)"...";
             }
             env_var_defaults[variable] = doc;
         } else {
@@ -45,7 +48,7 @@ function print_env_vars() {
 	if (length(env_var_defaults)>0) {
 		print "\n  environment variables:";
 		for (variable in env_var_defaults) {
-            printf "    $(BLUE)%s$(RESET)($(DIM)%s$(RESET)): $(GREEN)%s$(RESET)\n", variable, env_var_defaults[variable], env_var_documentation[variable];
+            printf "    $(BLUE)%-$(TARGET_MAX_CHAR_NUM)s$(RESET) ($(DIM)%-$(MAX_VAR_VALUE_CHAR_NUM)s$(RESET)) $(GREEN)%s$(RESET)\n", variable, env_var_defaults[variable], env_var_documentation[variable];
 		}
         # clear environment variable collections
 		split("", env_var_defaults);
