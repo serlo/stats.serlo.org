@@ -20,24 +20,24 @@ else
 endif
 
 
-# initialize terraform in the infrastructure repository
 .PHONY: terraform_init
+# initialize terraform in the infrastructure repository
 terraform_init:
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_init
 
-# plan the terraform provisioning in the cluster
 .PHONY: terraform_plan
+# plan the terraform provisioning in the cluster
 terraform_plan: build_images terraform_init
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_plan
 
-# apply the terraform provisoining in the cluster
 .PHONY: terraform_apply
+# apply the terraform provisoining in the cluster
 terraform_apply: build_images terraform_init
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_apply
 
-# build docker images for local dependencies in the cluster
 .PHONY: build_images
 .ONESHELL:
+# build docker images for local dependencies in the cluster
 build_images:
 	@eval "$(DOCKER_ENV)"
 	if (docker images | grep kpi-$* -q) ; then
@@ -46,9 +46,9 @@ build_images:
 		$(MAKE) build_images_forced
 	fi
 
-# build docker images for local dependencies in the cluster
 .PHONY: build_images_forced
 .ONESHELL:
+# build docker images for local dependencies in the cluster
 build_images_forced:
 	@eval "$(DOCKER_ENV)"
 	$(MAKE) -C mysql-importer docker-build
@@ -66,8 +66,8 @@ tmp/dump.sql: tmp/dump.zip
 	unzip $< -d tmp
 	touch $@
 
-# upload the current database dump to the content provider container
 .PHONY: provide_athene2_content
+# upload the current database dump to the content provider container
 provide_athene2_content: tmp/dump.sql
 	bash scripts/provide-athene2-content.sh
 

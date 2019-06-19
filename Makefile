@@ -28,28 +28,32 @@ endif
 include mk/grafana.mk
 include mk/test.mk
 include mk/deploy.mk
+include mk/tools.mk
+
+# forbid parallel building of prerequisites
+.NOTPARALLEL:
+
 
 .PHONY: project_deploy
 # deploy the project to an already running cluster
-project_deploy:
-	$(MAKE) terraform_apply
-	$(MAKE) provide_athene2_content restore_dashboards
+project_deploy: terraform_apply provide_athene2_content restore_dashboards
+
 
 .PHONY: project_launch
-# launch grafana 
+# launch the grafana dashboard
 project_launch:
 	xdg-open $(grafana_host)/login 2>/dev/null >/dev/null &
 
-include mk/tools.mk
 
 .PHONY: help
+# print a list of goals
 help:
 	@echo ''
 	@echo 'Usage:'
 	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
 	@echo ''
 	@echo 'Targets:'
-	@awk '/^[a-zA-Z\-0-9][a-zA-Z\-\_0-9]*:/ { \
+	@awk '/^[a-zA-Z\-0-9\%/][a-zA-Z\-\_0-9\%/\.]*:/ { \
 		helpMessage = match(lastLine, /^# (.*)/); \
 		if (helpMessage) { \
 			helpMessage = substr(lastLine, RSTART + 2, RLENGTH); \
@@ -58,6 +62,9 @@ help:
 		} \
 		if (helpMessage) { \
 			helpCommand = substr($$1, 0, index($$1, ":")-1); \
+			if (match(helpCommand, /[\%]/)) {
+				helpCommand = "$(DIM)"helpCommand;
+			}
 			printf "    ${YELLOW}%-$(TARGET_MAX_CHAR_NUM)s${RESET} ${GREEN}%s${RESET}\n", helpCommand, helpMessage; \
 		} \
 	} \
@@ -85,3 +92,4 @@ GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
+DIM  := $(shell tput -Txterm dim)

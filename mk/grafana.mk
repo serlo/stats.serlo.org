@@ -15,9 +15,11 @@ ifeq ($(env_name),dev)
 endif
 
 .PHONY: backup_dashboards
+# download grafana dashboards to the repository
 backup_dashboards: 
 	bash scripts/backup-dashboard.sh author-activity registrations
 
 .PHONY: restore_dashboards
+# load grafana dashboards to $grafana_host
 restore_dashboards:
 	bash scripts/restore-dashboard.sh author-activity registrations
