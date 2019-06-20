@@ -11,9 +11,9 @@ log_warn() {
 }
 
 log_info "run initial kpi aggregation"
-out=$(/tmp/run)
+/tmp/run
 if [[ $? != 0 ]] ; then
-    log_warn "kpi aggregation failed error [$?] output [$out]"
+    log_warn "kpi aggregation failed error [$?]"
 fi
 
 log_info "start with cron pattern [${CRON_PATTERN}]"
