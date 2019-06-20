@@ -11,10 +11,10 @@ build_image:
 docker_build:
 	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') --build-arg cron_pattern="$(cron_pattern)" -t serlo/$(image) .
 
-.PHONY: docker_run
+.PHONY: docker-run
 # run docker container
 docker_run:
-	docker run -it serlo/$(image):latest
+	docker run --network=host -e KPI_DATABASE_HOST=$(shell minikube ip) --env-file docker.env --rm serlo/$(image):latest
 
 .PHONY: docker_push
 # push docker container to gcr.io registry
