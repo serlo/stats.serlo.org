@@ -20,9 +20,9 @@ tools_importer_log: tools_container_log_mysql-importer
 # show the database dump log
 tools_dbdump_log: tools_container_log_dbdump
 
-.PHONY: tools_provider_log
+.PHONY: tools_dbsetup_log
 # show the athene2 content provider log
-tools_provider_log: tools_container_log_athene2-content-provider
+tools_provider_log: tools_container_log_dbsetup
 
 .PHONY: tools_psql_shell
 .ONESHELL:

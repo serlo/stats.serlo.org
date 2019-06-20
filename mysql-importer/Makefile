@@ -2,7 +2,7 @@
 build:
 	go build
 
-image=kpi-mysql-importer
+image="kpi-mysql-importer"
 cron_pattern=*/15 * * * *
 
 #

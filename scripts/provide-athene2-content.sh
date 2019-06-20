@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-pod_name="athene2-content-provider-app"
+pod_name="athene2-dbsetup-cronjob"
 dump_file="tmp/dump.sql"
 
 echo "wait for $pod_name to be ready"
@@ -16,11 +16,11 @@ if [[ ! -f $dump_file ]] ; then
 fi
 
 pod=$(kubectl get pods --namespace="kpi" | grep $pod_name | awk '{ print $1 }')
-kubectl_args="-c athene2-content-provider --namespace=kpi"
+kubectl_args="-c dbsetup-container --namespace=kpi"
 
 if kubectl exec -it $pod $kubectl_args -- ls -l /tmp/dump.sql ; then
-    echo "sql dump already present in athene2-content-provider"
+    echo "sql dump already present in athene2-dbsetup-cronjob"
 else
-    echo "copy sql dump to athene2-content-provider"
+    echo "copy sql dump to athene2-dbsetup-cronjob"
     kubectl cp $dump_file $pod:/tmp/dump.sql $kubectl_args 
 fi

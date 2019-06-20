@@ -1,10 +1,10 @@
 FROM golang:alpine AS build-env
 
 # Install some dependencies needed to build the project
-RUN apk add bash ca-certificates git gcc g++ libc-dev
+RUN apk add ca-certificates git gcc g++ libc-dev && rm -rf /var/cache/apk/*
 WORKDIR /app
 ADD . /app
-ARG git_revision="unknown"
+ARG git_revision
 RUN go build -ldflags="-w -s -X main.Revision=$git_revision" -o goapp
 
 FROM alpine
