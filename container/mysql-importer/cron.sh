@@ -12,16 +12,13 @@ log_warn() {
     echo "{\"level\":\"warn\",\"time\":\"$time\",\"message\":\"$1\"}"
 }
 
-exit_script() {
-  trap - SIGINT SIGTERM # clear the trap
-  log_warn "cron script shutdown"
-}
-
-trap exit_script SIGINT SIGTERM
-
 log_info "run initial athene2 database importer"
 cd /tmp && ./run
 
-log_info "start cronjob with cron pattern [${CRON_PATTERN}]"
+log_info "start with cron pattern [${CRON_PATTERN}]"
+echo "${CRON_PATTERN} /tmp/run" | crontab -
+crond -f -L /dev/stdout &
 
-/bin/sh -c "echo \"${CRON_PATTERN} /tmp/run\" | crontab - && crond -f -L /dev/stdout"
+log_info "crond running, quit with CTRL+C"
+trap "kill $!" SIGINT SIGTERM
+wait

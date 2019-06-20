@@ -11,6 +11,11 @@ if [[ "${ENVIRONMENT}" == "docker" ]] ; then
     exit 0
 else
     log_info "start with cron pattern [${CRON_PATTERN}]"
+    echo "${CRON_PATTERN} /tmp/run" | crontab -
+    crond -f -L /dev/stdout &
 
-    /bin/sh -c "echo \"${CRON_PATTERN} /tmp/run\" | crontab - && crond -f -L /dev/stdout"
+    log_info "crond running, quit with CTRL+C"
+    trap "kill $!" SIGINT SIGTERM
+    wait
 fi
+
