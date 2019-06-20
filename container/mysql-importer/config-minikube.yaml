@@ -1,0 +1,16 @@
+Logging:
+        Level: info
+        Truncate: true
+
+Mysql:
+        Url: 192.168.99.251:30020
+        User: root
+        Password: admin
+        DBName: serlo
+Postgres:
+        Host: 192.168.99.251
+        Port: 30021
+        User: postgres
+        Password: admin
+        DBName: kpi
+        SSLMode: disable

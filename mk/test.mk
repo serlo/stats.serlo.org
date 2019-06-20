@@ -2,10 +2,8 @@
 # Describes testing operations.
 #
 
-.PHONY: smoketest
-smoketest:
-	cd smoketest && go run main.go
+.PHONY: project_smoketest
+# run smoketest for kpi project
+project_smoketest:
+	$(MAKE) -C smoketest
 
-.PHONY: mysql-importer-run
-mysql-importer-run:
-	$(MAKE) -c mysql-importer run-once
