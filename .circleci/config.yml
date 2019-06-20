@@ -1,13 +1,7 @@
 version: 2.1
 jobs:
-#  build:
-#    branches:
-#      only:
-#        - master
     machine:
       image: ubuntu-1604:201903-01
-#    docker:
-#      - image: "debian:stretch"
     steps:
       - checkout
       - run:
@@ -21,12 +15,7 @@ jobs:
           command: |
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             gcloud auth configure-docker --quiet
-      - run: 'cd mysql-importer && make docker-build'
-      - run: 'cd mysql-importer && make docker-push'
-      - run: 'cd athene2-content-provider && make docker-build'
-      - run: 'cd athene2-content-provider && make docker-push'
-      - run: 'cd aggregator && make docker-build'
-      - run: 'cd aggregator && make docker-push'
+      - run: 'for build in container/* ; do make -C $build docker_build docker_push; done'
 
 workflows:
   version: 2
