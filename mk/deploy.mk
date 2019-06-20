@@ -20,7 +20,6 @@ else
     endif
 endif
 
-
 .PHONY: terraform_init
 # initialize terraform in the infrastructure repository
 terraform_init:
@@ -41,22 +40,18 @@ terraform_apply: build_images terraform_init
 # build docker images for local dependencies in the cluster
 build_images:
 	@eval "$(DOCKER_ENV)"
-	if (docker images | grep kpi-$* -q) ; then
-		echo "image for $* already exists! (use make build_images_forced for a new build)"
-	else
-		$(MAKE) build_images_forced
-	fi
+	for build in container/*; do \
+		$(MAKE) -C $$build build_image || exit 1; \
+	done
 
 .PHONY: build_images_forced
 .ONESHELL:
 # build docker images for local dependencies in the cluster
 build_images_forced:
 	@eval "$(DOCKER_ENV)"
-	$(MAKE) -C mysql-importer docker-build
-	$(MAKE) -C aggregator docker-build
-	$(MAKE) -C dbsetup docker-build
-	$(MAKE) -C dbdump docker-build
-
+	for build in container/*; do \
+		$(MAKE) -C $$build docker_build || exit 1;
+	done
 # download the database dump
 tmp/dump.zip:
 	mkdir -p tmp
@@ -71,6 +66,6 @@ tmp/dump.sql: tmp/dump.zip
 .PHONY: provide_athene2_content
 # upload the current database dump to the content provider container
 provide_athene2_content: tmp/dump.sql
-	bash scripts/provide-athene2-content.sh
+	bash scripts/setup-athene2-db.sh
 
 .NOTPARALLEL:

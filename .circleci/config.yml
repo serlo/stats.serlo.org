@@ -1,6 +1,9 @@
 version: 2.1
 jobs:
-  build:
+#  build:
+#    branches:
+#      only:
+#        - master
     machine:
       image: ubuntu-1604:201903-01
 #    docker:

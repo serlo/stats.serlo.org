@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 log_info() {
     time=$(date +"%Y-%m-%dT%H:%M:%SZ")
     echo "{\"level\":\"info\",\"time\":\"$time\",\"message\":\"$1\"}"
@@ -15,13 +17,11 @@ exit_script() {
   log_warn "cron script shutdown"
 }
 
+trap exit_script SIGINT SIGTERM
 
-log_info "run initial athene2 dbsetup"
-out=$(/tmp/run)
-if [[ $? != 0 ]] ; then
-    log_warn "athene2 dbsetup failed error [$?] output [$out]"
-fi
+log_info "run initial athene2 database importer"
+cd /tmp && ./run
 
-log_info "start with cron pattern [${CRON_PATTERN}]"
+log_info "start cronjob with cron pattern [${CRON_PATTERN}]"
 
 /bin/sh -c "echo \"${CRON_PATTERN} /tmp/run\" | crontab - && crond -f -L /dev/stdout"

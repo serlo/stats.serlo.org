@@ -6,7 +6,7 @@
 .PHONY: container_log_%
 # show the log for a specific container common implementation
 tools_container_log_%:
-	kubectl logs $$(kubectl get pods --namespace kpi | grep $* | awk '{ print $$1 }') -c $* --namespace kpi --follow
+	kubectl logs $$(kubectl get pods --namespace kpi | grep $* | awk '{ print $$1 }') -c $*-container --namespace kpi --follow
 
 .PHONY: tools_aggregator_log
 # show the data aggregator log
@@ -22,7 +22,7 @@ tools_dbdump_log: tools_container_log_dbdump
 
 .PHONY: tools_dbsetup_log
 # show the athene2 content provider log
-tools_provider_log: tools_container_log_dbsetup
+tools_dbsetup_log: tools_container_log_dbsetup
 
 .PHONY: tools_psql_shell
 .ONESHELL:
