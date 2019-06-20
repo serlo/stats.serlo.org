@@ -7,11 +7,7 @@ jobs:
       - checkout
       - run:
           command: |
-            COMMIT_RANGE=$(echo "${CIRCLE_COMPARE_URL}" | cut -d/ -f7)
-            if [[ $COMMIT_RANGE != *"..."* ]]; then
-              COMMIT_RANGE="${COMMIT_RANGE}...${COMMIT_RANGE}"
-            fi
-            echo "COMMIT_RANGE=$COMMIT_RANGE"
+            echo CIRCLE_SHA1=$CIRCLE_SHA1
       - run:
           command: |
             sudo apt update -y
