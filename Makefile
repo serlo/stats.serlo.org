@@ -17,8 +17,8 @@ infrastructure_repository ?= ../infrastructure
 _help: help
 
 ifeq ($(env_name),minikube)
-	include mk/minikube.mk
-	export terraform_auto_approve=-auto-approve
+include mk/minikube.mk
+export terraform_auto_approve=-auto-approve
 else
     ifeq ($(env_name),dev)
     	include mk/gcloud.mk
