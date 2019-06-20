@@ -85,6 +85,7 @@ func runOnceImporter() error {
 		// out of retries
 		return err
 	}
+	log.Logger.Info().Msgf("import successful")
 
 	return nil
 }

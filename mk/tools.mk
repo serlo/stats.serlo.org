@@ -30,3 +30,4 @@ tools_dbsetup_log: tools_container_log_dbsetup
 tools_psql_shell:
 	pod=$$(kubectl get pods --namespace=kpi | grep postgres | awk '{ print $$1 }')
 	kubectl exec -it $$pod --namespace=kpi -- su - postgres -c psql
+

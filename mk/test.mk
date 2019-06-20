@@ -3,7 +3,7 @@
 #
 
 .PHONY: project_smoketest
-# run a quick importer smote test
+# run smoketest for kpi project
 project_smoketest:
-	cd smoketest && go run main.go
+	$(MAKE) -C smoketest
 
