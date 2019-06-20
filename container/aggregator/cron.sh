@@ -10,12 +10,6 @@ log_warn() {
     echo "{\"level\":\"warn\",\"time\":\"$time\",\"message\":\"$1\"}"
 }
 
-exit_script() {
-  trap - SIGINT SIGTERM # clear the trap
-  log_warn "cron script shutdown"
-}
-
-
 log_info "run initial kpi aggregation"
 out=$(/tmp/run)
 if [[ $? != 0 ]] ; then
@@ -23,5 +17,9 @@ if [[ $? != 0 ]] ; then
 fi
 
 log_info "start with cron pattern [${CRON_PATTERN}]"
+echo "${CRON_PATTERN} /tmp/run" | crontab -
+crond -f -L /dev/stdout &
 
-/bin/sh -c "echo \"${CRON_PATTERN} /tmp/run\" | crontab - && crond -f -L /dev/stdout"
+log_info "crond running, quit with CTRL+C"
+trap "kill $!" SIGINT SIGTERM
+wait
