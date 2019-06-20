@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk update && apk add mysql-client
+RUN apk update && apk add mysql-client && rm -rf /var/cache/apk/*
 ADD ./run.sh /tmp/run.sh
 RUN apk update
 RUN apk upgrade
