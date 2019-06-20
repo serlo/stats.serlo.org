@@ -15,11 +15,7 @@ jobs:
         command: |
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
           gcloud auth configure-docker --quiet
-    - run:
-        command: |
-          for build in container/* ; do
-            make -C $build docker_build docker_push;
-          done
+    - run: for build in container/* ; do make -C $build docker_build docker_push; done
 
 workflows:
   version: 2
