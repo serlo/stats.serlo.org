@@ -1,4 +1,4 @@
-image=athene2-database-anonymizer
+image=athene2-dbdump
 
 #run only at 4 am
 cron_pattern=0 4 * * *

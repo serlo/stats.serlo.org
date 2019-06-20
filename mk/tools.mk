@@ -16,6 +16,10 @@ tools_aggregator_log: tools_container_log_aggregator
 # show the database importer log
 tools_importer_log: tools_container_log_mysql-importer
 
+.PHONY: tools_dbdump_log
+# show the database dump log
+tools_dbdump_log: tools_container_log_dbdump
+
 .PHONY: tools_provider_log
 # show the athene2 content provider log
 tools_provider_log: tools_container_log_athene2-content-provider

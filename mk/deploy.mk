@@ -55,6 +55,7 @@ build_images_forced:
 	$(MAKE) -C mysql-importer docker-build
 	$(MAKE) -C athene2-content-provider docker-build
 	$(MAKE) -C aggregator docker-build
+	$(MAKE) -C dbdump docker-build
 
 # download the database dump
 tmp/dump.zip:
