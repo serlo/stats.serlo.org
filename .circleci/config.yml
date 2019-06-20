@@ -7,6 +7,13 @@ jobs:
       - checkout
       - run:
           command: |
+            COMMIT_RANGE=$(echo "${CIRCLE_COMPARE_URL}" | cut -d/ -f7)
+            if [[ $COMMIT_RANGE != *"..."* ]]; then
+              COMMIT_RANGE="${COMMIT_RANGE}...${COMMIT_RANGE}"
+            fi
+            echo "COMMIT_RANGE=$COMMIT_RANGE"
+      - run:
+          command: |
             sudo apt update -y
             sudo apt install -y lsb-release curl gnupg2 build-essential software-properties-common apt-transport-https
             export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
