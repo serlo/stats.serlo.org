@@ -1,10 +1,10 @@
 #!/bin/bash
-for dashboard in "author-activity registrations"
+set -e
+
+dashboards=$(curl -s -X GET -u ${grafana_user}:${grafana_password} -k "${grafana_host}/api/search?type=dash-db" | jq ".[] | .uri" -r | cut -d "/" -f 2)
+
+for dashboard in ${dashboards}
 do
-	curl -s -X GET -u ${grafana_user}:${grafana_password} -k "${grafana_host}/api/dashboards/db/${dashboard}" | python -m json.tool > dashboards/tmp.json
-	line=$(cat dashboards/tmp.json | grep -n '[[:space:]]\{8\}\"id\"\:' | grep -v '[[:space:]]\{9\}' | awk '{ print $1 }' | sed 's/://')
-	if [ "${line}" != "" ] ; then 
-		sed "${line}d" dashboards/tmp.json >"dashboards/${dashboard}.json"
-	fi
-	rm dashboards/tmp.json
+    echo "backing up ${dashboard}..."
+    curl -s -X GET -u ${grafana_user}:${grafana_password} -k "${grafana_host}/api/dashboards/db/${dashboard}" | jq "del(.dashboard.id)" > ${dashboard}.json 
 done

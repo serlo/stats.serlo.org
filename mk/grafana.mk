@@ -17,9 +17,9 @@ endif
 .PHONY: backup_dashboards
 # download grafana dashboards to the repository
 backup_dashboards: 
-	bash scripts/backup-dashboard.sh author-activity registrations
+	bash scripts/backup-dashboard.sh
 
 .PHONY: restore_dashboards
 # load grafana dashboards to $grafana_host
 restore_dashboards:
-	bash scripts/restore-dashboard.sh author-activity registrations
+	bash scripts/restore-dashboard.sh
