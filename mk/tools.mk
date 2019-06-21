@@ -3,10 +3,10 @@
 #
 
 
-.PHONY: container_log_%
+.PHONY: tools_container_log_%
 # show the log for a specific container common implementation
 tools_container_log_%:
-	kubectl logs $$(kubectl get pods --namespace kpi | grep $* | awk '{ print $$1 }') -c $*-container --namespace kpi --follow
+	kubectl logs $$(kubectl get pods --namespace kpi | grep $* | awk '{ print $$1 }') --all-containers=true --namespace kpi --follow
 
 .PHONY: tools_aggregator_log
 # show the data aggregator log
