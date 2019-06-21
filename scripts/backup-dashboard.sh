@@ -6,5 +6,5 @@ dashboards=$(curl -s -X GET -u ${grafana_user}:${grafana_password} -k "${grafana
 for dashboard in ${dashboards}
 do
     echo "backing up ${dashboard}..."
-    curl -s -X GET -u ${grafana_user}:${grafana_password} -k "${grafana_host}/api/dashboards/db/${dashboard}" | jq "del(.dashboard.id)" > ${dashboard}.json 
+    curl -s -X GET -u ${grafana_user}:${grafana_password} -k "${grafana_host}/api/dashboards/db/${dashboard}" | jq "del(.dashboard.id)" > dashboards/${dashboard}.json 
 done
