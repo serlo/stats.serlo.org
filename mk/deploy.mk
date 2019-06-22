@@ -47,7 +47,7 @@ build_images:
 		$(MAKE) -C $$build build_image || exit 1; \
 	done
 	for build in $(infrastructure_repository)/container/*/; do \
-		$(MAKE) -C $$build docker_build || exit 1;
+		$(MAKE) -C $$build build_image || exit 1;
 	done
 
 .PHONY: build_images_forced
