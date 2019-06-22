@@ -7,7 +7,7 @@ import (
 
 //TestImporterApp test if mysql importer is working
 func TestDBSetupCronjob(t *testing.T) {
-	logs, err := getLogs(t, "athene2-dbsetup-cronjob", "dbsetup-container", 20)
+	logs, err := getLogs(t, "dbsetup-cronjob", "dbsetup-container", 20)
 	if err != nil {
 		t.Errorf("%s", err.Error())
 		return
