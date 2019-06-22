@@ -1,9 +1,11 @@
 package main
 
+/*
 import (
 	"strings"
 	"testing"
 )
+
 
 //TestImporterApp test if mysql importer is working
 func TestDBDumpCronjob(t *testing.T) {
@@ -21,3 +23,4 @@ func TestDBDumpCronjob(t *testing.T) {
 	}
 	t.Errorf("dbdump logs should have pattern [%s] but logs is [%s]", pattern, logs)
 }
+*/

@@ -43,8 +43,11 @@ terraform_apply: terraform_init
 # build docker images for local dependencies in the cluster
 build_images:
 	@eval "$(DOCKER_ENV)"
-	for build in container/*; do \
+	for build in container/*/; do \
 		$(MAKE) -C $$build build_image || exit 1; \
+	done
+	for build in $(infrastructure_repository)/container/*/; do \
+		$(MAKE) -C $$build docker_build || exit 1;
 	done
 
 .PHONY: build_images_forced
@@ -52,7 +55,10 @@ build_images:
 # build docker images for local dependencies in the cluster
 build_images_forced:
 	@eval "$(DOCKER_ENV)"
-	for build in container/*; do \
+	for build in container/*/; do \
+		$(MAKE) -C $$build docker_build || exit 1;
+	done
+	for build in $(infrastructure_repository)/container/*/; do \
 		$(MAKE) -C $$build docker_build || exit 1;
 	done
 # download the database dump
