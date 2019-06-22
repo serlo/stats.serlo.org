@@ -28,3 +28,7 @@ minikube_delete:
 minikube_dashboard:
 	$(MAKE) -C $(infrastructure_repository)/minikube minikube_dashboard
 
+.PHONY:
+kubectl-use-context:
+	kubectl config use-context minikube
+

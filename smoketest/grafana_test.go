@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
+	"os"
 	"regexp"
 	"testing"
 )
 
-var grafanaURL = "https://stats.serlo.local/login"
+var grafanaURL = fmt.Sprintf("%s/login", os.Getenv("grafana_host"))
 
 //TestGrafanaApp test if grafana is working
 func TestGrafanaApp(t *testing.T) {
