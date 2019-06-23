@@ -10,23 +10,23 @@ project_start: minikube_start project_launch
 
 .PHONY: minikube_start
 minikube_start:
-	$(MAKE) -C $(infrastructure_repository)/minikube minikube_start
+	$(MAKE) -C $(infrastructure_repository)/minikube/kpi minikube_start
 
 .PHONY:
 minikube_create:
-	$(MAKE) -C $(infrastructure_repository)/minikube minikube_create
+	$(MAKE) -C $(infrastructure_repository)/minikube/kpi minikube_create
 
 .PHONY:
 minikube_stop:
-	$(MAKE) -C $(infrastructure_repository)/minikube minikube_stop
+	$(MAKE) -C $(infrastructure_repository)/minikube/kpi minikube_stop
 
 .PHONY:
 minikube_delete:
-	$(MAKE) -C $(infrastructure_repository)/minikube minikube_delete
+	$(MAKE) -C $(infrastructure_repository)/minikube/kpi minikube_delete
 
 .PHONY:
 minikube_dashboard:
-	$(MAKE) -C $(infrastructure_repository)/minikube minikube_dashboard
+	$(MAKE) -C $(infrastructure_repository)/minikube/kpi minikube_dashboard
 
 .PHONY:
 kubectl_use_context:
