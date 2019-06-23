@@ -21,8 +21,12 @@ tools_importer_log: kubectl_use_context tools_container_log_mysql-importer
 tools_dbdump_log: kubectl_use_context tools_container_log_dbdump
 
 .PHONY: tools_dbsetup_log
-# show the athene2 content provider log
+# show the dbsetup log
 tools_dbsetup_log: kubectl_use_context tools_container_log_dbsetup
+
+.PHONY: tools_grafana_log
+# show the grafana log
+tools_grafana_log: kubectl_use_context tools_container_log_grafana
 
 .PHONY: tools_psql_shell
 .ONESHELL:
