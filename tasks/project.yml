@@ -1,5 +1,8 @@
 version: 2
 
+vars:
+  dump_location: gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
+
 tasks:
   create: 
     desc: |
@@ -27,9 +30,11 @@ tasks:
         - [minikube] builds the images in case they are not present in remote docker
         - applies the resources with terraform
     cmds:
-      - task: build:all
-      - task: terraform:apply
-      - task: upload_athene2_dump
+      - task build:all
+      - task terraform:apply
+      - test -f tmp/dump.sql || mkdir -p tmp && echo "downloading latest mysql dump from gcloud" && gsutil cp {{.dump_location}} tmp/dump.zip
+      - test -f tmp/dump.sql || unzip tmp/dump.zip -d tmp
+      - bash scripts/setup-athene2-db.sh
 
   launch:
     desc: |
@@ -39,14 +44,3 @@ tasks:
     cmds:
       - xdg-open $grafana_host 2>/dev/null >/dev/null
 
-  download_athene2_dump:
-    cmds:
-      - mkdir -p tmp && echo "downloading latest mysql dump from gcloud" && gsutil cp {{.dump_location}} tmp/dump.zip
-      - unzip tmp/dump.zip -d tmp
-    status:
-      - test -f tmp/dump.sql
-
-  upload_athene2_dump:
-    deps: [download_athene2_dump]
-    cmds:
-      - bash scripts/setup-athene2-db.sh
