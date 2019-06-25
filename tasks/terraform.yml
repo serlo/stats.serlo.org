@@ -1,0 +1,23 @@
+version: '2'
+
+env:
+  infrastructure_repo: ../infrastructure/minikube/kpi
+
+tasks:
+  init:
+    desc: run terraform init
+    cmds:
+      - cd $infrastructure_repo && task terraform:init
+    silent: true
+
+  plan:
+    desc: run terraform plan
+    cmds:
+      - cd $infrastructure_repo && task terraform:plan
+    silent: true
+
+  apply:
+    desc: run terraform apply
+    cmds:
+      - cd $infrastructure_repo && task terraform:apply
+    silent: true

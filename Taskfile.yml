@@ -1,0 +1,20 @@
+version: '2'
+
+env:
+  grafana_host: https://stats.serlo.local
+  grafana_password: admin
+  env_name: minikube
+  dump_location: gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
+
+includes:
+  build:    tasks/build.yml
+  log:      tasks/log.yml
+  project:  tasks/project.yml
+  grafana:  tasks/grafana_minikube.yml
+  minikube: ../infrastructure/tasks/minikube.yml
+  terraform: tasks/terraform.yml
+
+tasks:
+  default:
+    cmds:
+      - task -l

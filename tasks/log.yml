@@ -1,0 +1,27 @@
+version: '2'
+
+vars:
+  namespace: kpi
+
+tasks:
+  dbsetup:
+    desc: show dbsetup pod log and follow the output
+    cmds:
+      - task: kubectl_use_context
+      - kubectl logs $(kubectl get pods --namespace {{.namespace}} | grep ^dbsetup-cronjob | awk '{ print $1 }') --all-containers=true --namespace {{.namespace}} --follow
+
+  aggregator:
+    desc: show aggregator pod log and follow the output
+    cmds:
+      - task: kubectl_use_context
+      - kubectl logs $(kubectl get pods --namespace {{.namespace }} | grep ^aggregator | awk '{ print $1 }') --all-containers=true --namespace {{.namespace}} --follow
+
+  mysql_importer:
+    desc: show mysql importer pod log and follow the output
+    cmds:
+      - task: kubectl_use_context
+      - kubectl logs $(kubectl get pods --namespace {{.namespace }} | grep ^mysql-importer | awk '{ print $1 }') --all-containers=true --namespace {{.namespace}} --follow
+
+  kubectl_use_context:
+    cmds:
+      - kubectl config use-context minikube

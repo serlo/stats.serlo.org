@@ -1,0 +1,51 @@
+version: '2'
+
+vars:
+  dbsetup_image: athene2-dbsetup-cronjob
+  aggregator_image: kpi-aggregator
+  mysql_importer_image: kpi-mysql-importer
+
+tasks:
+  all:
+    desc: build required minikube images if images are not yet available
+    deps: [dbsetup, aggregator, mysql_importer]
+
+  all_forced:
+    desc: build each image even when image is available
+    deps: [dbsetup_forced, aggregator_forced, mysql_importer_forced]
+
+  dbsetup:
+    desc: build dbsetup image only if image is not already available
+    cmds:
+      - task: dbsetup_forced 
+    status:
+      - eval $(minikube docker-env) && docker images | grep {{ .dbsetup_image }}
+
+  dbsetup_forced:
+    desc: build dbsetup image even when image is available
+    cmds:
+    - eval $(minikube docker-env) && cd ../infrastructure/container/dbsetup && docker build -f Dockerfile -t serlo/{{.dbsetup_image}} .
+
+  aggregator:
+    desc: build aggregator image only if image is not already available
+    cmds:
+      - task: aggregator_forced 
+    status:
+      - eval $(minikube docker-env) && docker images | grep {{ .aggregator_image }}
+
+  aggregator_forced:
+    desc: build aggregator image even when image is available
+    cmds:
+    - eval $(minikube docker-env) && cd container/aggregator && docker build -f Dockerfile -t serlo/{{.aggregator_image}} .
+
+  mysql_importer:
+    desc: build mysql importer image only if image is not already available
+    cmds:
+      - task: mysql_importer_forced 
+    status:
+      - eval $(minikube docker-env) && docker images | grep {{ .mysql_importer_image }}
+
+  mysql_importer_forced:
+    desc: build mysql importer image even when image is available
+    cmds:
+    - eval $(minikube docker-env) && cd container/mysql-importer && docker build -f Dockerfile -t serlo/{{.mysql_importer_image}} .
