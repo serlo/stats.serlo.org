@@ -25,8 +25,17 @@ In case you already want to change dashboards or you changed some terraform scri
 
 Currently only MacOS and Linux as OS are supported and KVM and Virtualbox as virtualizer.
 Two make the cluster behave as if it is deployed in some domain you also may need dnsmasq setup.
+But usually also a simple /etc/hosts entry for serlo.local service URLs is sufficient.
 
-FIXME add more instructions for setup or refer to a common documentation
+The currently required entries are:
+
+stats.serlo.local -> KPI
+de.serlo.local -> Athene2
+mysql.serlo.local -> MYSQL DB on port 30020
+postgres.serlo.local -> Postgres DB on port 30021
+
+The IP address should be the minikube IP of the cluster. You can get it with ```minikube ip``` after the cluster is running.
+In case you are re-creating the cluster and you are not with Virtualbox you may need to update the ip address.
 
 ## Project Make
 
