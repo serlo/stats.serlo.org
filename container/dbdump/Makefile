@@ -1,4 +1,5 @@
 image=athene2-dbdump-cronjob
+local_image=serlo/$(image_name)
 
 minor_version=1.0
 #patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
@@ -10,11 +11,11 @@ cron_pattern=0 4 * * *
 
 .PHONY: build_image
 build_image:
-	docker images | grep $(image) && echo "image $(image) already exists use build_image_forced" || $(MAKE) docker_build
+	docker images | grep $(local_image) && echo "image $(local_image) already exists use build_image_forced" || $(MAKE) docker_build
 
 .PHONY: docker_build
 docker_build:
-	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') --build-arg cron_pattern="$(cron_pattern)" -t serlo/$(image) .
+	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') --build-arg cron_pattern="$(cron_pattern)" -t $(local_image) .
 
 docker_run:
 	docker run \
@@ -24,9 +25,5 @@ docker_run:
 		-e ATHENE2_DATABASE_USER=root \
 		-e ATHENE2_DATABASE_PASSWORD=admin \
 		-e ENVIRONMENT=docker \
-		-it serlo/$(image):latest
+		-it $(local_image):latest
 
-.PHONY: docker_push
-docker_push:
-	docker tag serlo/$(image):latest eu.gcr.io/serlo-containers/$(image):latest
-	docker push eu.gcr.io/serlo-containers/$(image):latest
