@@ -1,5 +1,6 @@
 image_name=kpi-aggregator
-minor_version=1.0
+major_version=1
+minor_version=0
 local_image=serlo/$(image_name)
 
 #patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
