@@ -3,7 +3,7 @@ image="athene2-dbsetup-cronjob"
 minor_version=1.0
 #patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
 
-include ../../../mk/dockerci.mk
+include ../../mk/dockerci.mk
 
 #every hour check if database is empty after initial check
 cron_pattern=0 0/1 * * *

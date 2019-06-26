@@ -2,7 +2,7 @@ image_name=kpi-aggregator
 minor_version=1.0
 #patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
 
-include ../../../mk/dockerci.mk
+include ../../mk/dockerci.mk
 
 cron_pattern=*/60 * * * *
 
