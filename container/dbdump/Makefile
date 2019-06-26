@@ -1,5 +1,10 @@
 image=athene2-dbdump-cronjob
 
+minor_version=1.0
+#patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
+
+include ../../../mk/dockerci.mk
+
 #run only at 4 am
 cron_pattern=0 4 * * *
 

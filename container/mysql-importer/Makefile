@@ -1,8 +1,10 @@
-.PHONY: build
-build:
-	go build
-
 image="kpi-mysql-importer"
+
+minor_version=1.0
+#patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
+
+include ../../../mk/dockerci.mk
+
 cron_pattern=*/15 * * * *
 
 .PHONY: build_image

@@ -1,4 +1,8 @@
-image=kpi-aggregator
+image_name=kpi-aggregator
+minor_version=1.0
+#patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
+
+include ../../../mk/dockerci.mk
 
 cron_pattern=*/60 * * * *
 
@@ -16,8 +20,4 @@ docker_build:
 docker_run:
 	docker run --network=host -e KPI_DATABASE_HOST=$(shell minikube ip) --env-file docker.env --rm serlo/$(image):latest
 
-.PHONY: docker_push
-# push docker container to gcr.io registry
-docker_push:
-	docker tag serlo/$(image):latest eu.gcr.io/serlo-containers/$(image):latest
-	docker push eu.gcr.io/serlo-containers/$(image):latest
+	
