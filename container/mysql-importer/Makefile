@@ -1,4 +1,4 @@
-image="kpi-mysql-importer"
+image_name="kpi-mysql-importer"
 local_image=serlo/$(image_name)
 
 minor_version=1.0

@@ -1,4 +1,4 @@
-image="athene2-dbsetup-cronjob"
+image_name="athene2-dbsetup-cronjob"
 local_image=serlo/$(image_name)
 
 minor_version=1.0
