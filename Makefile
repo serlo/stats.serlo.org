@@ -20,15 +20,9 @@ ifeq ($(env_name),minikube)
 include mk/minikube.mk
 export terraform_auto_approve=-auto-approve
 else
-    ifeq ($(env_name),dev)
-    	include mk/gcloud.mk
-    	#no auto approve in gcloud dev environment
-    	export terraform_auto_approve=
-    else
-        ifneq ($(subst help,,$(MAKECMDGOALS)),)
-    		$(error only env_name [minikube,dev] are supported)
-        endif
-    endif
+include mk/gcloud.mk
+#no auto approve in gcloud dev environment
+export terraform_auto_approve=
 endif
 
 include mk/help.mk

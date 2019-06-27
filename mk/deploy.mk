@@ -10,14 +10,8 @@ ifeq ($(env_name),minikube)
 	DOCKER_ENV ?= $(shell minikube docker-env)
 	env_folder = minikube/kpi
 else
-    ifeq ($(env_name),dev)
     	DOCKER_ENV ?= ""
-    	env_folder = live/dev
-    else
-        ifneq ($(subst help,,$(MAKECMDGOALS)),)
-    		$(error only env_name [minikube,dev] are supported)
-        endif
-    endif
+    	env_folder = "live/$(env_name)"
 endif
 
 .PHONY: terraform_init
@@ -33,7 +27,7 @@ terraform_plan: terraform_init
 .PHONY: terraform_apply
 # apply the terraform provisoining in the cluster
 terraform_apply: terraform_init
-	if [ "$(env_name)" = "minikube" ] ; then $(MAKE) build_images; fi
+	#if [ "$(env_name)" = "minikube" ] ; then $(MAKE) build_images; fi
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_apply
 
 .PHONY: build_images
@@ -67,7 +61,7 @@ tmp/dump.zip:
 
 # unzip database dump
 tmp/dump.sql: tmp/dump.zip
-	unzip $< -d tmp
+	unzip $< -o -d tmp
 	touch $@
 
 .PHONY: provide_athene2_content
