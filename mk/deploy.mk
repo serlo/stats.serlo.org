@@ -42,6 +42,13 @@ build_images:
 		$(MAKE) -C $$build build_image || exit 1;
 	done
 
+.PHONY: push_grafana_image
+push_grafana_image:
+	docker pull eu.gcr.io/serlo-containers/grafana:6.2.5 || docker pull grafana/grafana:6.2.5 ; \
+		docker tag grafana/grafana:6.2.5 eu.gcr.io/serlo-containers/grafana:6.2.5; \
+		docker push eu.gcr.io/serlo-containers/grafana:6.2.5
+
+
 .PHONY: build_images_forced
 .ONESHELL:
 # build docker images for local dependencies in the cluster
@@ -68,5 +75,6 @@ tmp/dump.sql: tmp/dump.zip
 # upload the current database dump to the content provider container
 provide_athene2_content: tmp/dump.sql
 	bash scripts/setup-athene2-db.sh
+
 
 .NOTPARALLEL:

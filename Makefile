@@ -37,8 +37,11 @@ include mk/tools.mk
 
 .PHONY: project_deploy
 # deploy the project to an already running cluster
+ifeq ($(env_name),minikube)
+project_deploy: build_images terraform_apply provide_athene2_content restore_dashboards
+else
 project_deploy: terraform_apply provide_athene2_content restore_dashboards
-
+endif
 
 .PHONY: project_launch
 # launch the grafana dashboard

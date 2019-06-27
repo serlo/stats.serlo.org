@@ -20,6 +20,7 @@ jobs:
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             gcloud auth configure-docker --quiet
       - run: for build in container/* ; do make -C $build docker_build docker_push; done
+      - run: make push_grafana_image
 
 workflows:
   version: 2
