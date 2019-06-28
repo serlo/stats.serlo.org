@@ -25,7 +25,7 @@ func (t *eventTable) load(rowLimit int) (int, error) {
 		return 0, err
 	}
 	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
-	rows, err := t.SourceDB.Query("SELECT id, name FROM event WHERE id > ? LIMIT ?", maxID, rowLimit)
+	rows, err := t.SourceDB.Query("SELECT id, name FROM event WHERE id > ? ORDER BY id ASC LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
 		return 0, err

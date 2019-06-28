@@ -5,28 +5,6 @@ import (
 	"time"
 )
 
-func runImporter(periodInMin int) {
-	log.Logger.Info().Msgf("run importer version [%s] revision [%s]", Version, Revision)
-	log.Logger.Info().Msgf("scheduled every [%d] minutes", periodInMin)
-	importTicker := time.NewTicker(time.Duration(periodInMin) * time.Minute)
-
-	//start importer for the first time after that when the timer is due
-	//delay run for 10 seconds
-	time.Sleep(time.Second * 10)
-	runOnceImporter()
-
-	for {
-		select {
-		case <-importTicker.C:
-			runOnceImporter()
-		case <-shutdown:
-			importTicker.Stop()
-			log.Logger.Info().Msg("shutdown importer")
-			return
-		}
-	}
-}
-
 func runOnceImporter() error {
 	log.Logger.Info().Msgf("run importer")
 	config, err := readImporterConfig()
