@@ -4,6 +4,8 @@
 
 # location of the current serlo database dump
 export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
+IMAGES := aggregator mysql-importer dbdump dbsetup
+$(info container images: $(IMAGES))
 
 # set the appropriate docker environment
 ifeq ($(env_name),minikube)
@@ -30,17 +32,37 @@ terraform_apply: terraform_init
 	#if [ "$(env_name)" = "minikube" ] ; then $(MAKE) build_images; fi
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_apply
 
-.PHONY: build_images
+.PHONY: build_image_%
 .ONESHELL:
+# build a specific docker image
+build_image_%:
+	@set -e
+	eval "$(DOCKER_ENV)"
+	if [[ -d container/$* ]]; then
+		$(MAKE) -C container/$* build_image
+	else
+		$(MAKE) -C $(infrastructure_repository)/container/$* build_image
+	fi
+
+.PHONY: build_image_forced_%
+.ONESHELL:
+# force rebuild of a specific docker image
+build_image_forced_%:
+	@set -e
+	eval "$(DOCKER_ENV)"
+	if [[ -d container/$* ]]; then
+		$(MAKE) -C container/$* docker_build
+	else
+		$(MAKE) -C $(infrastructure_repository)/container/$* docker_build
+	fi
+
+.PHONY: build_images
 # build docker images for local dependencies in the cluster
-build_images:
-	@eval "$(DOCKER_ENV)"
-	for build in container/*/; do \
-		$(MAKE) -C $$build build_image || exit 1; \
-	done
-	for build in $(infrastructure_repository)/container/*/; do \
-		$(MAKE) -C $$build build_image || exit 1;
-	done
+build_images: $(foreach CONTAINER,$(IMAGES),build_image_$(CONTAINER))
+
+.PHONY: build_images_forced
+# build docker images for local dependencies in the cluster (forced rebuild)
+build_images_forced: $(foreach CONTAINER,$(IMAGES),build_image_forced_$(CONTAINER))
 
 .PHONY: push_grafana_image
 push_grafana_image:
@@ -48,18 +70,6 @@ push_grafana_image:
 		docker tag grafana/grafana:6.2.5 eu.gcr.io/serlo-containers/grafana:6.2.5; \
 		docker push eu.gcr.io/serlo-containers/grafana:6.2.5
 
-
-.PHONY: build_images_forced
-.ONESHELL:
-# build docker images for local dependencies in the cluster
-build_images_forced:
-	@eval "$(DOCKER_ENV)"
-	for build in container/*/; do \
-		$(MAKE) -C $$build docker_build || exit 1;
-	done
-	for build in $(infrastructure_repository)/container/*/; do \
-		$(MAKE) -C $$build docker_build || exit 1;
-	done
 # download the database dump
 tmp/dump.zip:
 	mkdir -p tmp
