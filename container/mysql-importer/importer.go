@@ -101,6 +101,8 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
 			if err != nil {
 				return err
 			}
+			total += rowCount
+
 			if rowCount > 0 {
 				err = t.save()
 				if err != nil {
