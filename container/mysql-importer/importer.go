@@ -87,32 +87,27 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
 		}
 
 		total := 0
-		for {
-			update, targetMaxID, err := checkForUpdates(athene2DB, kpiDB, t.name())
+		update := true
+		for update {
+			var err error
+			var targetMaxID int
+			update, targetMaxID, err = checkForUpdates(athene2DB, kpiDB, t.name())
 			if err != nil {
 				return err
 			}
-			if !update {
-				//next table
-				break
-			}
-		
-			rowCount, err := t.load(targetMaxID, rowLimit)
-			if err != nil {
-				return err
-			}
-			total += rowCount
-
-			if rowCount > 0 {
-				err = t.save()
+			if update {
+				rowCount, err := t.load(targetMaxID, rowLimit)
 				if err != nil {
 					return err
 				}
-				if rowCount != rowLimit {
-					break
+	
+				if rowCount > 0 {
+					err = t.save()
+					if err != nil {
+						return err
+					}
+					total += rowCount
 				}
-			} else {
-				break
 			}
 		}
 		if total != 0 {
