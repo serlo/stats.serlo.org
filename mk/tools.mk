@@ -2,11 +2,13 @@
 # Various utilities
 #
 
+log_arg ?= --follow
+
 PHONY: log_container_%
 # show the log for a specific container common implementation
 log_container_%:
 	for pod in $$(kubectl get pods --namespace kpi | grep ^$* | awk '{ print $$1 }') ; do \
-                kubectl logs $$pod --namespace kpi | sed "s/^/$$pod\ /"; \
+                kubectl logs $$pod --namespace kpi $(log_arg) | sed "s/^/$$pod\ /"; \
         done
 
 .PHONY: log_aggregator
