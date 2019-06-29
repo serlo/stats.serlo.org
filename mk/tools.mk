@@ -31,6 +31,12 @@ log_dbsetup: kubectl_use_context log_container_dbsetup
 # show the grafana log
 log_grafana: kubectl_use_context log_container_grafana
 
+.PHONY: attach_aggregator_pod
+# attach to aggregator pod
+attach_aggregator_pod: kubectl_use_context
+	kubectl exec -it $(shell kubectl get pods --namespace kpi | grep aggregator | awk '{print $$1}') --namespace kpi /bin/sh
+
+
 .PHONY: tools_psql_shell
 .ONESHELL:
 # open a postgres shell
