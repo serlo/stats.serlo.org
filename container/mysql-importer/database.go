@@ -8,8 +8,9 @@ import (
 )
 
 type table interface {
+	name() string
 	create() error
-	load(rowLimit int) (int, error)
+	load(maxID int, rowLimit int) (int, error)
 	save() error
 }
 
@@ -124,7 +125,48 @@ func isTableCreated(targetDB *sql.DB, name string) (bool, error) {
 	return result, nil
 }
 
-func getMaxID(targetDB *sql.DB, name string) (int, error) {
+func checkForUpdates(sourceDB *sql.DB, targetDB *sql.DB, name string) (bool, int, error) {
+	sourceMaxID, err := getSourceMaxID(sourceDB, name)
+	if err != nil {
+		return false, 0, err
+	}
+
+	targetMaxID, err := getTargetMaxID(targetDB, name)
+	if err != nil {
+		return false, 0, err
+	}
+
+	if sourceMaxID == targetMaxID {
+		log.Logger.Info().Str("table", name).Int("sourceMaxID", sourceMaxID).Int("targetMaxID", targetMaxID).Msg("up-to-date")
+		return false, sourceMaxID, nil
+	}
+
+	if targetMaxID > sourceMaxID {
+		return false, 0, fmt.Errorf("inconsistence in table [%s] targetMaxID [%d] greater than sourceMaxID [%d]", name, targetMaxID, sourceMaxID)
+	}
+	log.Logger.Info().Str("table", name).Int("sourceMaxID", sourceMaxID).Int("targetMaxID", targetMaxID).Msg("import required")
+	return true, targetMaxID, nil
+}
+
+func getSourceMaxID(sourceDB *sql.DB, name string) (int, error) {
+	rows, err := sourceDB.Query(fmt.Sprintf("SELECT COALESCE(max(id), 0) FROM serlo.%s", name))
+	if err != nil {
+		return 0, fmt.Errorf("cannot get max id from source db table %s [%s]", name, err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		id := 0
+		err = rows.Scan(&id)
+		if err != nil {
+			return 0, fmt.Errorf("cannot get max id from targetdb table %s [%s]", name, err.Error())
+		}
+		return int(id), nil
+	}
+	return 0, fmt.Errorf("did not get the max(id) from table %s [%s]", name, err.Error())
+}
+
+func getTargetMaxID(targetDB *sql.DB, name string) (int, error) {
 	rows, err := targetDB.Query(fmt.Sprintf("SELECT COALESCE(max(id), 0) FROM public.%s", name))
 	if err != nil {
 		return 0, fmt.Errorf("cannot get max id from table %s [%s]", name, err.Error())
@@ -157,34 +199,5 @@ func createTable(db *sql.DB, name string, statements []string) error {
 		}
 	}
 
-	return nil
-}
-
-func loadTable(sourceDB *sql.DB, targetDB *sql.DB, name string, selectStmt string, selectData []interface{}, insertStmt string, insertData func() []interface{}) error {
-	maxID, err := getMaxID(targetDB, name)
-	if err != nil {
-		return err
-	}
-	rows, err := sourceDB.Query(selectStmt, maxID)
-	if err != nil {
-		log.Logger.Error().Msgf("cannot select %s [%s]", name, err.Error())
-		return err
-	}
-	defer rows.Close()
-
-	count := 0
-	for rows.Next() {
-		count++
-		err = rows.Scan(selectData...)
-		if err != nil {
-			return fmt.Errorf("select %s table error [%s]", name, err.Error())
-		}
-		_, err = targetDB.Exec(insertStmt, insertData()...)
-		if err != nil {
-			return fmt.Errorf("insert %s table error [%s]", name, err.Error())
-		}
-	}
-
-	log.Logger.Info().Msgf("load %s [%d] records imported\n", name, count)
 	return nil
 }

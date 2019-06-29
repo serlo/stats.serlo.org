@@ -79,24 +79,42 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB) error {
 		&eventTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event"},
 		&eventLogTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event_log"},
 	}
+
 	for _, t := range tables {
 		err := t.create()
 		if err != nil {
 			return err
 		}
 
+		total := 0
 		for {
-			rowCount, err := t.load(rowLimit)
+			update, targetMaxID, err := checkForUpdates(athene2DB, kpiDB, t.name())
 			if err != nil {
 				return err
 			}
-			err = t.save()
-			if err != nil {
-				return err
-			}
-			if rowCount != rowLimit {
+			if !update {
+				//next table
 				break
 			}
+		
+			rowCount, err := t.load(targetMaxID, rowLimit)
+			if err != nil {
+				return err
+			}
+			if rowCount > 0 {
+				err = t.save()
+				if err != nil {
+					return err
+				}
+				if rowCount != rowLimit {
+					break
+				}
+			} else {
+				break
+			}
+		}
+		if total != 0 {
+			log.Logger.Info().Str("table", t.name()).Int("importedCount", total).Msgf("rows successfully imported")		
 		}
 	}
 	return nil

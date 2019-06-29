@@ -11,7 +11,7 @@ cron_pattern=*/15 * * * *
 
 .PHONY: build_image
 build_image:
-	docker images | grep $(image) && echo "image $(image) already exists use build_image_forced" || $(MAKE) docker_build
+	docker images | grep $(image_name) && echo "image $(image_name) already exists use build_image_forced" || $(MAKE) docker_build
 
 #
 .PHONY: docker_build
@@ -24,4 +24,4 @@ docker_build:
 # run the docker container agains databases in minikube
 docker_run:
 	sed "s/MINIKUBE_IP/$(shell minikube ip)/" config.yaml >config-minikube.yaml
-	docker run --network=host -v $(CURDIR)/config-minikube.yaml:/app/config.yaml --rm serlo/$(image)
+	docker run --network=host -v $(CURDIR)/config-minikube.yaml:/app/config.yaml --rm $(local_image)

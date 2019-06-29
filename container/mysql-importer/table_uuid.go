@@ -19,12 +19,12 @@ type mysqlUUID struct {
 	Discriminator string
 }
 
-func (t *uuidTable) load(rowLimit int) (int, error) {
-	maxID, err := getMaxID(t.TargetDB, t.Name)
-	if err != nil {
-		return 0, err
-	}
-	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
+func (t *uuidTable) name() string {
+	return t.Name
+}
+
+func (t *uuidTable) load(maxID int, rowLimit int) (int, error) {
+	log.Logger.Info().Msgf("load [%s] id > [%d]", t.Name, maxID)
 
 	rows, err := t.SourceDB.Query("SELECT id, discriminator FROM uuid WHERE id > ? ORDER BY id ASC LIMIT ?", maxID, rowLimit)
 	if err != nil {
@@ -45,7 +45,7 @@ func (t *uuidTable) load(rowLimit int) (int, error) {
 		t.ResultSet = append(t.ResultSet, rowSet)
 	}
 
-	log.Logger.Info().Msgf("load %s [%d] records imported\n", t.Name, count)
+	log.Logger.Info().Msgf("load %s [%d] records loaded", t.Name, count)
 	return count, nil
 }
 
@@ -58,12 +58,18 @@ func (t *uuidTable) save() error {
 	if err != nil {
 		return err
 	}
+
+	count := len(t.ResultSet)
+
 	for _, uuid := range t.ResultSet {
 		_, err := stmt.Exec(uuid.ID, uuid.Discriminator)
 		if err != nil {
 			return err
 		}
 	}
+
+	t.ResultSet = []mysqlUUID{}
+
 	_, err = stmt.Exec()
 	if err != nil {
 		return err
@@ -75,9 +81,7 @@ func (t *uuidTable) save() error {
 	}
 
 	tx.Commit()
-
-	// release resultSet
-	t.ResultSet = []mysqlUUID{}
+	log.Logger.Info().Msgf("save %s [%d] records saved", t.Name, count)
 
 	return nil
 }

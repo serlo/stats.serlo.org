@@ -19,12 +19,12 @@ type mysqlEvent struct {
 	Name string
 }
 
-func (t *eventTable) load(rowLimit int) (int, error) {
-	maxID, err := getMaxID(t.TargetDB, t.Name)
-	if err != nil {
-		return 0, err
-	}
-	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
+func (t *eventTable) name() string {
+	return t.Name
+}
+
+func (t *eventTable) load(maxID int, rowLimit int) (int, error) {
+	log.Logger.Info().Msgf("load [%s] id > [%d]", t.Name, maxID)
 	rows, err := t.SourceDB.Query("SELECT id, name FROM event WHERE id > ? ORDER BY id ASC LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
@@ -44,7 +44,7 @@ func (t *eventTable) load(rowLimit int) (int, error) {
 		t.ResultSet = append(t.ResultSet, data)
 	}
 
-	log.Logger.Info().Msgf("load %s [%d] records imported", t.Name, count)
+	log.Logger.Info().Msgf("load %s [%d] records loaded", t.Name, count)
 	return count, nil
 }
 
@@ -58,12 +58,16 @@ func (t *eventTable) save() error {
 	if err != nil {
 		return err
 	}
+
+	count := len(t.ResultSet)
+
 	for _, data := range t.ResultSet {
 		_, err := stmt.Exec(data.ID, data.Name)
 		if err != nil {
 			return err
 		}
 	}
+	t.ResultSet= []mysqlEvent{}
 
 	_, err = stmt.Exec()
 	if err != nil {
@@ -76,9 +80,8 @@ func (t *eventTable) save() error {
 	}
 
 	tx.Commit()
+	log.Logger.Info().Msgf("save %s [%d] records saved", t.Name, count)
 
-	// release resultSet
-	t.ResultSet= []mysqlEvent{}
 	return nil
 }
 

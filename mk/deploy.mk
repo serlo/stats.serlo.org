@@ -25,7 +25,7 @@ terraform_plan: terraform_init
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_plan
 
 .PHONY: terraform_apply
-# apply the terraform provisoining in the cluster
+# apply the terraform provisioning in the cluster
 terraform_apply: terraform_init
 	#if [ "$(env_name)" = "minikube" ] ; then $(MAKE) build_images; fi
 	$(MAKE) -C $(infrastructure_repository)/$(env_folder) terraform_apply
