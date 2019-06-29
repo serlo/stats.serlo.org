@@ -2,33 +2,32 @@
 # Various utilities
 #
 
-
-.PHONY: tools_container_log_%
+PHONY: log_container_%
 # show the log for a specific container common implementation
-tools_container_log_%:
-	namespace=$$(kubectl get pods --all-namespaces | grep $* | awk '{ print $$1 }') ; \
-	pod=$$(kubectl get pods --namespace=$$namespace | grep $* | awk '{ print $$1 }') ; \
-	kubectl logs $$pod --all-containers=true --namespace=$$namespace --follow
+log_container_%:
+	for pod in $$(kubectl get pods --namespace kpi | grep ^$* | awk '{ print $$1 }') ; do \
+                kubectl logs $$pod --namespace kpi | sed "s/^/$$pod\ /"; \
+        done
 
-.PHONY: tools_aggregator_log
+.PHONY: log_aggregator
 # show the data aggregator log
-tools_aggregator_log: kubectl_use_context tools_container_log_aggregator
+log_aggregator: kubectl_use_context log_container_aggregator
 
-.PHONY: tools_importer_log
+.PHONY: log_importer
 # show the database importer log
-tools_importer_log: kubectl_use_context tools_container_log_mysql-importer
+log_importer: kubectl_use_context log_container_mysql-importer
 
-.PHONY: tools_dbdump_log
+.PHONY: log_dbdump
 # show the database dump log
-tools_dbdump_log: kubectl_use_context tools_container_log_dbdump
+log_dbdump: kubectl_use_context log_container_dbdump
 
-.PHONY: tools_dbsetup_log
+.PHONY: log_dbsetup
 # show the dbsetup log
-tools_dbsetup_log: kubectl_use_context tools_container_log_dbsetup
+log_dbsetup: kubectl_use_context log_container_dbsetup
 
-.PHONY: tools_grafana_log
+.PHONY: log_grafana
 # show the grafana log
-tools_grafana_log: kubectl_use_context tools_container_log_grafana
+log_grafana: kubectl_use_context log_container_grafana
 
 .PHONY: tools_psql_shell
 .ONESHELL:

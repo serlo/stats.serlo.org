@@ -18,4 +18,4 @@ kubectl_use_context:
 
 
 tools_run_postgres_cloud_sql_proxy:
-	$(MAKE) -C $(infrastructure_repository)/live/dev run-postgres-cloud-sql-proxy
+	$(MAKE) -C $(infrastructure_repository)/live/dev run_postgres_cloud_sql_proxy

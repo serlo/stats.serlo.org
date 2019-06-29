@@ -27,7 +27,7 @@ func (t *metadataTable) load(rowLimit int) (int, error) {
 	}
 	log.Logger.Info().Msgf("load [%s] max id [%d]", t.Name, maxID)
 
-	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ? ORDER BY id ASC LIMIT ?", maxID, rowLimit)
+	rows, err := t.SourceDB.Query("SELECT id, uuid_id, value, key_id FROM metadata WHERE id > ? ORDER BY id DESC LIMIT ?", maxID, rowLimit)
 	if err != nil {
 		log.Logger.Error().Msgf("cannot select %s [%s]", t.Name, err.Error())
 		return 0, err
