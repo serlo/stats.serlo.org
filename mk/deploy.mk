@@ -4,7 +4,7 @@
 
 # location of the current serlo database dump
 export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
-IMAGES := aggregator mysql-importer dbdump dbsetup
+IMAGES := aggregator mysql-importer dbdump dbsetup varnish
 $(info container images: $(IMAGES))
 
 # set the appropriate docker environment
