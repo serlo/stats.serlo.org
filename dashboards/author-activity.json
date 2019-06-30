@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-06-26T20:04:22Z",
-    "updated": "2019-06-30T13:44:34Z",
+    "updated": "2019-06-30T16:34:07Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 5,
+    "version": 7,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -258,7 +258,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "fill": 1,
         "gridPos": {
           "h": 8,
@@ -297,21 +297,19 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select yearday as time, category, count(actor) as \"Has Edited\" from (\nselect dates.yearday as yearday, metadata.value as category, el.actor_id as actor, count(el.actor_id) as edits from (serlo.event_log el join\n  (select distinct\n  str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as yearday\n  from serlo.event_log\n  where event_log.date between curdate() - interval 90 day and curdate()) as dates\non\n  el.event_id IN (4,5) and\n  el.date between dates.yearday - interval 90 day and dates.yearday \njoin metadata\n  on el.uuid_id = metadata.uuid_id and metadata.key_id = 1)\ngroup by el.actor_id, dates.yearday, metadata.value\nhaving count(el.actor_id) > 0\n) as active_authors\ngroup by yearday, category",
-            "refId": "C",
+            "rawSql": "SELECT\n  *\nFROM\n  cache_edits_by_category\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC;\n",
+            "refId": "A",
             "select": [
               [
                 {
                   "params": [
-                    "id"
+                    "value"
                   ],
                   "type": "column"
                 }
               ]
             ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
+            "timeColumn": "time",
             "where": [
               {
                 "name": "$__timeFilter",
@@ -618,6 +616,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 5
+    "version": 7
   }
 }

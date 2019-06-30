@@ -71,3 +71,34 @@ INSERT INTO cache_review_time (
         AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time)
     GROUP BY day
 );
+
+CREATE TABLE IF NOT EXISTS cache_edits_by_category(
+    time date,
+    category text,
+    author_count int4
+);
+
+INSERT INTO cache_edits_by_category (
+    SELECT
+        day as time,
+        category,
+        count(actor) as author_count
+    FROM (
+        SELECT
+            day,
+            metadata.value as category,
+            actor_id as actor,
+            count(actor_id) as edits
+        FROM event_log JOIN day ON
+            event_id IN (4,5)
+            AND date BETWEEN day - interval '90 day' AND day
+            AND day <= (SELECT MAX(date) FROM event_log)
+            AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_edits_by_category)
+        JOIN metadata ON
+            event_log.uuid_id = metadata.uuid_id
+            AND metadata.key_id = 1
+        GROUP BY actor_id, day, metadata.value
+        HAVING count(actor_id) > 0
+    ) as authors
+    GROUP BY day, category
+);
