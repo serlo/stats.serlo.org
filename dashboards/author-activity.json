@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-06-26T20:04:22Z",
-    "updated": "2019-06-30T16:34:07Z",
+    "updated": "2019-06-30T18:14:24Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 7,
+    "version": 10,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -365,7 +365,7 @@
         "bars": true,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "description": "A histogram of authors based on floor(log2(#number of edits)).",
         "fill": 1,
         "gridPos": {
@@ -382,7 +382,7 @@
           "max": true,
           "min": false,
           "rightSide": false,
-          "show": true,
+          "show": false,
           "total": false,
           "values": true
         },
@@ -406,21 +406,19 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "\nselect @rownum := @rownum + 1 as time, floor(log(2, count(actor_id))) as value from \n  (SELECT @rownum := 0) r,\n  user join event_log on logins > 0 and actor_id = user.id and event_id IN (4, 5)\n  group by actor_id;",
+            "rawSql": "SELECT\n  now() as time,\n  1 as value,\n  text(exponent) as metric\nFROM (\n  SELECT actor_id, count(actor_id) as edits FROM \"user\" JOIN event_log ON \n    logins > 0 \n    AND actor_id = \"user\".id\n    AND event_id IN (4, 5)\n  GROUP BY actor_id\n) value JOIN GENERATE_SERIES(0, 15, 1) exponent ON \n  edits >= 2^exponent\n  AND edits < 2^(exponent + 1);",
             "refId": "A",
             "select": [
               [
                 {
                   "params": [
-                    "id"
+                    "value"
                   ],
                   "type": "column"
                 }
               ]
             ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
+            "timeColumn": "time",
             "where": [
               {
                 "name": "$__timeFilter",
@@ -436,24 +434,26 @@
         "timeShift": null,
         "title": "Number of Authors by log2(edits)",
         "tooltip": {
-          "shared": true,
+          "shared": false,
           "sort": 0,
           "value_type": "individual"
         },
         "type": "graph",
         "xaxis": {
           "buckets": 13,
-          "mode": "histogram",
+          "mode": "series",
           "name": null,
           "show": true,
-          "values": []
+          "values": [
+            "total"
+          ]
         },
         "yaxes": [
           {
-            "format": "none",
+            "format": "short",
             "label": "Number of Authors",
-            "logBase": 1,
-            "max": null,
+            "logBase": 2,
+            "max": "2000",
             "min": "0",
             "show": true
           },
@@ -480,7 +480,7 @@
           "rgba(237, 129, 40, 0.89)",
           "#d44a3a"
         ],
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "format": "none",
         "gauge": {
           "maxValue": 100,
@@ -543,15 +543,13 @@
               [
                 {
                   "params": [
-                    "id"
+                    "value"
                   ],
                   "type": "column"
                 }
               ]
             ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
+            "timeColumn": "time",
             "where": [
               {
                 "name": "$__timeFilter",
@@ -616,6 +614,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 7
+    "version": 10
   }
 }
