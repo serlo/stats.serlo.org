@@ -15,8 +15,14 @@ SELECT i::date FROM GENERATE_SERIES((SELECT COALESCE(MAX(week), '2013-12-31')FRO
 
 CREATE INDEX IF NOT EXISTS date_idx ON event_log(date);
 
-DROP MATERIALIZED VIEW IF EXISTS cache_active_authors CASCADE;
-CREATE MATERIALIZED VIEW cache_active_authors AS (
+CREATE TABLE IF NOT EXISTS cache_active_authors(
+    time date,
+    authors int4,
+    active_authors int4,
+    very_active_authors int4
+);
+
+INSERT INTO cache_active_authors (
     SELECT 
         day as "time",
         count(author) as "authors",
@@ -30,24 +36,12 @@ CREATE MATERIALIZED VIEW cache_active_authors AS (
         FROM event_log JOIN day ON 
             date BETWEEN day - interval '90 day' and day
             AND event_id IN (4,5)
-            AND day >= '2018-01-01'
+            AND day >= '2018-01-01' 
             AND day <= (SELECT MAX(date) FROM event_log)
+            AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
         GROUP BY day, actor_id
     ) activity 
     GROUP BY day 
     ORDER BY day ASC
 );
 
-/*
-DROP MATERIALIZED VIEW IF EXISTS event_log_window_90 CASCADE;
-CREATE MATERIALIZED VIEW event_log_window_90 AS (
-    SELECT * FROM 
-        event_log JOIN day ON 
-            day BETWEEN 
-                ((SELECT MAX(date) FROM event_log) - interval '180 day') 
-                AND (SELECT MAX(date) FROM event_log)
-            AND event_log.date BETWEEN (day - interval '90 day' ) AND day 
-        
-);
-
-*/
