@@ -1,25 +1,25 @@
 {
   "meta": {
-    "canAdmin": true,
-    "canEdit": true,
+    "type": "db",
     "canSave": true,
+    "canEdit": true,
+    "canAdmin": true,
     "canStar": true,
-    "created": "2019-06-24T20:19:01Z",
-    "createdBy": "admin",
+    "slug": "registrations-postgres",
+    "url": "/d/ghjAdN4Zz/registrations-postgres",
     "expires": "0001-01-01T00:00:00Z",
+    "created": "2019-06-29T12:33:43Z",
+    "updated": "2019-06-29T12:33:43Z",
+    "updatedBy": "admin",
+    "createdBy": "admin",
+    "version": 1,
+    "hasAcl": false,
+    "isFolder": false,
     "folderId": 0,
     "folderTitle": "General",
     "folderUrl": "",
-    "hasAcl": false,
-    "isFolder": false,
     "provisioned": false,
-    "provisionedExternalId": "",
-    "slug": "registrations-postgres",
-    "type": "db",
-    "updated": "2019-06-24T20:19:01Z",
-    "updatedBy": "admin",
-    "url": "/d/ghjAdN4Zz/registrations-postgres",
-    "version": 30
+    "provisionedExternalId": ""
   },
   "dashboard": {
     "annotations": {
@@ -525,6 +525,6 @@
     "timezone": "",
     "title": "Registrations Postgres",
     "uid": "ghjAdN4Zz",
-    "version": 2
+    "version": 1
   }
 }

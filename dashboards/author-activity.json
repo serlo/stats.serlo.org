@@ -8,11 +8,11 @@
     "slug": "author-activity",
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-06-20T18:01:44Z",
-    "updated": "2019-06-21T14:01:37Z",
+    "created": "2019-06-26T20:04:22Z",
+    "updated": "2019-06-30T13:44:34Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 15,
+    "version": 5,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -45,7 +45,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "fill": 1,
         "gridPos": {
           "h": 7,
@@ -67,12 +67,14 @@
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
+        "options": {},
         "paceLength": 10,
         "percentage": false,
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
         "seriesOverrides": [],
+        "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
         "targets": [
@@ -81,21 +83,19 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "SELECT dates.yearday as time, AVG(TIMESTAMPDIFF(SECOND, el1.date, el2.date)) / 60 / 60 AS \"Durchschnittliche Reaktionszeit in h\"\nFROM event_log el1\nINNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id\nINNER JOIN event e1 ON e1.id = el1.event_id\nINNER JOIN event e2 ON e2.id = el2.event_id\nJOIN (select distinct str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as yearday\n      from serlo.event_log\n      where event_log.date > TIMESTAMP('2014-06-01')) AS dates ON el1.date between dates.yearday - interval 90 day and dates.yearday\nWHERE e1.name = 'entity/revision/add' AND e2.name = 'entity/revision/checkout' AND el1.actor_id != el2.actor_id AND TIMESTAMPDIFF(SECOND, el1.date, el2.date) > 10\nGROUP BY dates.yearday;\n",
+            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75% (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95% (h)\"\nFROM\n  cache_review_time\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
             "refId": "A",
             "select": [
               [
                 {
                   "params": [
-                    "id"
+                    "value"
                   ],
                   "type": "column"
                 }
               ]
             ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
+            "timeColumn": "time",
             "where": [
               {
                 "name": "$__timeFilter",
@@ -151,7 +151,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "fill": 1,
         "gridPos": {
           "h": 7,
@@ -174,12 +174,14 @@
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
+        "options": {},
         "paceLength": 10,
         "percentage": false,
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
         "seriesOverrides": [],
+        "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
         "targets": [
@@ -188,77 +190,19 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select yearday as time, count(actor) as \"Active\" from (\nselect dates.yearday as yearday, el.actor_id as actor, count(el.actor_id) as edits from (serlo.event_log el join\n  (select distinct\n  str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as yearday\n  from serlo.event_log\n  where event_log.date between curdate() - interval 90 day and curdate()) as dates\non\n  el.event_id IN (4,5) and\n  el.date between dates.yearday - interval 90 day and dates.yearday )\ngroup by el.actor_id, dates.yearday\nhaving count(el.actor_id) >= 10\n) as active_authors\ngroup by yearday",
+            "rawSql": "select * from cache_active_authors WHERE $__timeFilter(time);\n",
             "refId": "A",
             "select": [
               [
                 {
                   "params": [
-                    "id"
+                    "value"
                   ],
                   "type": "column"
                 }
               ]
             ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          },
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "select yearday as time, count(actor) as \"Very Active\" from (\nselect dates.yearday as yearday, el.actor_id as actor, count(el.actor_id) as edits from (serlo.event_log el join\n  (select distinct\n  str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as yearday\n  from serlo.event_log\n  where event_log.date between curdate() - interval 90 day and curdate()) as dates\non\n  el.event_id IN (4,5) and\n  el.date between dates.yearday - interval 90 day and dates.yearday )\ngroup by el.actor_id, dates.yearday\nhaving count(el.actor_id) >= 100\n) as active_authors\ngroup by yearday",
-            "refId": "B",
-            "select": [
-              [
-                {
-                  "params": [
-                    "id"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          },
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "select yearday as time, count(actor) as \"Has Edited\" from (\nselect dates.yearday as yearday, el.actor_id as actor, count(el.actor_id) as edits from (serlo.event_log el join\n  (select distinct\n  str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as yearday\n  from serlo.event_log\n  where event_log.date between curdate() - interval 90 day and curdate()) as dates\non\n  el.event_id IN (4,5) and\n  el.date between dates.yearday - interval 90 day and dates.yearday )\ngroup by el.actor_id, dates.yearday\nhaving count(el.actor_id) > 0\n) as active_authors\ngroup by yearday",
-            "refId": "C",
-            "select": [
-              [
-                {
-                  "params": [
-                    "id"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "table": "attachment_file",
-            "timeColumn": "timestamp",
-            "timeColumnType": "timestamp",
+            "timeColumn": "time",
             "where": [
               {
                 "name": "$__timeFilter",
@@ -337,12 +281,14 @@
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
+        "options": {},
         "paceLength": 10,
         "percentage": false,
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
         "seriesOverrides": [],
+        "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
         "targets": [
@@ -446,12 +392,14 @@
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
+        "options": {},
         "paceLength": 10,
         "percentage": false,
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
         "seriesOverrides": [],
+        "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
         "targets": [
@@ -566,6 +514,7 @@
         "maxDataPoints": 100,
         "nullPointMode": "connected",
         "nullText": null,
+        "options": {},
         "postfix": "",
         "postfixFontSize": "50%",
         "prefix": "",
@@ -669,6 +618,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 15
+    "version": 5
   }
 }
