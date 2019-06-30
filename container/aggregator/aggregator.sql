@@ -45,3 +45,29 @@ INSERT INTO cache_active_authors (
     ORDER BY day ASC
 );
 
+CREATE TABLE IF NOT EXISTS cache_review_time(
+    time date,
+    perc_50 interval,
+    perc_75 interval,
+    perc_95 interval
+);
+INSERT INTO cache_review_time (
+    SELECT
+        day as time,
+		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
+		percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
+		percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
+    FROM event_log el1
+    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id 
+        AND el1.date < el2.date
+    INNER JOIN event e1 ON e1.id = el1.event_id
+    INNER JOIN event e2 ON e2.id = el2.event_id
+    JOIN day ON el1.date between day - interval '90 day' and day
+    WHERE e1.name = 'entity/revision/add'
+        AND e2.name = 'entity/revision/checkout'
+        AND el1.actor_id != el2.actor_id
+        AND el2.date - el1.date > interval '00:00:10'
+        AND day <= (SELECT MAX(date) FROM event_log)
+        AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time)
+    GROUP BY day
+);
