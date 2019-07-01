@@ -223,7 +223,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select user.date as time, count(actor_id) as \"Edits\" from user join event_log on datediff(now(), user.date) between 0 and 90 and user.id = event_log.actor_id and event_id in (4,5) group by user.id;",
+            "rawSql": "select \"user\".date as time, count(actor_id) as \"Edits\" from \"user\" join event_log on date_part('day', CURRENT_DATE - \"user\".date) between 0 and 90 and \"user\".id = event_log.actor_id and event_id in (4,5) group by \"user\".id;",
             "refId": "B",
             "select": [
               [
