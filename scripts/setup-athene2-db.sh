@@ -22,7 +22,7 @@ kubectl_args="--namespace $namespace -c dbsetup-container"
 if kubectl exec -it $pod $kubectl_args -- ls -l /tmp/$dump_file  >/dev/null 2>/dev/null; then
     echo "sql dump already present in dbsetup-cronjob"
 else
-    echo "copy sql dump [/tmp/$dump_file] to pod [$pod] args [$kubectl_args]"
+    echo "copy sql dump [tmp/$dump_file] to pod [$pod] args [$kubectl_args]"
     kubectl cp tmp/$dump_file $pod:/tmp/${dump_transfer_file} $kubectl_args 
     echo "mv sql dump transfer file to final destination to activate import"
     kubectl exec -it $pod --namespace athene2 -- /bin/sh -c "mv /tmp/${dump_transfer_file} /tmp/${dump_file}"
