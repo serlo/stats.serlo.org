@@ -36,7 +36,7 @@ done
 for retry in 1 2 3 4 5 6 7 8 9 10 ; do
     log_info "check if athene2 database exists"
     sleep 10
-    mysql $connect -e "SHOW DATABASES" | grep "serlo" >/dev/null 2>/dev/null && mysql $connect -e "USE sero; SHOW TABLES;" | grep uuid >/dev/null 2>/dev/null
+    mysql $connect -e "SHOW DATABASES" | grep "serlo" >/dev/null 2>/dev/null && mysql $connect -e "USE serlo; SHOW TABLES;" | grep uuid >/dev/null 2>/dev/null
     if [[ $? != 0 ]] ; then
         log_info "could not find serlo database lets import the latest dump"
         if [[ -f /tmp/dump.sql ]] ; then
