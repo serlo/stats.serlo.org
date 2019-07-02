@@ -82,5 +82,15 @@ provide_athene2_content: tmp/dump.sql
 	$(MAKE) kubectl_use_context
 	bash scripts/setup-athene2-db.sh
 
+.PHONY: deploy_aggregator
+# force the deployment of the aggregator
+deploy_aggregator: kubectl_use_context
+	kubectl patch deployment aggregator-cronjob --namespace kpi  -p "{\"spec\": {\"template\": {\"metadata\": { \"labels\": {  \"redeploy\": \"$$(date +%s)\"}}}}}"
+
+.PONY: deploy_importer
+# force the deployment of the mysql importer
+deploy_importer: kubectl_use_context
+	kubectl patch deployment mysql-importer-cronjob --namespace kpi  -p "{\"spec\": {\"template\": {\"metadata\": { \"labels\": {  \"redeploy\": \"$$(date +%s)\"}}}}}"
+
 
 .NOTPARALLEL:
