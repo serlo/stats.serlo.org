@@ -19,13 +19,13 @@ log_info "run aggregator revision [$GIT_REVISION]"
 
 export PGPASSWORD=$KPI_DATABASE_PASSWORD
 
-log_info connect to [$KPI_DATABASE_HOST:$KPI_DATABASE_PORT] with user [$KPI_DATABASE_USER] to database [$KPI_DATABASE_NAME]
+log_info "connect to [$KPI_DATABASE_HOST:$KPI_DATABASE_PORT] with user [$KPI_DATABASE_USER] to database [$KPI_DATABASE_NAME]"
 
 connect="-h $KPI_DATABASE_HOST -U $KPI_DATABASE_USER -d $KPI_DATABASE_NAME -p $KPI_DATABASE_PORT"
 
 log_info "wait for kpi database to be ready"
 for retry in 1 2 3 4 5 6 7 8 9 10 ; do
-    psql $connect -c "SELECT version();" >/dev/null
+    psql $connect -c "SELECT version();" >/dev/null 2>&1
     if [[ $? == 0 ]] ; then
         if [[ "$retry" == "10" ]] ; then
             log_fatal "kpi database not ready stop retry"
