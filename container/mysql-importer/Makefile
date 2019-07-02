@@ -24,4 +24,4 @@ docker_build:
 # run the docker container agains databases in minikube
 docker_run:
 	sed "s/MINIKUBE_IP/$(shell minikube ip)/" config.yaml >config-minikube.yaml
-	docker run --network=host -v $(CURDIR)/config-minikube.yaml:/app/config.yaml --rm $(local_image)
+	docker run --network=host -v $(CURDIR)/config-minikube.yaml:/tmp/config.yaml --rm $(local_image)
