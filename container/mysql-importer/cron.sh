@@ -17,7 +17,7 @@ cd /tmp && ./run
 
 log_info "start with cron pattern [${CRON_PATTERN}]"
 echo "${CRON_PATTERN} /tmp/run" | crontab -
-crond -f -L /dev/stdout &
+crond -f -L /dev/stdout >/dev/null & 
 
 log_info "crond running, quit with CTRL+C"
 trap "kill $!" SIGINT SIGTERM

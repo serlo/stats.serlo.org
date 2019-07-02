@@ -9,8 +9,14 @@ include ../../mk/dockerci.mk
 
 cron_pattern=*/60 * * * *
 
-.PHONY: build_image
-build_image:
+.PHONY: docker_build_ci
+# builds the docker image in the ci and pushes it to eu.gcr.io
+docker_build_ci:
+	@../../scripts/check_changes.sh . ; if [ $$? != 0 ] ; then $(MAKE) docker_build && $(MAKE) docker_push; fi
+
+
+.PHONY: docker_build_minikube
+docker_build_minikube:
 	docker images | grep $(local_image) && echo "image $(local_image) already exists use build_image_forced" || $(MAKE) docker_build
 
 .PHONY: docker_build
