@@ -45,7 +45,7 @@ build_images:
 .PHONY: push_grafana_image
 push_grafana_image:
 	docker pull eu.gcr.io/serlo-containers/grafana:6.2.2 || docker pull grafana/grafana:6.2.2 ; \
-		docker tag grafana/grafana:6.2.5 eu.gcr.io/serlo-containers/grafana:6.2.2; \
+		docker tag grafana/grafana:6.2.2 eu.gcr.io/serlo-containers/grafana:6.2.2; \
 		docker push eu.gcr.io/serlo-containers/grafana:6.2.2
 
 
