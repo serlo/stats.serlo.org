@@ -38,10 +38,10 @@ terraform_apply: terraform_init
 build_image_%:
 	@set -e
 	eval "$(DOCKER_ENV)"
-	if [[ -d container/$* ]]; then
-		$(MAKE) -C container/$* build_image
-	else
-		$(MAKE) -C $(infrastructure_repository)/container/$* build_image
+	if test -d container/$* ; then \
+		$(MAKE) -C container/$* build_image; \
+	else \
+		$(MAKE) -C $(infrastructure_repository)/container/$* build_image; \
 	fi
 
 .PHONY: build_image_forced_%
@@ -50,10 +50,10 @@ build_image_%:
 build_image_forced_%:
 	@set -e
 	eval "$(DOCKER_ENV)"
-	if [[ -d container/$* ]]; then
-		$(MAKE) -C container/$* docker_build
-	else
-		$(MAKE) -C $(infrastructure_repository)/container/$* docker_build
+	if test -d container/$* ; then \
+		$(MAKE) -C container/$* docker_build; \
+	else \
+		$(MAKE) -C $(infrastructure_repository)/container/$* docker_build; \
 	fi
 
 .PHONY: build_images
@@ -75,11 +75,6 @@ tmp/dump.zip:
 	mkdir -p tmp
 	echo "downloading latest mysql dump from gcloud"
 	gsutil cp $(dump_location) $@
-
-# unzip database dump
-tmp/dump.sql: tmp/dump.zip
-	unzip $< -o -d tmp
-	touch $@
 
 .PHONY: provide_athene2_content
 # upload the current database dump to the content provider container

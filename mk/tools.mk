@@ -26,6 +26,9 @@ log_dbdump: kubectl_use_context log_container_dbdump
 .PHONY: log_dbsetup
 # show the dbsetup log
 log_dbsetup: kubectl_use_context log_container_dbsetup
+	for pod in $$(kubectl get pods --namespace athene2 | grep ^$* | awk '{ print $$1 }') ; do \
+                kubectl logs $$pod --namespace athene2 $(log_arg) | sed "s/^/$$pod\ /"; \
+        done
 
 .PHONY: log_grafana
 # show the grafana log

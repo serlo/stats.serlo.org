@@ -2,15 +2,16 @@
 
 set -e
 pod_name="dbsetup-cronjob"
-dump_file="tmp/dump.sql"
+dump_file="dump.zip"
+dump_transfer_file="dump_new.zip"
 
 echo "wait for $pod_name to be ready"
-until kubectl get pods --all-namespaces | grep $pod_name
+until kubectl get pods --namespace athene2 | grep $pod_name
 do
   sleep 5
 done
 
-if [[ ! -f $dump_file ]] ; then
+if [[ ! -f tmp/$dump_file ]] ; then
     echo "cold not find database dump!"
     exit 1
 fi
@@ -18,9 +19,11 @@ namespace="$(kubectl get pods --all-namespaces | grep $pod_name | head -1 | awk 
 pod="$(kubectl get pods --all-namespaces | grep $pod_name | head -1 | awk '{ print $2 }')"
 kubectl_args="--namespace $namespace -c dbsetup-container"
 
-if kubectl exec -it $pod $kubectl_args -- ls -l /tmp/dump.sql >/dev/null 2>/dev/null; then
+if kubectl exec -it $pod $kubectl_args -- ls -l /tmp/$dump_file  >/dev/null 2>/dev/null; then
     echo "sql dump already present in dbsetup-cronjob"
 else
-    echo "copy sql dump [$dump_file] to pod [$pod] args [$kubectl_args]"
-    kubectl cp $dump_file $pod:/tmp/dump.sql $kubectl_args 
+    echo "copy sql dump [/tmp/$dump_file] to pod [$pod] args [$kubectl_args]"
+    kubectl cp tmp/$dump_file $pod:/tmp/${dump_transfer_file} $kubectl_args 
+    echo "mv sql dump transfer file to final destination to activate import"
+    kubectl exec -it $pod --namespace athene2 -- /bin/sh -c "mv /tmp/${dump_transfer_file} /tmp/${dump_file}"
 fi

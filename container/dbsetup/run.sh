@@ -39,10 +39,16 @@ for retry in 1 2 3 4 5 6 7 8 9 10 ; do
     mysql $connect -e "SHOW DATABASES" | grep "serlo" >/dev/null 2>/dev/null && mysql $connect -e "USE serlo; SHOW TABLES;" | grep uuid >/dev/null 2>/dev/null
     if [[ $? != 0 ]] ; then
         log_info "could not find serlo database lets import the latest dump"
-        if [[ -f /tmp/dump.sql ]] ; then
+        if [[ -f /tmp/dump.zip ]] ; then
+            unzip /tmp/dump.zip -d /tmp
+            if [[ $? != 0 ]] ; then
+                log_warn "could not unzip dump zip - failure"
+                exit 1
+            fi
             mysql $connect </tmp/dump.sql
             if [[ $? != 0 ]] ; then
                 log_warn "could not import serlo database from dump - trying later"
+                sleep 30
                 continue
             else
                 log_info "import serlo database was successful"
@@ -50,6 +56,7 @@ for retry in 1 2 3 4 5 6 7 8 9 10 ; do
             fi
         else
             log_info "serlo database does not exists but no dump file present - trying later"
+            sleep 30
             continue
         fi
     else

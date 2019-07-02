@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk update && apk add mysql-client && rm -rf /var/cache/apk/*
+RUN apk update && apk add mysql-client unzip && rm -rf /var/cache/apk/*
 ADD ./cron.sh /tmp/
 ADD ./run.sh /tmp/run
 RUN /bin/chmod +x /tmp/cron.sh && /bin/chmod +x /tmp/run
