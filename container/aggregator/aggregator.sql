@@ -102,3 +102,6 @@ INSERT INTO cache_edits_by_category (
     ) as authors
     GROUP BY day, category
 );
+
+GRANT USAGE ON SCHEMA public TO serlo_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO serlo_readonly;
