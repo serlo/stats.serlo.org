@@ -1,5 +1,8 @@
-/* Create a day table for day aggregation. */
 
+/* Start a transaction */
+BEGIN;
+
+/* Create a day table for day aggregation. */
 CREATE TABLE IF NOT EXISTS day (day date);
 INSERT INTO day
 SELECT i::date FROM GENERATE_SERIES((SELECT COALESCE(MAX(day), '2013-12-31')FROM day) + 1,
@@ -110,6 +113,9 @@ INSERT INTO cache_edits_by_category (
     GROUP BY day, category
 ) ON CONFLICT (time, category) DO UPDATE SET
     author_count = excluded.author_count;
+
+/* commit the aggregation transaction */
+COMMIT;
 
 GRANT USAGE ON SCHEMA public TO serlo_readonly;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO serlo_readonly;
