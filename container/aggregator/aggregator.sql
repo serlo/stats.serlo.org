@@ -16,7 +16,7 @@ SELECT i::date FROM GENERATE_SERIES((SELECT COALESCE(MAX(week), '2013-12-31')FRO
 CREATE INDEX IF NOT EXISTS date_idx ON event_log(date);
 
 CREATE TABLE IF NOT EXISTS cache_active_authors(
-    time date,
+    time date UNIQUE,
     authors int4,
     active_authors int4,
     very_active_authors int4
@@ -38,15 +38,18 @@ INSERT INTO cache_active_authors (
             AND event_id IN (4,5)
             AND day >= '2018-01-01' 
             AND day <= (SELECT MAX(date) FROM event_log)
-            AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
+            AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
         GROUP BY day, actor_id
     ) activity 
     GROUP BY day 
     ORDER BY day ASC
-);
+) ON CONFLICT (time) DO UPDATE SET
+    authors = excluded.authors,
+    active_authors = excluded.active_authors,
+    very_active_authors = excluded.very_active_authors;
 
 CREATE TABLE IF NOT EXISTS cache_review_time(
-    time date,
+    time date UNIQUE,
     perc_50 interval,
     perc_75 interval,
     perc_95 interval
@@ -68,14 +71,18 @@ INSERT INTO cache_review_time (
         AND el1.actor_id != el2.actor_id
         AND el2.date - el1.date > interval '00:00:10'
         AND day <= (SELECT MAX(date) FROM event_log)
-        AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time)
+        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time)
     GROUP BY day
-);
+) ON CONFLICT (time) DO UPDATE SET
+    perc_50 = excluded.perc_50,
+    perc_75 = excluded.perc_75,
+    perc_95 = excluded.perc_95;
 
 CREATE TABLE IF NOT EXISTS cache_edits_by_category(
     time date,
     category text,
-    author_count int4
+    author_count int4,
+    UNIQUE (time, category)
 );
 
 INSERT INTO cache_edits_by_category (
@@ -93,7 +100,7 @@ INSERT INTO cache_edits_by_category (
             event_id IN (4,5)
             AND date BETWEEN day - interval '90 day' AND day
             AND day <= (SELECT MAX(date) FROM event_log)
-            AND day > (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_edits_by_category)
+            AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_edits_by_category)
         JOIN metadata ON
             event_log.uuid_id = metadata.uuid_id
             AND metadata.key_id = 1
@@ -101,7 +108,8 @@ INSERT INTO cache_edits_by_category (
         HAVING count(actor_id) > 0
     ) as authors
     GROUP BY day, category
-);
+) ON CONFLICT (time, category) DO UPDATE SET
+    author_count = excluded.author_count;
 
 GRANT USAGE ON SCHEMA public TO serlo_readonly;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO serlo_readonly;
