@@ -1,9 +1,10 @@
 image_name=kpi-aggregator
-major_version=1
-minor_version=0
 local_image=serlo/$(image_name)
 
-#patch version is automatically generated from minor_version + number of commits so we do not need to maintain it
+major_version=1
+minor_version=1
+patch_version=0
+version=$(major_version).$(minor_version).$(patch_version) 
 
 include ../../mk/dockerci.mk
 
@@ -12,8 +13,7 @@ cron_pattern=*/60 * * * *
 .PHONY: docker_build_ci
 # builds the docker image in the ci and pushes it to eu.gcr.io
 docker_build_ci:
-	@../../scripts/check_changes.sh . ; if [ $$? != 0 ] ; then $(MAKE) docker_build && $(MAKE) docker_push; fi
-
+	 docker pull eu.gcr.io/serlo-containers/${image_name}:$(version) 2>/dev/null >/dev/null || $(MAKE) docker_build docker_push
 
 .PHONY: docker_build_minikube
 docker_build_minikube:
