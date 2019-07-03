@@ -37,6 +37,8 @@ postgres.serlo.local -> Postgres DB on port 30021
 The IP address should be the minikube IP of the cluster. You can get it with ```minikube ip``` after the cluster is running.
 In case you are re-creating the cluster and you are not with Virtualbox you may need to update the ip address.
 
+To be able to run the make file scripts you need to have repository infrastructure and infrastructure-images checked out in the same workspace as the kpi repository.
+
 ## Project Make
 
 The KPI project follows a project pattern implemented with Make.
@@ -67,9 +69,12 @@ All goals starting with ```tools``` provide some helper to debug or change some 
 
 All goals starting with ```build``` take care of building images in the project repository.
 
-```build_images``` only builds them if they are not already in the minikube cluster.
+```build_minikube``` only builds them if they are not already in the minikube cluster.
 
-```build_images_forced``` forces a re-build of the images and pushes them to the minikube cluster.
+```build_minikube_forced``` forces a re-build of the images and pushes them to the minikube cluster.
+
+```build_ci``` builds the ci images and pushes them to eu.gcr.io registry.
+
 
 All goals starting with ```terraform```  handle the terraform provisioning
 

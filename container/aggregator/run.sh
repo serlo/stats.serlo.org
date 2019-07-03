@@ -33,8 +33,8 @@ for retry in 1 2 3 4 5 6 7 8 9 10 ; do
         fi
         break
     fi
-    log_warn "could not find kpi database - retry in 30 seconds"
-    sleep 30
+    log_warn "could not find kpi database - retry in 60 seconds"
+    sleep 60
 done
 
 log_info "kpi database ready"

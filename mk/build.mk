@@ -12,36 +12,40 @@ else
     	env_folder = "live/$(env_name)"
 endif
 
-.PHONY: build_image_minikube_%
+.PHONY: build_minikube_%
 # build a specific docker image
-build_image_minikube_%:
+build_minikube_%:
 	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C container/$* docker_build_minikube
 
-.PHONY: build_image_minikube_shared_%
+.PHONY: build_minikube_shared_%
 # build a specific docker image
-build_image_minikube_shared_%:
+build_minikube_shared_%:
 	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C $(sharedimage_repository)/container/$* docker_build_minikube
 
-.PHONY: build_image_minikube_forced_%
+.PHONY: build_minikube_forced_%
 # force rebuild of a specific docker image
-build_image_minikube_forced_%:
+build_minikube_forced_%:
 	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C container/$* docker_build
 
-
-.PHONY: build_image_minikube_shared_forced_%
+.PHONY: build_shared_%
 # force rebuild of a specific docker image
-build_image_minikube_shared_forced_%:
-	 @set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C $(sharedimage_repository)/container/$* docker_build
+build_shared_%:
+	 @set -e ; $(MAKE) -C $(sharedimage_repository)/container/$* docker_build
 
-.PHONY: build_images_ci
+.PHONY: build_ci_%
+# build ci images
+build_ci_%:
+	@set -e ; $(MAKE) -C container/$* docker_build_ci
+
+.PHONY: build_ci
 # build docker images for ci
-build_images_ci: $(foreach CONTAINER,$(IMAGES),build_image_ci_$(CONTAINER))
+build_ci: $(foreach CONTAINER,$(IMAGES),build_ci_$(CONTAINER))
 
-.PHONY: build_images_minikube
+.PHONY: build_minikube
 # build docker images for local dependencies in the cluster
-build_images_minikube: $(foreach CONTAINER,$(IMAGES),build_image_minikube_$(CONTAINER)) $(foreach CONTAINER,$(SHARED_IMAGES),build_image_minikube_shared_$(CONTAINER))
+build_minikube: $(foreach CONTAINER,$(IMAGES),build_minikube_$(CONTAINER)) $(foreach CONTAINER,$(SHARED_IMAGES),build_minikube_shared_$(CONTAINER))
 
-.PHONY: build_images_minikube_forced
+.PHONY: build_minikube_forced
 # build docker images for local dependencies in the cluster (forced rebuild)
-build_images_minikube_forced: $(foreach CONTAINER,$(IMAGES),build_image_minikube_forced_$(CONTAINER)) $(foreach CONTAINER,$(SHARED_IMAGES),build_image_minikube_shared_forced_$(CONTAINER))
+build_minikube_forced: $(foreach CONTAINER,$(IMAGES),build_minikube_forced_$(CONTAINER))
 
