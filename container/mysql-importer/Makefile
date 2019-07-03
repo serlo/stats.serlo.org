@@ -10,15 +10,6 @@ include ../../mk/dockerci.mk
 
 cron_pattern=*/15 * * * *
 
-.PHONY: docker_build_ci
-# builds the docker image in the ci and pushes it to eu.gcr.io
-docker_build_ci:
-	 docker pull eu.gcr.io/serlo-containers/${image_name}:$(version) 2>/dev/null >/dev/null || $(MAKE) docker_build docker_push
-
-.PHONY: docker_build_minikube
-docker_build_minikube:
-	docker images | grep $(image_name) && echo "image $(image_name) already exists use build_image_forced" || $(MAKE) docker_build
-
 #
 .PHONY: docker_build
 .ONE_SHELL:
