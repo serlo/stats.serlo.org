@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-06-26T20:04:22Z",
-    "updated": "2019-06-30T18:14:24Z",
+    "updated": "2019-07-03T18:52:33Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 10,
+    "version": 12,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -583,7 +583,7 @@
       "list": []
     },
     "time": {
-      "from": "now-90d",
+      "from": "now-1y",
       "to": "now"
     },
     "timepicker": {
@@ -614,6 +614,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 10
+    "version": 12
   }
 }
