@@ -20,14 +20,14 @@ ifneq ($(env_name),minikube)
 	export grafana_password ?= $(shell cat $(infrastructure_repository)/live/$(env_name)/secrets/terraform-$(env_name).tfvars | grep kpi_grafana_admin_password | awk '{ print $$3}' | sed 's/\"//g')
 endif
 
-.PHONY: backup_dashboards
+.PHONY: grafan_backup_dashboards
 # download grafana dashboards to the repository
-backup_dashboards: 
+grafana_backup_dashboards: 
 	bash scripts/backup-dashboard.sh
 
-.PHONY: restore_dashboards
+.PHONY: grafana_restore_dashboards
 # load grafana dashboards to $grafana_host
-restore_dashboards:
+grafana_restore_dashboards:
 	bash scripts/restore-dashboard.sh
 
 .ONESHELL:
