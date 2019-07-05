@@ -17,7 +17,7 @@ tmp/dump.zip:
 
 .PHONY: provide_athene2_content
 # upload the current database dump to the content provider container
-provide_athene2_content: tmp/dump.sql
+provide_athene2_content:
 	$(MAKE) kubectl_use_context
 	bash scripts/setup-athene2-db.sh
 

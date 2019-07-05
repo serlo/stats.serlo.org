@@ -1,5 +1,5 @@
 image_name="kpi-mysql-importer"
-local_image=serlo/$(image_name)
+local_image=eu.gcr.io/serlo-shared/$(image_name)
 
 major_version=1
 minor_version=2

@@ -41,7 +41,7 @@ include mk/terraform.mk
 .PHONY: project_deploy
 # deploy the project to an already running cluster
 ifeq ($(env_name),minikube)
-project_deploy: build_minikube terraform_apply provide_athene2_content restore_dashboards
+project_deploy: docker_minikube_setup terraform_apply provide_athene2_content restore_dashboards
 else
 project_deploy: terraform_apply provide_athene2_content restore_dashboards
 endif
