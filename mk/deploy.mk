@@ -9,12 +9,6 @@ resource_importer = module.kpi.kubernetes_deployment.mysql-importer-cronjob
 resource_aggregator = module.kpi.kubernetes_deployment.aggregator-cronjob
 resource_grafana = module.kpi.kubernetes_deployment.grafana_deployment
 
-# download the database dump
-tmp/dump.zip:
-	mkdir -p tmp
-	echo "downloading latest mysql dump from gcloud"
-	gsutil cp $(dump_location) $@
-
 .PHONY: provide_athene2_content
 # upload the current database dump to the content provider container
 provide_athene2_content:
