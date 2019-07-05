@@ -18,6 +18,7 @@ endif
 
 ifneq ($(env_name),minikube)
 	export grafana_password ?= $(shell cat $(infrastructure_repository)/live/$(env_name)/secrets/terraform-$(env_name).tfvars | grep kpi_grafana_admin_password | awk '{ print $$3}' | sed 's/\"//g')
+	export grafana_serlo_password ?= $(shell cat $(infrastructure_repository)/live/$(env_name)/secrets/terraform-$(env_name).tfvars | grep kpi_grafana_serlo_password | awk '{ print $$3}' | sed 's/\"//g')
 endif
 
 .PHONY: grafan_backup_dashboards
@@ -38,3 +39,14 @@ grafana_add_default_users:
 	@curl -s $$params -XGET $(grafana_host)/api/users | grep serlo >/dev/null && echo "user serlo already created" && exit 0
 	@curl -s $$params -XPOST -H 'Content-Type: application/json' -d "{\"name\":\"serlo\",\"email\":\"kpi-user@serlo.org\",\"login\":\"serlo\",\"password\":\"$(grafana_serlo_password)\"}" \
 			$(grafana_host)/api/admin/users >/dev/null && echo "user serlo created"
+
+.ONESHELL:
+.PHONY: grafana_set_preferences
+# set timezone browser and home dashboard author activity
+grafana_set_preferences:
+	@params="-k -u $(grafana_user):$(grafana_password)"
+	#get dashboard by uid of author activity
+	dashboard_id=$$(curl -s $$params -XGET -H 'Accept: application/json' -H 'Content-Type: application/json' $(grafana_host)/api/dashboards/uid/yS5BVkWZk | jq '.dashboard.id')
+	curl -s $$params -XPUT /api/org/preferences -H 'Accept: application/json' -H 'Content-Type: application/json' -d "{\"theme\":\"\",\"homeDashboardId\":$${dashboard_id},\"timezone\":\"browser\"}" $(grafana_host)/api/org/preferences
+	echo ""
+
