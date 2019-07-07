@@ -6,13 +6,13 @@
     "canAdmin": true,
     "canStar": true,
     "slug": "registrations",
-    "url": "/d/eDpcWzWZk/registrations",
+    "url": "/d/ghjAdN4Zz/registrations",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-06-26T20:04:23Z",
-    "updated": "2019-06-29T12:33:42Z",
+    "created": "2019-06-29T12:33:43Z",
+    "updated": "2019-06-29T12:33:43Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 2,
+    "version": 1,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -46,7 +46,7 @@
         "bars": true,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "decimals": 0,
         "fill": 1,
         "gridPos": {
@@ -69,12 +69,14 @@
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
+        "options": {},
         "paceLength": 10,
         "percentage": false,
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
         "seriesOverrides": [],
+        "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
         "targets": [
@@ -83,7 +85,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select date as time, count(id) as \"Raw Registrations\" from (select str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as date, id from user) u group by date;",
+            "rawSql": "select date(date) as time, count(id) as \"Raw Registrations\" from \"user\" group by date(date) order by date(date);",
             "refId": "A",
             "select": [
               [
@@ -111,7 +113,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select date as time, count(id) as \"Returning Users\" from (select str_to_date(concat(day(date),'-',month(date),'-',year(date)), '%d-%m-%Y') as date, id from user where logins > 0 and datediff(last_login, date) > 0) u group by date;",
+            "rawSql": "select date(date) as time, count(id) as \"Returning Users\" from \"user\" where logins > 0 and date_part('day', last_login::timestamp - date::timestamp) > 0 group by date(date) order by date(date);",
             "refId": "B",
             "select": [
               [
@@ -182,7 +184,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "decimals": 0,
         "fill": 1,
         "gridPos": {
@@ -205,12 +207,14 @@
         "linewidth": 1,
         "links": [],
         "nullPointMode": "null",
+        "options": {},
         "paceLength": 10,
         "percentage": false,
         "pointradius": 2,
         "points": true,
         "renderer": "flot",
         "seriesOverrides": [],
+        "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
         "targets": [
@@ -219,7 +223,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select user.date as time, count(actor_id) as \"Edits\" from user join event_log on datediff(now(), user.date) between 0 and 90 and user.id = event_log.actor_id and event_id in (4,5) group by user.id;",
+            "rawSql": "select \"user\".date as time, count(actor_id) as \"Edits\" from \"user\" join event_log on date_part('day', CURRENT_DATE - \"user\".date) between 0 and 90 and \"user\".id = event_log.actor_id and event_id in (4,5) group by \"user\".id;",
             "refId": "B",
             "select": [
               [
@@ -293,7 +297,7 @@
           "label": "Others",
           "threshold": 0
         },
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "fontSize": "80%",
         "format": "none",
         "gridPos": {
@@ -315,6 +319,7 @@
         "links": [],
         "maxDataPoints": 3,
         "nullPointMode": "connected",
+        "options": {},
         "pieType": "pie",
         "strokeWidth": 1,
         "targets": [
@@ -323,7 +328,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select now() as time, count(id) as \"Returning Users\" from serlo.user where logins > 0 and datediff(last_login, date) > 0;",
+            "rawSql": "select now() as time, count(id) as \"Returning Users\" from \"user\" where logins > 0 and date_part('day', last_login::timestamp - date::timestamp) > 0;",
             "refId": "A",
             "select": [
               [
@@ -351,7 +356,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select now() as time, \n  count(id) \n    - (select count(id) as \"Returning Users\" from serlo.user where logins > 0 and datediff(last_login, date) > 0)\n  \nas \"Raw Registrations\" from serlo.user;",
+            "rawSql": "select now() as time, \n  count(id) \n    - (select count(id) as \"Returning Users\" from \"user\" where logins > 0 and date_part('day', last_login::timestamp - date::timestamp) > 0)\n  \nas \"Raw Registrations\" from \"user\";",
             "refId": "B",
             "select": [
               [
@@ -389,7 +394,7 @@
           "label": "Others",
           "threshold": 0
         },
-        "datasource": "serlo-athene2-mysql",
+        "datasource": "serlo-kpi-postgres",
         "description": "Registered users with at least one edit.",
         "fontSize": "80%",
         "format": "none",
@@ -412,6 +417,7 @@
         "links": [],
         "maxDataPoints": 3,
         "nullPointMode": "connected",
+        "options": {},
         "pieType": "pie",
         "strokeWidth": 1,
         "targets": [
@@ -421,7 +427,7 @@
             "hide": false,
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select now() as time, \n  count(id) \n    - (select count(distinct user.id) as \"Authors\" from serlo.user join event_log on actor_id = user.id)\n  \nas \"Raw Registrations\" from serlo.user;",
+            "rawSql": "select now() as time, \n  count(id) \n    - (select count(distinct \"user\".id) as \"Authors\" from \"user\" join event_log on actor_id = \"user\".id)\n  \nas \"Raw Registrations\" from \"user\";",
             "refId": "C",
             "select": [
               [
@@ -449,7 +455,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select now() as time, count(distinct user.id) as \"Authors\" from serlo.user join event_log on actor_id = user.id;",
+            "rawSql": "select now() as time, count(distinct \"user\".id) as \"Authors\" from \"user\" join event_log on actor_id = \"user\".id;",
             "refId": "A",
             "select": [
               [
@@ -480,6 +486,7 @@
         "valueName": "current"
       }
     ],
+    "refresh": false,
     "schemaVersion": 18,
     "style": "dark",
     "tags": [],
@@ -517,7 +524,7 @@
     },
     "timezone": "",
     "title": "Registrations",
-    "uid": "eDpcWzWZk",
-    "version": 2
+    "uid": "ghjAdN4Zz",
+    "version": 1
   }
 }
