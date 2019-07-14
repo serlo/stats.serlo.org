@@ -8,7 +8,6 @@
 env_name ?=
 # path to the serlo infrastructure repository
 infrastructure_repository ?= ../infrastructure
-sharedimage_repository ?= ../infrastructure-images
 
 # location of the current serlo database dump
 export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
