@@ -9,12 +9,6 @@ resource_importer = module.kpi.kubernetes_deployment.mysql-importer-cronjob
 resource_aggregator = module.kpi.kubernetes_deployment.aggregator-cronjob
 resource_grafana = module.kpi.kubernetes_deployment.grafana_deployment
 
-.PHONY: provide_athene2_content
-# upload the current database dump to the content provider container
-provide_athene2_content:
-	$(MAKE) kubectl_use_context
-	bash scripts/setup-athene2-db.sh
-
 .PHONY: deploy_aggregator
 # force the deployment of the aggregator
 deploy_aggregator:

@@ -33,6 +33,7 @@ include mk/deploy.mk
 include mk/tools.mk
 include mk/build.mk
 include mk/terraform.mk
+include $(infrastructure_repository)/mk/minikube.mk
 
 # forbid parallel building of prerequisites
 .NOTPARALLEL:
@@ -41,7 +42,7 @@ include mk/terraform.mk
 .PHONY: project_deploy
 # deploy the project to an already running cluster
 ifeq ($(env_name),minikube)
-project_deploy: docker_minikube_setup terraform_apply provide_athene2_content grafana_restore_dashboards grafana_add_default_users grafana_set_preferences
+project_deploy: docker_minikube_setup terraform_apply grafana_restore_dashboards grafana_add_default_users grafana_set_preferences
 else
 project_deploy: terraform_apply provide_athene2_content grafana_restore_dashboards grafana_add_default_users grafana_set_preferences
 endif

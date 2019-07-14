@@ -1,4 +1,7 @@
 importer/importer
 importer/importer.exe
 .vscode
-tmp
+tmp/
+modules
+.terraform/
+terraform.tfstate*
