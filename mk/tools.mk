@@ -4,7 +4,7 @@
 
 log_arg ?= --follow
 
-PHONY: log_container_%
+.PHONY: log_container_%
 # show the log for a specific container common implementation
 log_container_%:
 	for pod in $$(kubectl get pods --namespace kpi | grep ^$* | awk '{ print $$1 }') ; do \
