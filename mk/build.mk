@@ -3,7 +3,6 @@ ifeq ($(env_name),minikube)
 	DOCKER_ENV ?= $(shell minikube docker-env)
 else
     	DOCKER_ENV ?= ""
-    	env_folder = "live/$(env_name)"
 endif
 
 script = scripts/docker-setup-minikube.sh
