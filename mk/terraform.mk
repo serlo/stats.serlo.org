@@ -7,31 +7,63 @@ terraform_auto_approve=-auto-approve
 terraform_plan:
 	# just make sure we know what we are doing
 	-ln -s $(infrastructure_repository)/modules modules
-	terraform fmt -recursive minikube 
-	cd minikube && terraform plan
+	terraform fmt -recursive $(env_folder) 
+	cd $(env_folder) && terraform plan
 
 .PHONY: terraform_apply
 # apply terraform with secrets
 terraform_apply:
 	# just make sure we know what we are doing
 	-ln -s $(infrastructure_repository)/modules modules
-	terraform fmt -recursive minikube 
-	cd minikube && terraform apply $(terraform_auto_approve)
+	terraform fmt -recursive $(env_folder) 
+	cd $(env_name) && terraform apply $(terraform_auto_approve)
 
 .PHONY: terraform_init
 # init terraform environment
 terraform_init: 
 	-ln -s $(infrastructure_repository)/modules modules
-	cd minikube && terraform init
+	cd $(env_name) && terraform init
+
+.PHONY: terraform_destroy
+# destroy terraform environment
+terraform_destroy:
+	cd $(env_name) && terraform destroy -var-file secrets/terraform-$(env_name).tfvars
 
 else
-ifndef cloudsql_credential_filename
-$(error variable cloudsql_credential_filename not set)
-endif
+.PHONY: terraform_init
+# init terraform environment
+.ONESHELL:
+terraform_init: 
+	#remove secrets and load latest secret from gcloud
+	cd $(env_folder)
+	rm -rf secrets
+	gsutil -m cp -R gs://serlo_$(env_name)_terraform/secrets/ .
+	terraform init
 
-ifndef gcloud_env_name
-$(error variable env_name not set)
-endif
+.PHONY: terraform_plan
+# plan terrform with secrets
+.ONESHELL:
+terraform_plan:
+	cd $(env_folder)
+	terraform fmt -recursive ../../
+	terraform plan -var-file secrets/terraform-$(env_name).tfvars
 
+.PHONY: terraform_apply
+# apply terraform with secrets
+.ONESHELL:
+terraform_apply:
+	# just make sure we know what we are doing
+	cd $(env_folder)
+	terraform fmt -recursive ../../
+	terraform apply -var-file secrets/terraform-$(env_name).tfvars
+
+.PHONY: terraform_destroy
+# destroy terraform with secrets
+.ONESHELL:
+terraform_destroy:
+	# just make sure we know what we are doing
+	cd $(env_folder)
+	terraform fmt -recursive ../../
+	terraform destroy -var-file secrets/terraform-$(env_name).tfvars
 endif
 
