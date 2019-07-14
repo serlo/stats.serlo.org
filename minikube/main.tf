@@ -22,24 +22,16 @@ provider "kubernetes" {
 # namespaces
 #####################################################################
 
-#synchronize resource for mysql and postgres as both will be part of kpi namespace
-resource "null_resource" "postgres_namespace" {
-  depends_on = [kubernetes_namespace.kpi_namespace, module.local_postgres]
-}
-
-resource "null_resource" "mysql_namespace" {
-  depends_on = [kubernetes_namespace.kpi_namespace, module.local_mysql]
-}
-
-resource "kubernetes_namespace" "kpi_namespace" {
-  metadata {
-    name = "kpi"
-  }
-}
-
 resource "kubernetes_namespace" "athene2_namespace" {
   metadata {
     name = "athene2"
+  }
+}
+
+resource "kubernetes_namespace" "kpi_namespace" {
+  depends_on = [kubernetes_namespace.athene2_namespace]
+  metadata {
+    name = "kpi"
   }
 }
 
@@ -49,7 +41,7 @@ resource "kubernetes_namespace" "athene2_namespace" {
 
 module "local_mysql" {
   source    = "./../modules/mysql"
-  namespace = "kpi"
+  namespace = kubernetes_namespace.kpi_namespace.metadata.0.name
 }
 
 #####################################################################
@@ -58,15 +50,15 @@ module "local_mysql" {
 
 module "local_postgres" {
   source    = "./../modules/postgres"
-  namespace = "kpi"
+  namespace = kubernetes_namespace.kpi_namespace.metadata.0.name
 }
 
 module "athene2_dbsetup" {
   source                    = "./../modules/athene2_dbsetup"
-  namespace                 = "athene2"
+  namespace                 = kubernetes_namespace.athene2_namespace.metadata.0.name
   database_username_default = "root"
   database_password_default = "admin"
-  database_host             = "mysql.kpi"
+  database_host             = "mysql.${kubernetes_namespace.kpi_namespace.metadata.0.name}"
   image_pull_policy         = "Never"
   gcloud_bucket_url         = ""
 
@@ -84,12 +76,12 @@ module "kpi" {
   domain                 = "serlo.local"
   grafana_admin_password = "admin"
 
-  athene2_database_host              = "mysql.kpi"
+  athene2_database_host              = "mysql.${kubernetes_namespace.kpi_namespace.metadata.0.name}"
   athene2_database_username_readonly = "root"
   athene2_database_password_readonly = "admin"
   image_pull_policy                  = "Never"
 
-  kpi_database_host              = "postgres.kpi"
+  kpi_database_host              = "postgres.${kubernetes_namespace.kpi_namespace.metadata.0.name}"
   kpi_database_username_default  = "postgres"
   kpi_database_password_default  = "admin"
   kpi_database_username_readonly = "postgres"

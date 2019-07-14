@@ -10,6 +10,8 @@ env_name ?=
 infrastructure_repository ?= ../infrastructure
 sharedimage_repository ?= ../infrastructure-images
 
+# location of the current serlo database dump
+export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 
 .PHONY: _help
 # print help as the default target. 
@@ -18,38 +20,26 @@ sharedimage_repository ?= ../infrastructure-images
 _help: help
 
 ifeq ($(env_name),minikube)
-include $(infrastructure_repository)/mk/minikube.mk
+env_folder = minikube
+include mk/minikube.mk
 export terraform_auto_approve=-auto-approve
 else
+env_folder = $(infrastructure_repository)/live/$(env_name)
 include mk/gcloud.mk
 #no auto approve in gcloud dev environment
 export terraform_auto_approve=
 endif
 
 include mk/help.mk
+include mk/terraform.mk
 include mk/grafana.mk
-include mk/test.mk
 include mk/deploy.mk
 include mk/tools.mk
 include mk/build.mk
-include mk/terraform.mk
+include mk/project.mk
 
 # forbid parallel building of prerequisites
 .NOTPARALLEL:
-
-
-.PHONY: project_deploy
-# deploy the project to an already running cluster
-ifeq ($(env_name),minikube)
-project_deploy: docker_minikube_setup terraform_apply grafana_restore_dashboards grafana_add_default_users grafana_set_preferences
-else
-project_deploy: terraform_apply provide_athene2_content grafana_restore_dashboards grafana_add_default_users grafana_set_preferences
-endif
-
-.PHONY: project_launch
-# launch the grafana dashboard
-project_launch:
-	xdg-open $(grafana_host)/login 2>/dev/null >/dev/null &
 
 # COLORS
 GREEN  := $(shell tput -Txterm setaf 2)

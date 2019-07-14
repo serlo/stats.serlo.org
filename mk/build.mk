@@ -1,7 +1,6 @@
 # set the appropriate docker environment
 ifeq ($(env_name),minikube)
 	DOCKER_ENV ?= $(shell minikube docker-env)
-	env_folder = minikube/kpi
 else
     	DOCKER_ENV ?= ""
     	env_folder = "live/$(env_name)"
