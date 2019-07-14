@@ -18,7 +18,7 @@ sharedimage_repository ?= ../infrastructure-images
 _help: help
 
 ifeq ($(env_name),minikube)
-include mk/minikube.mk
+include $(infrastructure_repository)/mk/minikube.mk
 export terraform_auto_approve=-auto-approve
 else
 include mk/gcloud.mk
@@ -33,7 +33,6 @@ include mk/deploy.mk
 include mk/tools.mk
 include mk/build.mk
 include mk/terraform.mk
-include $(infrastructure_repository)/mk/minikube.mk
 
 # forbid parallel building of prerequisites
 .NOTPARALLEL:
