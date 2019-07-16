@@ -57,6 +57,8 @@ CREATE TABLE IF NOT EXISTS cache_review_time(
     perc_75 interval,
     perc_95 interval
 );
+/* TODO: Fix incremental calculation (test with smoketest/aggregation.sh) */
+DELETE FROM cache_review_time WHERE true;
 INSERT INTO cache_review_time (
     SELECT
         day as time,
