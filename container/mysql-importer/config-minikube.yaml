@@ -3,14 +3,16 @@ Logging:
         Truncate: true
 
 Mysql:
-        Url: 192.168.99.251:30020
+        Url: 192.168.39.104:30020
         User: root
         Password: admin
         DBName: serlo
 Postgres:
-        Host: 192.168.99.251
+        Host: 192.168.39.104
         Port: 30021
         User: postgres
         Password: admin
         DBName: kpi
         SSLMode: disable
+Debug:
+        OnlyFirstChunk: true

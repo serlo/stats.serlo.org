@@ -14,3 +14,5 @@ Postgres:
         Password: admin
         DBName: kpi
         SSLMode: disable
+Debug:
+        OnlyFirstChunk: true
