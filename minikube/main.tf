@@ -62,7 +62,9 @@ module "athene2_dbsetup" {
   image_pull_policy         = "Never"
   gcloud_bucket_url         = ""
 
-  feature_minikube = true
+  feature_minikube            = true
+  gcloud_service_account_name = ""
+  gcloud_service_account_key  = ""
 }
 
 

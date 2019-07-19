@@ -2,11 +2,15 @@
 ifeq ($(env_name),minikube)
 terraform_auto_approve=-auto-approve
 
+ifeq ($(infrastructure_repository),)
+$(error infrastructure_repository not defined)
+endif
+
 .PHONY: terraform_plan
 # plan terraform
 terraform_plan:
 	# just make sure we know what we are doing
-	-ln -s $(infrastructure_repository)/modules modules
+	test -d modules || ln -s $(infrastructure_repository)/modules modules
 	terraform fmt -recursive $(env_folder) 
 	cd $(env_folder) && terraform plan
 
@@ -14,14 +18,14 @@ terraform_plan:
 # apply terraform with secrets
 terraform_apply:
 	# just make sure we know what we are doing
-	-ln -s $(infrastructure_repository)/modules modules
+	test -d modules || ln -s $(infrastructure_repository)/modules modules
 	terraform fmt -recursive $(env_folder) 
 	cd $(env_name) && terraform apply $(terraform_auto_approve)
 
 .PHONY: terraform_init
 # init terraform environment
 terraform_init: 
-	-ln -s $(infrastructure_repository)/modules modules
+	test -d modules || ln -s $(infrastructure_repository)/modules modules
 	cd $(env_name) && terraform init
 
 .PHONY: terraform_destroy
