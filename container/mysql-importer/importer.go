@@ -2,8 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"github.com/lib/pq"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 func runOnceImporter() error {
@@ -53,10 +54,16 @@ func runOnceImporter() error {
 	for i := 0; i < 10; i++ {
 		err = importTables(athene2DB, kpiDB, &config.Debug)
 		if err != nil {
-			log.Logger.Error().Msgf("import failed [%s, %s]", err.(*pq.Error).Code.Name(), err.Error())
-            if err.(*pq.Error).Code.Name() == "foreign_key_violation" {
-				log.Logger.Info().Msgf("skipping for now...")
+			if checkPsqlError(err) {
+				log.Logger.Error().Msgf("import failed [%s, %s]", err.(*pq.Error).Code.Name(), err.Error())
+				if err.(*pq.Error).Code.Name() == "foreign_key_violation" {
+					log.Logger.Info().Msgf("skipping for now...")
+				} else {
+					log.Logger.Info().Msgf("retrying in 30 seconds")
+					time.Sleep(time.Second * 30)
+				}
 			} else {
+				log.Logger.Error().Msgf("import failed %s", err.Error())
 				log.Logger.Info().Msgf("retrying in 30 seconds")
 				time.Sleep(time.Second * 30)
 			}
@@ -75,7 +82,6 @@ func runOnceImporter() error {
 
 func importTables(athene2DB *sql.DB, kpiDB *sql.DB, dconfig *debugConfig) error {
 	rowLimit := 10000
-
 
 	log.Logger.Info().Bool("OnlyFirstChunk", dconfig.OnlyFirstChunk).Msgf("is set")
 
@@ -117,13 +123,22 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB, dconfig *debugConfig) error 
 					total += rowCount
 				}
 			}
-            if dconfig.OnlyFirstChunk {
-                break
-            }
+			if dconfig.OnlyFirstChunk {
+				break
+			}
 		}
 		if total != 0 {
 			log.Logger.Info().Str("table", t.name()).Int("importedCount", total).Msgf("rows successfully imported")
 		}
 	}
 	return nil
+}
+
+func checkPsqlError(err error) bool {
+	switch err.(type) {
+	case *pq.Error:
+		return true
+	default:
+		return false
+	}
 }
