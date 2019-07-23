@@ -127,9 +127,7 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB, dconfig *debugConfig) error 
 				break
 			}
 		}
-		if total != 0 {
-			log.Logger.Info().Str("table", t.name()).Int("importedCount", total).Msgf("rows successfully imported")
-		}
+		log.Logger.Info().Str("table", t.name()).Int("importedCount", total).Msgf("rows successfully imported")
 	}
 	return nil
 }

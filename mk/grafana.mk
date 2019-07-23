@@ -21,7 +21,11 @@ ifneq ($(env_name),minikube)
 	export grafana_serlo_password ?= $(shell cat $(infrastructure_repository)/live/$(env_name)/secrets/terraform-$(env_name).tfvars | grep kpi_grafana_serlo_password | awk '{ print $$3}' | sed 's/\"//g')
 endif
 
-.PHONY: grafan_backup_dashboards
+.PHONY: grafana_setup
+# setup grafana on a new cluster
+grafana_setup: grafana_restore_dashboards grafana_add_default_users grafana_set_preferences
+
+.PHONY: grafana_backup_dashboards
 # download grafana dashboards to the repository
 grafana_backup_dashboards: 
 	bash scripts/backup-dashboard.sh
