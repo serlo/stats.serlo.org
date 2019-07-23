@@ -15,6 +15,9 @@ endif
 ifeq ($(env_name),staging)
 	export grafana_host ?= https://stats.serlo-staging.dev
 endif
+ifeq ($(env_name),prod)
+	export grafana_host ?= https://stats.serlo.dev
+endif
 
 ifneq ($(env_name),minikube)
 	export grafana_password ?= $(shell cat $(infrastructure_repository)/live/$(env_name)/secrets/terraform-$(env_name).tfvars | grep kpi_grafana_admin_password | awk '{ print $$3}' | sed 's/\"//g')
