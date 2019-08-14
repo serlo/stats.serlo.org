@@ -190,7 +190,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select * from cache_active_authors WHERE $__timeFilter(time);\n",
+            "rawSql": "select * from cache_active_authors WHERE $__timeFilter(time) ORDER BY time ASC;\n",
             "refId": "A",
             "select": [
               [
