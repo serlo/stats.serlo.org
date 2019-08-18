@@ -17,8 +17,6 @@ iftrue = $(if $(subst true,,$1),,$2)
 # expands to $2 if $1 is false
 iffalse = $(if $(subst false,,$1),,$2)
 
-$(info $(call iffalse,$(MINIKUBE_EXISTS),Minikube does not exist!))
-$(info Using virtualizer: $(virtualizer))
 
 export env_name = minikube
 
@@ -57,31 +55,36 @@ check_prerequisites_linux_running: check_prerequisites_linux
 	systemctl status libvirtd --no-pager
 
 
-# check if the network is set up properly
-.PHONY: minikube_check_network
-minikube_check_network:
-	#use any hostname for serlo.local domain
-	@ping -c 1 test.serlo.local || (echo "$(bold)could not reach serlo.local! Please check your DNS configuration!$(normal)" && exit 1)
+# wait until the network is configured properly
+.PHONY: minikube_wait_network
+minikube_wait_network:
+	@until ping -c 1 test.serlo.local > /dev/null; \
+	do \
+		echo "$(bold)could not reach serlo.local (should be $$(minikube ip))!\n\
+		Please update your DNS configuration!$(normal)"; \
+	done
 
 .PHONY: minikube_create
-# create a new minikube cluster
+# create a new minikube cluster. This should called by minikube_start
 minikube_create: check_prerequisites_linux_running
 	minikube start $(minikube_args)
-#	virt-xml -c qemu:///system minikube --edit 1 --network mac=52:54:00:67:4a:01
-#	virt-xml -c qemu:///system minikube --edit 2 --network mac=52:54:00:67:4a:02
-#	minikube stop
-#	minikube start $(minikube_args)	
 	minikube addons enable ingress
 	minikube addons enable dashboard
 	minikube addons enable freshpod
 	@echo "$(bold)Minikube was created with ip $$(minikube ip)!$(normal)"
+	@echo "$(bold)Please add the following line to your /etc/hosts:$(normal)"
+	@echo ""
+	@$(MAKE) --no-print-directory minikube_dns
+	@echo ""
 
 .PHONY: minikube_start
 # start an existing minikube
 minikube_start: $(call iffalse,$(MINIKUBE_EXISTS),minikube_create)
+	$(info Minikube exists: $(MINIKUBE_EXISTS))
+	$(info Using virtualizer: $(virtualizer))
 	minikube start $(minikube_args)
 	kubectl config use-context minikube
-	$(MAKE) minikube_check_network
+	@$(MAKE) minikube_wait_network
 	@echo "$(bold)Minikube was successfully started with ip $$(minikube ip)!$(normal)"
 
 .PHONY: minikube_stop
@@ -102,7 +105,7 @@ minikube_dashboard:
 .PHONY: minikube_dns
 # configure dns for minikube ip
 minikube_dns:
-	@echo "$(shell minikube ip 2>/dev/null)	stats.serlo.local mysql.serlo.local postgres.serlo.local test.serlo.local"
+	@echo "$$(minikube ip 2>/dev/null)	stats.serlo.local mysql.serlo.local postgres.serlo.local test.serlo.local"
 
 .PHONY:
 # set kubectl context
