@@ -8,11 +8,11 @@
     "slug": "author-activity",
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-08-18T10:25:43Z",
-    "updated": "2019-08-18T17:09:00Z",
+    "created": "2019-08-18T11:08:03Z",
+    "updated": "2019-08-18T17:29:59Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 17,
+    "version": 9,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -38,6 +38,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
+    "iteration": 1566149384822,
     "links": [],
     "panels": [
       {
@@ -86,7 +87,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
+            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time[[cached_days]]\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
             "refId": "A",
             "select": [
               [
@@ -539,7 +540,41 @@
     "style": "dark",
     "tags": [],
     "templating": {
-      "list": []
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "7",
+            "value": "7"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "label": "Time interval in days",
+          "multi": false,
+          "name": "cached_days",
+          "options": [
+            {
+              "selected": false,
+              "text": "90",
+              "value": "90"
+            },
+            {
+              "selected": true,
+              "text": "7",
+              "value": "7"
+            },
+            {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            }
+          ],
+          "query": "90,7,1",
+          "skipUrlSync": false,
+          "type": "custom"
+        }
+      ]
     },
     "time": {
       "from": "now-1y",
@@ -573,6 +608,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 17
+    "version": 9
   }
 }

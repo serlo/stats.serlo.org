@@ -51,15 +51,33 @@ INSERT INTO cache_active_authors (
     active_authors = excluded.active_authors,
     very_active_authors = excluded.very_active_authors;
 
-CREATE TABLE IF NOT EXISTS cache_review_time(
+CREATE TABLE IF NOT EXISTS cache_review_time90(
     time date UNIQUE,
     perc_50 interval,
     perc_75 interval,
     perc_95 interval
 );
+
+CREATE TABLE IF NOT EXISTS cache_review_time7(
+    time date UNIQUE,
+    perc_50 interval,
+    perc_75 interval,
+    perc_95 interval
+);
+
+CREATE TABLE IF NOT EXISTS cache_review_time1(
+    time date UNIQUE,
+    perc_50 interval,
+    perc_75 interval,
+    perc_95 interval
+);
+
 /* TODO: Fix incremental calculation (test with smoketest/aggregation.sh) */
-DELETE FROM cache_review_time WHERE true;
-INSERT INTO cache_review_time (
+DELETE FROM cache_review_time90 WHERE true;
+DELETE FROM cache_review_time7 WHERE true;
+DELETE FROM cache_review_time1 WHERE true;
+
+INSERT INTO cache_review_time90 (
     SELECT
         day as time,
 		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
@@ -76,7 +94,55 @@ INSERT INTO cache_review_time (
         AND el1.actor_id != el2.actor_id
         AND el2.date - el1.date > interval '00:00:10'
         AND day <= (SELECT MAX(date) FROM event_log)
-        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time)
+        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time90)
+    GROUP BY day
+) ON CONFLICT (time) DO UPDATE SET
+    perc_50 = excluded.perc_50,
+    perc_75 = excluded.perc_75,
+    perc_95 = excluded.perc_95;
+
+INSERT INTO cache_review_time7 (
+    SELECT
+        day as time,
+		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
+		percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
+		percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
+    FROM event_log el1
+    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id 
+        AND el1.date < el2.date
+    INNER JOIN event e1 ON e1.id = el1.event_id
+    INNER JOIN event e2 ON e2.id = el2.event_id
+    JOIN day ON el1.date between day - interval '7 day' and day
+    WHERE e1.name = 'entity/revision/add'
+        AND e2.name = 'entity/revision/checkout'
+        AND el1.actor_id != el2.actor_id
+        AND el2.date - el1.date > interval '00:00:10'
+        AND day <= (SELECT MAX(date) FROM event_log)
+        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time7)
+    GROUP BY day
+) ON CONFLICT (time) DO UPDATE SET
+    perc_50 = excluded.perc_50,
+    perc_75 = excluded.perc_75,
+    perc_95 = excluded.perc_95;
+
+INSERT INTO cache_review_time1 (
+    SELECT
+        day as time,
+		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
+		percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
+		percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
+    FROM event_log el1
+    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id 
+        AND el1.date < el2.date
+    INNER JOIN event e1 ON e1.id = el1.event_id
+    INNER JOIN event e2 ON e2.id = el2.event_id
+    JOIN day ON el1.date between day - interval '1 day' and day
+    WHERE e1.name = 'entity/revision/add'
+        AND e2.name = 'entity/revision/checkout'
+        AND el1.actor_id != el2.actor_id
+        AND el2.date - el1.date > interval '00:00:10'
+        AND day <= (SELECT MAX(date) FROM event_log)
+        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_review_time1)
     GROUP BY day
 ) ON CONFLICT (time) DO UPDATE SET
     perc_50 = excluded.perc_50,
