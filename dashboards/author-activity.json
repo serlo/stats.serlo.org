@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T18:15:40Z",
-    "updated": "2019-08-18T21:37:41Z",
+    "updated": "2019-08-18T21:50:27Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 2,
+    "version": 4,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -38,7 +38,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "iteration": 1566159788709,
+    "iteration": 1566159788713,
     "links": [],
     "panels": [
       {
@@ -129,10 +129,11 @@
         },
         "yaxes": [
           {
+            "decimals": null,
             "format": "short",
             "label": "Stunden",
             "logBase": 1,
-            "max": "750",
+            "max": "504",
             "min": "0",
             "show": true
           },
@@ -634,8 +635,8 @@
           "allValue": null,
           "current": {
             "tags": [],
-            "text": "7",
-            "value": "7"
+            "text": "90",
+            "value": "90"
           },
           "hide": 0,
           "includeAll": false,
@@ -697,6 +698,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 2
+    "version": 4
   }
 }
