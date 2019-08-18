@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T18:15:40Z",
-    "updated": "2019-08-18T21:50:27Z",
+    "updated": "2019-08-18T22:07:19Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 4,
+    "version": 6,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -508,7 +508,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select DATE(el1.date)as time, count(el1.id) as \"Selbstreview\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date >= el1.date and (el2.event_id = 6 or el2.event_id = 11) where el1.event_id = 5 and el1.date > '2015-01-01' and el1.actor_id = el2.actor_id group by DATE(el1.date) ORDER BY DATE(el1.date);",
+            "rawSql": "SELECT\n  DATE(el1.date) AS time,\n  count(el1.id) AS \"Selbstreview\"\nFROM event_log el1\nLEFT OUTER JOIN event_log el2\nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date >= el1.date AND\n  el1.event_id = 5 AND\n  (el2.event_id = 6 OR el2.event_id = 11) AND\n  $__timeFilter(el1.date)\nWHERE\n  el1.actor_id = el2.actor_id AND\n  $__timeFilter(el1.date)\nGROUP BY DATE(el1.date)\nORDER BY DATE(el1.date);",
             "refId": "A",
             "select": [
               [
@@ -534,7 +534,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Fremdreview\" from event_log el1 inner join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date >= el1.date and (el2.event_id = 6 or el2.event_id = 11) where el1.event_id = 5 and el1.date > '2015-01-01' and el1.actor_id != el2.actor_id group by DATE(el1.date) ORDER BY DATE(el1.date);",
+            "rawSql": "SELECT\n  DATE(el1.date) AS time,\n  count(el1.id) AS \"Fremdreview\"\nFROM event_log el1\nINNER JOIN event_log el2\nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date >= el1.date AND\n  el1.event_id = 5 AND\n  (el2.event_id = 6 or el2.event_id = 11) AND\n  $__timeFilter(el1.date)\nWHERE\n  el1.actor_id != el2.actor_id AND\n  $__timeFilter(el1.date)\nGROUP BY DATE(el1.date) ORDER BY DATE(el1.date);",
             "refId": "B",
             "select": [
               [
@@ -558,9 +558,10 @@
           {
             "format": "time_series",
             "group": [],
+            "hide": false,
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Ohne Review\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date > el1.date where el1.event_id = 5 and el2.event_id is null and el1.date > '2015-01-01' group by DATE(el1.date) ORDER BY DATE(el1.date);\n",
+            "rawSql": "SELECT\n  DATE(el1.date) as time,\n  count(el1.id) as \"Ohne Review\"\nFROM event_log el1\nLEFT OUTER JOIN event_log el2\nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date > el1.date AND\n  el1.event_id = 5 AND\n  el1.date > '2015-01-01'\nWHERE\n  el2.event_id is null AND\n  $__timeFilter(el1.date)\nGROUP BY DATE(el1.date) ORDER BY DATE(el1.date);\n",
             "refId": "C",
             "select": [
               [
@@ -667,7 +668,7 @@
       ]
     },
     "time": {
-      "from": "now-1y",
+      "from": "now-6M",
       "to": "now"
     },
     "timepicker": {
@@ -698,6 +699,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 4
+    "version": 6
   }
 }
