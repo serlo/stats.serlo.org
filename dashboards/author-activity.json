@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T18:15:40Z",
-    "updated": "2019-08-18T23:06:11Z",
+    "updated": "2019-08-18T23:15:21Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 7,
+    "version": 8,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -47,123 +47,13 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
-        "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen, die manuell gereviewt werden müssen, sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
-        "fill": 1,
-        "gridPos": {
-          "h": 7,
-          "w": 24,
-          "x": 0,
-          "y": 0
-        },
-        "id": 8,
-        "legend": {
-          "alignAsTable": true,
-          "avg": true,
-          "current": true,
-          "max": true,
-          "min": true,
-          "rightSide": true,
-          "show": true,
-          "total": false,
-          "values": true
-        },
-        "lines": true,
-        "linewidth": 2,
-        "links": [],
-        "nullPointMode": "null",
-        "options": {},
-        "paceLength": 10,
-        "percentage": false,
-        "pointradius": 2,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time[[cached_days]]\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Reviewzeiten in den jeweils letzten [[cached_days]] Tagen",
-        "tooltip": {
-          "shared": true,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "decimals": null,
-            "format": "short",
-            "label": "Stunden",
-            "logBase": 1,
-            "max": "504",
-            "min": "0",
-            "show": true
-          },
-          {
-            "format": "short",
-            "label": "",
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": false
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
-      },
-      {
-        "aliasColors": {},
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": "serlo-kpi-postgres",
         "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen:\n\n* Autor*innen: Mindestens eine Aktion in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Aktionen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Aktionen in den letzten 90 Tagen\n\nAls Aktion werden alle Bearbeitungsmöglichkeiten auf Serlo gezählt (Bearbeitung durchgeführt, Elemente verschoben, Review durchgeführt).",
         "fill": 1,
         "gridPos": {
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 7
+          "y": 0
         },
         "hideTimeOverride": false,
         "id": 2,
@@ -275,7 +165,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 14
+          "y": 7
         },
         "hideTimeOverride": false,
         "id": 10,
@@ -357,6 +247,116 @@
             "label": "Anzahl",
             "logBase": 1,
             "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": "",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "serlo-kpi-postgres",
+        "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen, die manuell gereviewt werden müssen, sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
+        "fill": 1,
+        "gridPos": {
+          "h": 7,
+          "w": 24,
+          "x": 0,
+          "y": 15
+        },
+        "id": 8,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
+          "rightSide": true,
+          "show": true,
+          "total": false,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "paceLength": 10,
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "format": "time_series",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time[[cached_days]]\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Reviewzeiten in den jeweils letzten [[cached_days]] Tagen",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "decimals": null,
+            "format": "short",
+            "label": "Stunden",
+            "logBase": 1,
+            "max": "504",
             "min": "0",
             "show": true
           },
@@ -807,6 +807,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 7
+    "version": 8
   }
 }
