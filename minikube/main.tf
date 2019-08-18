@@ -75,6 +75,8 @@ module "athene2_dbsetup" {
 module "kpi" {
   source = "../terraform_modules/kpi/"
 
+  grafana_image = "eu.gcr.io/serlo-shared/kpi-grafana:latest"
+
   domain                 = "serlo.local"
   grafana_admin_password = "admin"
 
