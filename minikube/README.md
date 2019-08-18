@@ -47,7 +47,7 @@ Grafana is deployed as a service and is exposed via the ingress controller.
 
 To access Grafana from the browser you need to add an entry into your /etc/hosts.
 
- [minikube ip]  stats.serlo.local mysql.serlo.local postgres.serlo.local
+Run ```make minikube_dns``` to display this entry.
 
 After that you can access it using https://stats.serlo.local/login
 

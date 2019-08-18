@@ -124,6 +124,11 @@ minikube_delete:
 minikube_dashboard:
 	minikube dashboard 2>/dev/null >/dev/null &
 
+.PHONY: minikube_dns
+# configure dns for minikube ip
+minikube_dns:
+	echo $(minikube ip)	stats.serlo.local mysql.serlo.local postgres.serlo.local test.serlo.local
+
 .PHONY:
 # set kubectl context
 kubectl_use_context:
