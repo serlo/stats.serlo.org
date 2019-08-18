@@ -6,7 +6,7 @@ project_start: project_deploy project_launch
 
 ADDITIONAL_STEPS  := 
 ifeq ($(env_name),minikube)
-	ADDITIONAL_STEPS := minikube_start docker_minikube_setup
+	ADDITIONAL_STEPS := minikube_start docker_minikube_setup build_local
 endif
 
 .PHONY: project_deploy

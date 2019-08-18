@@ -4,6 +4,7 @@
 
 export grafana_user ?= admin
 
+############  This sould be nicer once grafana deployment is fully containerized ########
 ifeq ($(env_name),minikube)
 	export grafana_host ?= https://stats.serlo.local
 	export grafana_password ?= admin
@@ -24,6 +25,7 @@ ifneq ($(env_name),minikube)
 	export grafana_serlo_password ?= $(shell cat $(infrastructure_repository)/live/$(env_name)/secrets/terraform-$(env_name).tfvars | grep kpi_grafana_serlo_password | awk '{ print $$3}' | sed 's/\"//g')
 endif
 
+######################################################################################
 
 GRAFANA_CURL_AUTH=-k -u $(grafana_user):$(grafana_password) -s -S
 
