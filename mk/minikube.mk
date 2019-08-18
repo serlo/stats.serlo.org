@@ -83,7 +83,7 @@ minikube_start: $(call iffalse,$(MINIKUBE_EXISTS),minikube_create)
 	$(info Minikube exists: $(MINIKUBE_EXISTS))
 	$(info Using virtualizer: $(virtualizer))
 	minikube start $(minikube_args)
-	kubectl config use-context minikube
+	@$(MAKE) --no-print-directory kubectl_use_context
 	@$(MAKE) minikube_wait_network
 	@echo "$(bold)Minikube was successfully started with ip $$(minikube ip)!$(normal)"
 
