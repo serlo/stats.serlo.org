@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T18:15:40Z",
-    "updated": "2019-08-18T22:07:19Z",
+    "updated": "2019-08-18T23:06:11Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 6,
+    "version": 7,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -38,7 +38,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "iteration": 1566159788713,
+    "iteration": 1566166500919,
     "links": [],
     "panels": [
       {
@@ -375,6 +375,114 @@
         }
       },
       {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "serlo-kpi-postgres",
+        "description": "Verlauf der Anzahl von Reviewer*innen: Gezählt werden nur Bearbeitungen der jeweils letzten 90 Tage. Nur manuelle Reviewing-Aktionen (Annahme und Ablehung) *fremder Bearbeitungen* werden betrachtet:\n\n* Reviewer*in: Mindestens ein Reviewing in den letzten 90 Tagen\n* Aktive Reviewer*innen: Mindestens 10 Reviewing-Aktionen in den letzten 90 Tagen\n* Aktive Reviewer*innen: Mindestens 100 Reviewing-Aktionen in den letzten 90 Tagen",
+        "fill": 1,
+        "gridPos": {
+          "h": 7,
+          "w": 24,
+          "x": 0,
+          "y": 22
+        },
+        "id": 16,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
+          "rightSide": true,
+          "show": true,
+          "total": false,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "format": "time_series",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  time,\n  reviewers as \"Reviewer*innen\",\n  active_reviewers as \"Aktive Reviewer*innen\",\n  very_active_reviewers as \"Sehr aktive Reviewer*innen\"\nFROM cache_active_reviewers\nWHERE $__timeFilter(time) ORDER BY time ASC;\n",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Anzahl Reviewer*innen",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Anzahl",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
         "cacheTimeout": null,
         "cards": {
           "cardPadding": null,
@@ -396,7 +504,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 22
+          "y": 29
         },
         "heatmap": {},
         "hideZeroBuckets": false,
@@ -475,7 +583,7 @@
           "h": 10,
           "w": 24,
           "x": 0,
-          "y": 30
+          "y": 37
         },
         "id": 12,
         "legend": {
@@ -699,6 +807,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 6
+    "version": 7
   }
 }

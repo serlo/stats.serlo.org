@@ -51,6 +51,45 @@ INSERT INTO cache_active_authors (
     active_authors = excluded.active_authors,
     very_active_authors = excluded.very_active_authors;
 
+CREATE TABLE IF NOT EXISTS cache_active_reviewers(
+    time date UNIQUE,
+    reviewers int4,
+    active_reviewers int4,
+    very_active_reviewers int4
+);
+
+INSERT INTO cache_active_reviewers (
+    SELECT
+        day as "time",
+        count(reviewer) as "reviewers",
+        count(reviewer_active) as "active reviewers",
+        count(reviewer_very_active) as "very active reviewers"
+    FROM (
+        SELECT day, el_review.actor_id,
+            el_review.actor_id as reviewer,
+            CASE WHEN count(el_review.actor_id) > 10 THEN el_review.actor_id END as reviewer_active,
+            CASE WHEN count(el_review.actor_id) > 100 THEN el_review.actor_id END as reviewer_very_active
+        FROM event_log AS el_review
+	JOIN day ON
+            date BETWEEN day - interval '90 day' and day
+            AND (el_review.event_id = 6 or el_review.event_id = 11)
+            AND day >= '2018-01-01'
+            AND day <= (SELECT MAX(date) FROM event_log)
+            AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_reviewers)
+	INNER JOIN event_log AS el_revision ON
+            el_review.uuid_id = el_revision.uuid_id
+            AND el_review.date >= el_revision.date
+            AND el_revision.event_id = 5
+            AND el_revision.actor_id != el_review.actor_id
+        GROUP BY day, el_review.actor_id
+    ) activity
+    GROUP BY day
+    ORDER BY day ASC
+) ON CONFLICT (time) DO UPDATE SET
+    reviewers = excluded.reviewers,
+    active_reviewers = excluded.active_reviewers,
+    very_active_reviewers = excluded.very_active_reviewers;
+
 CREATE TABLE IF NOT EXISTS cache_review_time90(
     time date UNIQUE,
     perc_50 interval,
