@@ -8,11 +8,11 @@
     "slug": "author-activity",
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-08-18T11:08:03Z",
-    "updated": "2019-08-18T16:25:08Z",
+    "created": "2019-08-18T10:25:43Z",
+    "updated": "2019-08-18T16:47:09Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 4,
+    "version": 15,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -42,7 +42,7 @@
     "panels": [
       {
         "aliasColors": {},
-        "bars": true,
+        "bars": false,
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
@@ -63,9 +63,8 @@
           "total": false,
           "values": false
         },
-        "lines": false,
+        "lines": true,
         "linewidth": 1,
-        "links": [],
         "nullPointMode": "null",
         "options": {},
         "percentage": false,
@@ -74,7 +73,7 @@
         "renderer": "flot",
         "seriesOverrides": [],
         "spaceLength": 10,
-        "stack": true,
+        "stack": false,
         "steppedLine": false,
         "targets": [
           {
@@ -134,7 +133,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Edits without review\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date > el1.date where el1.event_id = 5 and el2.event_id is null and el1.date > '2015-01-01' group by DATE(el1.date) ORDER BY DATE(el1.date);",
+            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Edits without review\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date > el1.date where el1.event_id = 5 and el2.event_id is null and el1.date > '2015-01-01' group by DATE(el1.date) ORDER BY DATE(el1.date);\n",
             "refId": "C",
             "select": [
               [
@@ -203,6 +202,7 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
+        "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen, die manuell gereviewt werden müssen, sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
         "fill": 1,
         "gridPos": {
           "h": 7,
@@ -212,16 +212,18 @@
         },
         "id": 8,
         "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
+          "rightSide": true,
           "show": true,
           "total": false,
-          "values": false
+          "values": true
         },
         "lines": true,
-        "linewidth": 1,
+        "linewidth": 2,
         "links": [],
         "nullPointMode": "null",
         "options": {},
@@ -240,7 +242,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75% (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95% (h)\"\nFROM\n  cache_review_time\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
+            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
             "refId": "A",
             "select": [
               [
@@ -266,7 +268,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Durchschnittliche Reaktionszeit auf Editierungen",
+        "title": "Reviewzeiten in den letzten 90 Tagen",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -283,7 +285,7 @@
         "yaxes": [
           {
             "format": "short",
-            "label": null,
+            "label": "Stunden",
             "logBase": 1,
             "max": "750",
             "min": "0",
@@ -291,11 +293,11 @@
           },
           {
             "format": "short",
-            "label": null,
+            "label": "",
             "logBase": 1,
             "max": null,
             "min": null,
-            "show": true
+            "show": false
           }
         ],
         "yaxis": {
@@ -309,6 +311,7 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
+        "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen:\n\n* Autor*innen: Mindestens eine Aktion in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Aktionen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Aktionen in den letzten 90 Tagen\n\nAls Aktion werden alle Bearbeitungsmöglichkeiten auf Serlo gezählt (Bearbeitung durchgeführt, Elemente verschoben, Review durchgeführt).",
         "fill": 1,
         "gridPos": {
           "h": 7,
@@ -319,10 +322,14 @@
         "hideTimeOverride": false,
         "id": 2,
         "legend": {
+          "alignAsTable": true,
           "avg": true,
-          "current": false,
+          "current": true,
+          "hideEmpty": false,
+          "hideZero": false,
           "max": true,
           "min": true,
+          "rightSide": true,
           "show": true,
           "total": false,
           "values": true
@@ -347,7 +354,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select * from cache_active_authors WHERE $__timeFilter(time) ORDER BY time ASC;\n",
+            "rawSql": "SELECT\n  time,\n  authors as \"Autor*innen\",\n  active_authors as \"Aktive Autor*innen\",\n  very_active_authors as \"Sehr aktive Autor*innen\"\nFROM cache_active_authors\nWHERE $__timeFilter(time) ORDER BY time ASC;\n",
             "refId": "A",
             "select": [
               [
@@ -373,7 +380,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Active Authors",
+        "title": "Anzahl Autor*innen (insgesamt)",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -390,7 +397,7 @@
         "yaxes": [
           {
             "format": "short",
-            "label": null,
+            "label": "Anzahl",
             "logBase": 1,
             "max": null,
             "min": "0",
@@ -416,6 +423,7 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
+        "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen gefiltert nach Fachbereich:\n\n* Autor*innen: Mindestens eine Aktion in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Aktionen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Aktionen in den letzten 90 Tagen\n\nAls Aktion werden alle Bearbeitungsmöglichkeiten auf Serlo gezählt (Bearbeitung durchgeführt, Elemente verschoben, Review durchgeführt).",
         "fill": 1,
         "gridPos": {
           "h": 8,
@@ -426,11 +434,14 @@
         "hideTimeOverride": false,
         "id": 10,
         "legend": {
+          "alignAsTable": true,
           "avg": true,
-          "current": false,
+          "current": true,
           "max": true,
           "min": true,
+          "rightSide": true,
           "show": true,
+          "sideWidth": null,
           "total": false,
           "values": true
         },
@@ -480,7 +491,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Active Authors",
+        "title": "Anzahl Autor*innen (pro Fach)",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -497,7 +508,7 @@
         "yaxes": [
           {
             "format": "short",
-            "label": null,
+            "label": "Anzahl",
             "logBase": 1,
             "max": null,
             "min": "0",
@@ -516,220 +527,6 @@
           "align": false,
           "alignLevel": null
         }
-      },
-      {
-        "aliasColors": {},
-        "bars": true,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": "serlo-kpi-postgres",
-        "description": "A histogram of authors based on floor(log2(#number of edits)).",
-        "fill": 1,
-        "gridPos": {
-          "h": 8,
-          "w": 19,
-          "x": 0,
-          "y": 29
-        },
-        "id": 6,
-        "legend": {
-          "alignAsTable": false,
-          "avg": true,
-          "current": false,
-          "max": true,
-          "min": false,
-          "rightSide": false,
-          "show": false,
-          "total": false,
-          "values": true
-        },
-        "lines": false,
-        "linewidth": 1,
-        "links": [],
-        "nullPointMode": "null",
-        "options": {},
-        "paceLength": 10,
-        "percentage": false,
-        "pointradius": 2,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "SELECT\n  now() as time,\n  1 as value,\n  text(exponent) as metric\nFROM (\n  SELECT actor_id, count(actor_id) as edits FROM \"user\" JOIN event_log ON \n    logins > 0 \n    AND actor_id = \"user\".id\n    AND event_id IN (4, 5)\n  GROUP BY actor_id\n) value JOIN GENERATE_SERIES(0, 15, 1) exponent ON \n  edits >= 2^exponent\n  AND edits < 2^(exponent + 1);",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Number of Authors by log2(edits)",
-        "tooltip": {
-          "shared": false,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": 13,
-          "mode": "series",
-          "name": null,
-          "show": true,
-          "values": [
-            "total"
-          ]
-        },
-        "yaxes": [
-          {
-            "format": "short",
-            "label": "Number of Authors",
-            "logBase": 2,
-            "max": "2000",
-            "min": "0",
-            "show": true
-          },
-          {
-            "format": "none",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": false
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": false,
-        "colors": [
-          "#299c46",
-          "rgba(237, 129, 40, 0.89)",
-          "#d44a3a"
-        ],
-        "datasource": "serlo-kpi-postgres",
-        "format": "none",
-        "gauge": {
-          "maxValue": 100,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": true
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 5,
-          "x": 19,
-          "y": 29
-        },
-        "id": 4,
-        "interval": null,
-        "links": [],
-        "mappingType": 1,
-        "mappingTypes": [
-          {
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "options": {},
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
-            "from": "null",
-            "text": "N/A",
-            "to": "null"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "Edits",
-        "targets": [
-          {
-            "format": "table",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "select count(*) as \"Edits\" from event_log where event_id IN (4,5);",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
-        "thresholds": "",
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "Total Edits",
-        "type": "singlestat",
-        "valueFontSize": "80%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
-        "valueName": "avg"
       }
     ],
     "refresh": false,
@@ -771,6 +568,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 4
+    "version": 15
   }
 }
