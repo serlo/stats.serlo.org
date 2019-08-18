@@ -11,10 +11,8 @@ FROM alpine
 WORKDIR /app
 COPY --from=build-env /app/goapp /tmp/goapp
 COPY ./run.sh /tmp/run
-COPY ./cron.sh /tmp/cron.sh
-RUN /bin/chmod a+x /tmp/goapp && chmod a+x /tmp/run && chmod a+x /tmp/cron.sh
+COPY ./loop.sh /tmp/loop.sh
+RUN /bin/chmod a+x /tmp/goapp && chmod a+x /tmp/run && chmod a+x /tmp/loop.sh
 ARG git_revision
 ENV GIT_REVISION $git_revision
-ARG cron_pattern
-ENV CRON_PATTERN $cron_pattern
-CMD ["/tmp/cron.sh"]
+CMD ["/tmp/loop.sh"]

@@ -8,12 +8,10 @@ version=$(major_version).$(minor_version).$(patch_version)
 
 include ../../mk/dockerci.mk
 
-cron_pattern=*/60 * * * *
-
 .PHONY: docker_build
 # build docker container
 docker_build:
-	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') --build-arg cron_pattern="$(cron_pattern)" -t $(local_image) .
+	docker build --build-arg git_revision=$(shell git log | head -n 1 | cut  -f 2 -d ' ') -t $(local_image) .
 
 .PHONY: docker-run
 # run docker container
