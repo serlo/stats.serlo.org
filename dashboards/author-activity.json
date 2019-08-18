@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T18:15:40Z",
-    "updated": "2019-08-18T23:27:39Z",
+    "updated": "2019-08-18T23:30:25Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 9,
+    "version": 10,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -71,7 +71,7 @@
           "values": true
         },
         "lines": true,
-        "linewidth": 1,
+        "linewidth": 2,
         "links": [],
         "nullPointMode": "null",
         "options": {},
@@ -182,7 +182,7 @@
           "values": true
         },
         "lines": true,
-        "linewidth": 1,
+        "linewidth": 2,
         "links": [],
         "nullPointMode": "null",
         "options": {},
@@ -807,6 +807,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 9
+    "version": 10
   }
 }
