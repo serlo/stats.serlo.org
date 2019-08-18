@@ -40,7 +40,7 @@ resource "kubernetes_namespace" "kpi_namespace" {
 #####################################################################
 
 module "local_mysql" {
-  source    = "./../modules/mysql"
+  source    = "git::https://github.com/serlo/infrastructure-modules-shared//mysql"
   namespace = kubernetes_namespace.kpi_namespace.metadata.0.name
 }
 
@@ -49,12 +49,12 @@ module "local_mysql" {
 #####################################################################
 
 module "local_postgres" {
-  source    = "./../modules/postgres"
+  source    = "git::https://github.com/serlo/infrastructure-modules-shared//postgres"
   namespace = kubernetes_namespace.kpi_namespace.metadata.0.name
 }
 
 module "athene2_dbsetup" {
-  source                    = "./../modules/athene2_dbsetup"
+  source                    = "git::https://github.com/serlo/infrastructure-modules-serlo.org//athene2_dbsetup"
   namespace                 = kubernetes_namespace.athene2_namespace.metadata.0.name
   database_username_default = "root"
   database_password_default = "admin"
@@ -73,7 +73,7 @@ module "athene2_dbsetup" {
 #####################################################################
 
 module "kpi" {
-  source = "./../modules/kpi"
+  source = "git::https://github.com/serlo/infrastructure-modules-kpi//kpi"
 
   domain                 = "serlo.local"
   grafana_admin_password = "admin"

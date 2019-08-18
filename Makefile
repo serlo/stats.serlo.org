@@ -6,8 +6,6 @@
 
 # the environment type. use minikube for development
 env_name ?=
-# path to the serlo infrastructure repository
-infrastructure_repository ?= ../infrastructure
 
 # location of the current serlo database dump
 export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
@@ -19,14 +17,7 @@ export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 _help: help
 
 ifeq ($(env_name),minikube)
-env_folder = minikube
 include mk/minikube.mk
-export terraform_auto_approve=-auto-approve
-else
-env_folder = $(infrastructure_repository)/live/$(env_name)
-include mk/gcloud.mk
-#no auto approve in gcloud dev environment
-export terraform_auto_approve=
 endif
 
 # forbid parallel building of prerequisites

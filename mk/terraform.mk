@@ -1,69 +1,25 @@
-.PHONY: terraform_init
-ifeq ($(env_name),minikube)
-terraform_auto_approve=-auto-approve
-
-ifeq ($(infrastructure_repository),)
-$(error infrastructure_repository not defined)
+ifneq ($(env_name),minikube)
+$(error this repo can only deploy to minikube, other deployments must be done via infrastructure!)
 endif
+
+TERRAFORM_PATH := minikube
 
 .PHONY: terraform_plan
 # plan terraform
 terraform_plan:
-	# just make sure we know what we are doing
-	test -d modules || ln -s $(infrastructure_repository)/modules modules
-	terraform fmt -recursive $(env_folder) 
-	cd $(env_folder) && terraform plan
+	cd $(TERRAFORM_PATH) && terraform plan
 
 .PHONY: terraform_apply
 # apply terraform with secrets
 terraform_apply:
-	# just make sure we know what we are doing
-	test -d modules || ln -s $(infrastructure_repository)/modules modules
-	terraform fmt -recursive $(env_folder) 
-	cd $(env_name) && terraform apply $(terraform_auto_approve)
+	cd $(TERRAFORM_PATH) && terraform apply -auto-approve
 
 .PHONY: terraform_init
 # init terraform environment
 terraform_init: 
-	test -d modules || ln -s $(infrastructure_repository)/modules modules
-	cd $(env_name) && terraform init
+	cd $(TERRAFORM_PATH) && terraform init
 
 .PHONY: terraform_destroy
 # destroy terraform environment
 terraform_destroy:
-	cd $(env_name) && terraform destroy -var-file secrets/terraform-$(env_name).tfvars
-
-else
-.PHONY: terraform_init
-# init terraform environment
-terraform_init: 
-	#remove secrets and load latest secret from gcloud
-	cd $(env_folder) && \
-		rm -rf secrets && \
-		gsutil -m cp -R gs://serlo_$(env_name)_terraform/secrets/ . && \
-		terraform init
-
-.PHONY: terraform_plan
-# plan terrform with secrets
-terraform_plan:
-	cd $(env_folder) && \
-		terraform fmt -recursive ../../ && \
-		terraform plan -var-file secrets/terraform-$(env_name).tfvars
-
-.PHONY: terraform_apply
-# apply terraform with secrets
-terraform_apply:
-	# just make sure we know what we are doing
-	cd $(env_folder) && \
-		terraform fmt -recursive ../../ && \
-		terraform apply -var-file secrets/terraform-$(env_name).tfvars
-
-.PHONY: terraform_destroy
-# destroy terraform with secrets
-terraform_destroy:
-	# just make sure we know what we are doing
-	cd $(env_folder) && \
-	terraform fmt -recursive ../../ && \
-	terraform destroy -var-file secrets/terraform-$(env_name).tfvars
-endif
-
+	cd $(TERRAFORM_PATH) && terraform destroy

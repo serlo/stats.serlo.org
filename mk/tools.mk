@@ -51,3 +51,14 @@ tools_psql_shell: kubectl_use_context
 deploy_%:
 	bash -c "cd $(env_folder) && terraform taint module.kpi.kubernetes_deployment.$*"
 	$(MAKE) terraform_apply
+
+.PHONY: gclound_dashboard
+# open the gcloud dashboard
+gcloud_dashboard:
+	xdg-open https://console.cloud.google.com/kubernetes/workload?project=serlo-dev&workload_list_tablesize=50 2>/dev/null >/dev/null &
+
+.PHONY: gcloud_kubectl_context_%
+# switch to the gcloud kubectl context $* (dev,staging,production). 
+gcloud_kubectl_context_%:
+	kubectl config use-context gke_serlo-$*_europe-west3-a_serlo-$*-cluster
+

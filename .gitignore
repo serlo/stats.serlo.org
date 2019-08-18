@@ -2,7 +2,6 @@ importer/importer
 importer/importer.exe
 .vscode
 tmp/
-modules
 .terraform/
 terraform.tfstate*
 container/mysql-importer/config-minikube.yaml
