@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T10:25:43Z",
-    "updated": "2019-08-18T16:47:09Z",
+    "updated": "2019-08-18T17:09:00Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 15,
+    "version": 17,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -46,169 +46,13 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
-        "fill": 1,
-        "gridPos": {
-          "h": 7,
-          "w": 24,
-          "x": 0,
-          "y": 0
-        },
-        "id": 12,
-        "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
-          "show": true,
-          "total": false,
-          "values": false
-        },
-        "lines": true,
-        "linewidth": 1,
-        "nullPointMode": "null",
-        "options": {},
-        "percentage": false,
-        "pointradius": 2,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "select DATE(el1.date)as time, count(el1.id) as \"Edits with automatic review\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date >= el1.date and (el2.event_id = 6 or el2.event_id = 11) where el1.event_id = 5 and el1.date > '2015-01-01' and el1.actor_id = el2.actor_id group by DATE(el1.date) ORDER BY DATE(el1.date);",
-            "refId": "A",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          },
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Edits with review from others\" from event_log el1 inner join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date >= el1.date and (el2.event_id = 6 or el2.event_id = 11) where el1.event_id = 5 and el1.date > '2015-01-01' and el1.actor_id != el2.actor_id group by DATE(el1.date) ORDER BY DATE(el1.date);",
-            "refId": "B",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          },
-          {
-            "format": "time_series",
-            "group": [],
-            "metricColumn": "none",
-            "rawQuery": true,
-            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Edits without review\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date > el1.date where el1.event_id = 5 and el2.event_id is null and el1.date > '2015-01-01' group by DATE(el1.date) ORDER BY DATE(el1.date);\n",
-            "refId": "C",
-            "select": [
-              [
-                {
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }
-              ]
-            ],
-            "timeColumn": "time",
-            "where": [
-              {
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }
-            ]
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Panel Title",
-        "tooltip": {
-          "shared": true,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          },
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
-      },
-      {
-        "aliasColors": {},
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": "serlo-kpi-postgres",
         "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen, die manuell gereviewt werden müssen, sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
         "fill": 1,
         "gridPos": {
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 7
+          "y": 0
         },
         "id": 8,
         "legend": {
@@ -317,7 +161,7 @@
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 14
+          "y": 7
         },
         "hideTimeOverride": false,
         "id": 2,
@@ -429,7 +273,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 21
+          "y": 14
         },
         "hideTimeOverride": false,
         "id": 10,
@@ -527,6 +371,167 @@
           "align": false,
           "alignLevel": null
         }
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "serlo-kpi-postgres",
+        "description": "Dashboard, welche pro Tag die Bearbeitungen nach folgenden Kategorien sortiert:\n\n* Selbstreview: Der Autor / die Autorin hat selbst die Bearbeitung manuell oder automatisch gereviewt.\n* Fremdreview: Eine andere Person hat die Bearbeitung manuell im Reviewingverfahren gereviewt.\n* Ohne Review: Für diese Bearbeitung liegt kein Reviewing vor. Dies liegt daran, dass entweder die Bearbeitung noch offen ist oder eine darauffolgende Bearbeitung gereviewt wurde.",
+        "fill": 1,
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 22
+        },
+        "id": 12,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": false,
+          "rightSide": true,
+          "show": true,
+          "total": true,
+          "values": true
+        },
+        "lines": false,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null as zero",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "format": "time_series",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "select DATE(el1.date)as time, count(el1.id) as \"Selbstreview\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date >= el1.date and (el2.event_id = 6 or el2.event_id = 11) where el1.event_id = 5 and el1.date > '2015-01-01' and el1.actor_id = el2.actor_id group by DATE(el1.date) ORDER BY DATE(el1.date);",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "format": "time_series",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Fremdreview\" from event_log el1 inner join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date >= el1.date and (el2.event_id = 6 or el2.event_id = 11) where el1.event_id = 5 and el1.date > '2015-01-01' and el1.actor_id != el2.actor_id group by DATE(el1.date) ORDER BY DATE(el1.date);",
+            "refId": "B",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "format": "time_series",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "select DATE(el1.date) as time, count(el1.id) as \"Ohne Review\" from event_log el1 left outer join event_log el2 on el1.uuid_id = el2.uuid_id and el2.date > el1.date where el1.event_id = 5 and el2.event_id is null and el1.date > '2015-01-01' group by DATE(el1.date) ORDER BY DATE(el1.date);\n",
+            "refId": "C",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Bearbeitungen pro Tag",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "decimals": null,
+            "format": "short",
+            "label": "Anzahl",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
       }
     ],
     "refresh": false,
@@ -568,6 +573,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 15
+    "version": 17
   }
 }
