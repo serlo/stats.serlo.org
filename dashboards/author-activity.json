@@ -8,11 +8,11 @@
     "slug": "author-activity",
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-06-26T20:04:22Z",
-    "updated": "2019-07-03T18:52:33Z",
+    "created": "2019-08-18T10:25:43Z",
+    "updated": "2019-08-18T11:19:05Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 12,
+    "version": 4,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -46,6 +46,7 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
+        "description": "",
         "fill": 1,
         "gridPos": {
           "h": 7,
@@ -126,7 +127,7 @@
         "yaxes": [
           {
             "format": "short",
-            "label": null,
+            "label": "Stunden",
             "logBase": 1,
             "max": "750",
             "min": "0",
@@ -134,11 +135,11 @@
           },
           {
             "format": "short",
-            "label": null,
+            "label": "",
             "logBase": 1,
             "max": null,
             "min": null,
-            "show": true
+            "show": false
           }
         ],
         "yaxis": {
@@ -233,7 +234,7 @@
         "yaxes": [
           {
             "format": "short",
-            "label": null,
+            "label": "Anzahl",
             "logBase": 1,
             "max": null,
             "min": "0",
@@ -340,7 +341,7 @@
         "yaxes": [
           {
             "format": "short",
-            "label": null,
+            "label": "Anzahl",
             "logBase": 1,
             "max": null,
             "min": "0",
@@ -614,6 +615,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 12
+    "version": 4
   }
 }

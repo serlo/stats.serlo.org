@@ -8,11 +8,11 @@
     "slug": "registrations",
     "url": "/d/ghjAdN4Zz/registrations",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-06-29T12:33:43Z",
-    "updated": "2019-06-29T12:33:43Z",
+    "created": "2019-08-18T10:25:43Z",
+    "updated": "2019-08-18T11:05:01Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 1,
+    "version": 2,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -525,6 +525,6 @@
     "timezone": "",
     "title": "Registrations",
     "uid": "ghjAdN4Zz",
-    "version": 1
+    "version": 2
   }
 }
