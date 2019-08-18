@@ -13,13 +13,13 @@ deploy_aggregator:
 	bash -c "cd $(env_folder) && terraform taint $(resource_aggregator)"
 	$(MAKE) terraform_apply
 
-.PONY: deploy_importer
+.PHONY: deploy_importer
 # force the deployment of the mysql importer
 deploy_importer:
 	bash -c "cd $(env_folder) && terraform taint $(resource_importer)"
 	$(MAKE) terraform_apply
 
-.PONY: deploy_grafana
+.PHONY: deploy_grafana
 # force the deployment of grafana
 deploy_grafana:
 	bash -c "cd $(env_folder) && terraform taint $(resource_grafana)"
