@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T10:25:43Z",
-    "updated": "2019-08-18T13:06:14Z",
+    "updated": "2019-08-18T13:29:28Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 8,
+    "version": 9,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -56,16 +56,18 @@
         },
         "id": 8,
         "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
+          "rightSide": true,
           "show": true,
           "total": false,
-          "values": false
+          "values": true
         },
         "lines": true,
-        "linewidth": 1,
+        "linewidth": 2,
         "links": [],
         "nullPointMode": "null",
         "options": {},
@@ -163,10 +165,14 @@
         "hideTimeOverride": false,
         "id": 2,
         "legend": {
+          "alignAsTable": true,
           "avg": true,
-          "current": false,
+          "current": true,
+          "hideEmpty": false,
+          "hideZero": false,
           "max": true,
           "min": true,
+          "rightSide": true,
           "show": true,
           "total": false,
           "values": true
@@ -191,7 +197,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "select * from cache_active_authors WHERE $__timeFilter(time) ORDER BY time ASC;\n",
+            "rawSql": "SELECT\n  time,\n  authors as \"Autor*innen\",\n  active_authors as \"Aktive Autor*innen\",\n  very_active_authors as \"Sehr aktive Autor*innen\"\nFROM cache_active_authors\nWHERE $__timeFilter(time) ORDER BY time ASC;\n",
             "refId": "A",
             "select": [
               [
@@ -270,11 +276,14 @@
         "hideTimeOverride": false,
         "id": 10,
         "legend": {
+          "alignAsTable": true,
           "avg": true,
-          "current": false,
+          "current": true,
           "max": true,
           "min": true,
+          "rightSide": true,
           "show": true,
+          "sideWidth": null,
           "total": false,
           "values": true
         },
@@ -401,6 +410,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 8
+    "version": 9
   }
 }
