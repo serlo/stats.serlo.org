@@ -29,14 +29,6 @@ include mk/gcloud.mk
 export terraform_auto_approve=
 endif
 
-include mk/help.mk
-include mk/terraform.mk
-include mk/grafana.mk
-include mk/deploy.mk
-include mk/tools.mk
-include mk/build.mk
-include mk/project.mk
-
 # forbid parallel building of prerequisites
 .NOTPARALLEL:
 
@@ -47,3 +39,12 @@ BLUE   := $(shell tput -Txterm setaf 4)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
 DIM  := $(shell tput -Txterm dim)
+
+include mk/help.mk
+include mk/terraform.mk
+include mk/grafana.mk
+include mk/deploy.mk
+include mk/tools.mk
+include mk/build.mk
+include mk/project.mk
+

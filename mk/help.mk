@@ -70,7 +70,7 @@ FNR==1 {
 /^#/ {
 	if (header) {
         match($$0, /^[#]+[[:blank:]]*(.*)/, groups);
-		documentation = groups[1]
+		documentation = groups[1];
 		if (documentation) {
 			printf "  "documentation"\n";
 		}
@@ -82,6 +82,16 @@ FNR==1 {
 { lastLine = $$0 }
 endef
 
+# variable containing a newline
+# there must be two blank lines between the define and endef
+# (http://stackoverflow.com/a/17055840/2064196)
+define NL
+
+
+endef
+
+ESCAPED := $(subst $(NL),\$(NL),$(HELP_AWK))
+
 .PHONY: help
 # print a list of goals
 help:
@@ -90,4 +100,4 @@ help:
 	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
 	@echo ''
 	@echo 'Targets:'
-	@awk '$(HELP_AWK)' $(MAKEFILE_LIST)
+	@awk '$(ESCAPED)' $(MAKEFILE_LIST)
