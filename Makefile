@@ -43,7 +43,6 @@ DIM  := $(shell tput -Txterm dim)
 include mk/help.mk
 include mk/terraform.mk
 include mk/grafana.mk
-include mk/deploy.mk
 include mk/tools.mk
 include mk/build.mk
 include mk/project.mk

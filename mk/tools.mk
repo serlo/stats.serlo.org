@@ -46,3 +46,8 @@ tools_psql_shell: kubectl_use_context
 		$$(kubectl get pods --namespace=kpi | grep postgres | awk '{ print $$1 }') \
 	--namespace=kpi -- su - postgres -c 'psql -d kpi'
 
+.PHONY: deploy_%
+# force re-deployment of {aggregator-cronjob|mqsql-importer-cronjob|grafana_deployment}
+deploy_%:
+	bash -c "cd $(env_folder) && terraform taint module.kpi.kubernetes_deployment.$*"
+	$(MAKE) terraform_apply
