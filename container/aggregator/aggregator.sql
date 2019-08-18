@@ -185,5 +185,21 @@ INSERT INTO cache_edits_by_category (
 /* commit the aggregation transaction */
 COMMIT;
 
+
+/* create serlo user in minikube to avoid errors with permission granting */
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT                       -- SELECT list can stay empty for this
+      FROM   pg_catalog.pg_roles
+      WHERE  rolname = 'serlo_readonly') THEN
+      CREATE USER serlo_readonly NOCREATEDB;
+   END IF;
+END
+$do$;
+
+GRANT CONNECT ON DATABASE kpi TO serlo_readonly;
 GRANT USAGE ON SCHEMA public TO serlo_readonly;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO serlo_readonly;
+

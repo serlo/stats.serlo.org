@@ -40,7 +40,9 @@ done
 log_info "kpi database ready"
 
 time=$(date +"%Y-%m-%dT%H:%M:%SZ")
-psql $connect -f /tmp/aggregator.sql 2>&1 | sed 's/\"//g' | sed "s/.*/\{\"level\":\"info\",\"time\":\"$time\",\"message\":\"&\"\}/"
+psql -v ON_ERROR_STOP=1 $connect -f /tmp/aggregator.sql 2>&1
+# do not output as JSON for now, since piping eats the exit code
+#| sed 's/\"//g' | sed "s/.*/\{\"level\":\"info\",\"time\":\"$time\",\"message\":\"&\"\}/"
 
 if [[ $? != 0 ]] ; then
     log_fatal "aggregator script run failed"
