@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T10:25:43Z",
-    "updated": "2019-08-18T11:28:10Z",
+    "updated": "2019-08-18T11:45:31Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 5,
+    "version": 6,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -110,7 +110,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Durchschnittliche Reaktionszeit auf Editierungen",
+        "title": "Reviewzeiten in den letzten 90 Tagen",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -615,6 +615,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 5
+    "version": 6
   }
 }
