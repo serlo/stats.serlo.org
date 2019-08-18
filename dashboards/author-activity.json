@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T18:15:40Z",
-    "updated": "2019-08-18T23:15:21Z",
+    "updated": "2019-08-18T23:27:39Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 8,
+    "version": 9,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -38,7 +38,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "iteration": 1566166500919,
+    "iteration": 1566170209745,
     "links": [],
     "panels": [
       {
@@ -47,7 +47,7 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
-        "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen:\n\n* Autor*innen: Mindestens eine Aktion in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Aktionen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Aktionen in den letzten 90 Tagen\n\nAls Aktion werden alle Bearbeitungsmöglichkeiten auf Serlo gezählt (Bearbeitung durchgeführt, Elemente verschoben, Review durchgeführt).",
+        "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen:\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen\n\nAls Bearbeitungen werden nur Aktionen gezählt, bei der neue Inhalte hinzugefügt oder bestehende verändert werden. Änderungen an der Taxonomie oder Review-Aktionen werden nicht beachtet.",
         "fill": 1,
         "gridPos": {
           "h": 7,
@@ -159,7 +159,7 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "serlo-kpi-postgres",
-        "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen gefiltert nach Fachbereich:\n\n* Autor*innen: Mindestens eine Aktion in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Aktionen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Aktionen in den letzten 90 Tagen\n\nAls Aktion werden alle Bearbeitungsmöglichkeiten auf Serlo gezählt (Bearbeitung durchgeführt, Elemente verschoben, Review durchgeführt).",
+        "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen gefiltert nach Fachbereich:\n\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen\n\nAls Bearbeitungen werden nur Aktionen gezählt, bei der neue Inhalte hinzugefügt oder bestehende verändert werden. Änderungen an der Taxonomie oder Review-Aktionen werden nicht beachtet.",
         "fill": 1,
         "gridPos": {
           "h": 8,
@@ -807,6 +807,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 8
+    "version": 9
   }
 }
