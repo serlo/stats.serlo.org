@@ -36,38 +36,34 @@ terraform_destroy:
 else
 .PHONY: terraform_init
 # init terraform environment
-.ONESHELL:
 terraform_init: 
 	#remove secrets and load latest secret from gcloud
-	cd $(env_folder)
-	rm -rf secrets
-	gsutil -m cp -R gs://serlo_$(env_name)_terraform/secrets/ .
-	terraform init
+	cd $(env_folder) && \
+		rm -rf secrets && \
+		gsutil -m cp -R gs://serlo_$(env_name)_terraform/secrets/ . && \
+		terraform init
 
 .PHONY: terraform_plan
 # plan terrform with secrets
-.ONESHELL:
 terraform_plan:
-	cd $(env_folder)
-	terraform fmt -recursive ../../
-	terraform plan -var-file secrets/terraform-$(env_name).tfvars
+	cd $(env_folder) && \
+		terraform fmt -recursive ../../ && \
+		terraform plan -var-file secrets/terraform-$(env_name).tfvars
 
 .PHONY: terraform_apply
 # apply terraform with secrets
-.ONESHELL:
 terraform_apply:
 	# just make sure we know what we are doing
-	cd $(env_folder)
-	terraform fmt -recursive ../../
-	terraform apply -var-file secrets/terraform-$(env_name).tfvars
+	cd $(env_folder) && \
+		terraform fmt -recursive ../../ && \
+		terraform apply -var-file secrets/terraform-$(env_name).tfvars
 
 .PHONY: terraform_destroy
 # destroy terraform with secrets
-.ONESHELL:
 terraform_destroy:
 	# just make sure we know what we are doing
-	cd $(env_folder)
-	terraform fmt -recursive ../../
+	cd $(env_folder) && \
+	terraform fmt -recursive ../../ && \
 	terraform destroy -var-file secrets/terraform-$(env_name).tfvars
 endif
 

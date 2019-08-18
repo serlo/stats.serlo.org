@@ -39,9 +39,10 @@ attach_pod_%: kubectl_use_context
 	kubectl exec -it $$(kubectl get pods --namespace kpi | grep "$*" | awk '{print $$1}') --namespace kpi /bin/sh
 
 .PHONY: tools_psql_shell
-.ONESHELL:
 # open a postgres shell
 tools_psql_shell: kubectl_use_context
-	pod=$$(kubectl get pods --namespace=kpi | grep postgres | awk '{ print $$1 }')
-	kubectl exec -it $$pod --namespace=kpi -- su - postgres -c 'psql -d kpi'
+	pod=
+	kubectl exec -it \
+		$$(kubectl get pods --namespace=kpi | grep postgres | awk '{ print $$1 }') \
+	--namespace=kpi -- su - postgres -c 'psql -d kpi'
 
