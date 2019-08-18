@@ -5,3 +5,4 @@ tmp/
 modules
 .terraform/
 terraform.tfstate*
+container/mysql-importer/config-minikube.yaml
