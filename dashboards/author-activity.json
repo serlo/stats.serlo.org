@@ -8,11 +8,11 @@
     "slug": "author-activity",
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2019-08-18T11:08:03Z",
-    "updated": "2019-08-18T17:47:35Z",
+    "created": "2019-08-18T18:15:40Z",
+    "updated": "2019-08-18T21:37:41Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 12,
+    "version": 2,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -38,7 +38,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "iteration": 1566150389112,
+    "iteration": 1566159788709,
     "links": [],
     "panels": [
       {
@@ -374,6 +374,95 @@
         }
       },
       {
+        "cacheTimeout": null,
+        "cards": {
+          "cardPadding": null,
+          "cardRound": null
+        },
+        "color": {
+          "cardColor": "#b4ff00",
+          "colorScale": "sqrt",
+          "colorScheme": "interpolateSpectral",
+          "exponent": 0.5,
+          "max": null,
+          "min": null,
+          "mode": "spectrum"
+        },
+        "dataFormat": "timeseries",
+        "datasource": "serlo-kpi-postgres",
+        "description": "Dieses Dashboard zeigt den Verlauf der Verteilung der Reviewzeiten in Stunden an. Die Farbe der Zellen zeigen an, wie viele Bearbeitungen in diesem Zeitraum in dem Review-Zeitraum der Zelle liegt. Die Y-Achse ist dabei logarithmisch zur Basis 2 und in Stunden angegeben.",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 22
+        },
+        "heatmap": {},
+        "hideZeroBuckets": false,
+        "highlightCards": true,
+        "id": 14,
+        "legend": {
+          "show": true
+        },
+        "links": [],
+        "options": {},
+        "pluginVersion": "6.2.2",
+        "reverseYBuckets": false,
+        "targets": [
+          {
+            "format": "time_series",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  DATE(el1.date) AS time,\n  ceiling(EXTRACT(epoch FROM el2.date - el1.date) / 3600) AS \"Reviewzeit\"\nFROM event_log el1\nINNER JOIN event_log el2 \nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date >= el1.date AND\n  (el2.event_id = 6 OR el2.event_id = 11) AND\n  $__timeFilter(el1.date) AND\n  el1.event_id = 5\nWHERE\n  el1.actor_id != el2.actor_id;",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "timeColumn": "time",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "Verlauf Reviewzeiten (in Stunden)",
+        "tooltip": {
+          "show": true,
+          "showHistogram": true
+        },
+        "type": "heatmap",
+        "xAxis": {
+          "show": true
+        },
+        "xBucketNumber": 20,
+        "xBucketSize": "",
+        "yAxis": {
+          "decimals": null,
+          "format": "locale",
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true,
+          "splitFactor": 1
+        },
+        "yBucketBound": "auto",
+        "yBucketNumber": null,
+        "yBucketSize": 5
+      },
+      {
         "aliasColors": {},
         "bars": true,
         "dashLength": 10,
@@ -385,7 +474,7 @@
           "h": 10,
           "w": 24,
           "x": 0,
-          "y": 22
+          "y": 30
         },
         "id": 12,
         "legend": {
@@ -608,6 +697,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 12
+    "version": 2
   }
 }
