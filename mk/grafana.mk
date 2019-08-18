@@ -15,7 +15,7 @@ endif
 ifeq ($(env_name),staging)
 	export grafana_host ?= https://stats.serlo-staging.dev
 endif
-ifeq ($(env_name),prod)
+ifeq ($(env_name),production)
 	export grafana_host ?= https://stats.serlo.dev
 endif
 
