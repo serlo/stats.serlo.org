@@ -46,7 +46,7 @@ grafana_restore_dashboards:
 grafana_add_default_users:
 	curl $(GRAFANA_CURL_AUTH) \
 		-XGET $(grafana_host)/api/users \
-	| grep serlo >/dev/null && echo "user serlo already created" && exit 0
+	| grep serlo >/dev/null && echo "user serlo already created" || \
 	curl $(GRAFANA_CURL_AUTH) \
 		-XPOST \
 		-H 'Content-Type: application/json' \
