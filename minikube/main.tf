@@ -73,7 +73,7 @@ module "athene2_dbsetup" {
 #####################################################################
 
 module "kpi" {
-  source = "git::https://github.com/serlo/infrastructure-modules-kpi//kpi"
+  source = "../terraform_modules/kpi/"
 
   domain                 = "serlo.local"
   grafana_admin_password = "admin"
