@@ -11,7 +11,7 @@ image_path = eu.gcr.io/serlo-shared
 .PHONY: build_ci
 # build docker images for ci
 build_ci:
-	@set -e ; $(MAKE) -C container/aggregatgor docker_build_ci
+	@set -e ; $(MAKE) -C container/aggregator docker_build_ci
 	@set -e ; $(MAKE) -C container/mysql-importer docker_build_ci
 
 .PHONY: docker_minikube_setup
