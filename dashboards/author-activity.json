@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T11:08:03Z",
-    "updated": "2019-08-18T17:29:59Z",
+    "updated": "2019-08-18T17:47:35Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 9,
+    "version": 12,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -38,7 +38,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "iteration": 1566149384822,
+    "iteration": 1566150389112,
     "links": [],
     "panels": [
       {
@@ -113,7 +113,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Reviewzeiten in den letzten 90 Tagen",
+        "title": "Reviewzeiten in den jeweils letzten [[cached_days]] Tagen",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -555,12 +555,12 @@
           "name": "cached_days",
           "options": [
             {
-              "selected": false,
+              "selected": true,
               "text": "90",
               "value": "90"
             },
             {
-              "selected": true,
+              "selected": false,
               "text": "7",
               "value": "7"
             },
@@ -608,6 +608,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 9
+    "version": 12
   }
 }
