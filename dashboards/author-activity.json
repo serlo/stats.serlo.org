@@ -9,10 +9,10 @@
     "url": "/d/yS5BVkWZk/author-activity",
     "expires": "0001-01-01T00:00:00Z",
     "created": "2019-08-18T10:25:43Z",
-    "updated": "2019-08-18T11:19:05Z",
+    "updated": "2019-08-18T11:28:10Z",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 4,
+    "version": 5,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -84,7 +84,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75% (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95% (h)\"\nFROM\n  cache_review_time\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
+            "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
             "refId": "A",
             "select": [
               [
@@ -615,6 +615,6 @@
     "timezone": "",
     "title": "Author Activity",
     "uid": "yS5BVkWZk",
-    "version": 4
+    "version": 5
   }
 }
