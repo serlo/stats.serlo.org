@@ -59,6 +59,8 @@ resource "kubernetes_deployment" "grafana_deployment" {
           image = var.grafana_image
           name  = "grafana"
 
+          image_pull_policy = var.image_pull_policy
+
           resources {
             limits {
               cpu    = "100m"
