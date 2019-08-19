@@ -79,6 +79,7 @@ module "kpi" {
 
   domain                 = "serlo.local"
   grafana_admin_password = "admin"
+  grafana_serlo_password = "serlo"
 
   athene2_database_host              = "mysql.${kubernetes_namespace.kpi_namespace.metadata.0.name}"
   athene2_database_username_readonly = "root"
