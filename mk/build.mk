@@ -1,26 +1,23 @@
 # set the appropriate docker environment
-ifeq ($(env_name),minikube)
-	DOCKER_ENV ?= $(shell minikube docker-env)
-else
-    	DOCKER_ENV ?= ""
-endif
+DOCKER_ENV ?= $(shell minikube docker-env)
 
-script = scripts/docker-setup-minikube.sh
-image_path = eu.gcr.io/serlo-shared
+PULL_SCRIPT = scripts/docker-setup-minikube.sh
+IMAGE_PATH = eu.gcr.io/serlo-shared
 
 .PHONY: build_ci
 # build docker images for ci
 build_ci:
-	@set -e ; $(MAKE) -C container/aggregator docker_build_ci
-	@set -e ; $(MAKE) -C container/mysql-importer docker_build_ci
+	$(MAKE) -C container/aggregator docker_build_ci
+	$(MAKE) -C container/mysql-importer docker_build_ci
+	$(MAKE) -C container/grafana docker_build_ci
 
 .PHONY: docker_minikube_setup
-# setup minikube docker with eu.gcr.io docker
+# pull images from eu.gcr.io to minikube docker
 docker_minikube_setup:
-	$(script) $(image_path)/kpi-aggregator latest
-	$(script) $(image_path)/kpi-mysql-importer latest
-	$(script) $(image_path)/athene2-dbsetup-cronjob latest
-	$(script) $(image_path)/grafana 6.2.5
+	$(PULL_SCRIPT) $(IMAGE_PATH)/kpi-aggregator latest
+	$(PULL_SCRIPT) $(IMAGE_PATH)/kpi-mysql-importer latest
+	$(PULL_SCRIPT) $(IMAGE_PATH)/athene2-dbsetup-cronjob latest
+	$(PULL_SCRIPT) $(IMAGE_PATH)/grafana 6.2.5
 
 .PHONY: build_local
 # build docker images locally and copy them to minikube

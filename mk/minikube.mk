@@ -107,6 +107,11 @@ minikube_dashboard:
 minikube_dns:
 	@echo "$$(minikube ip 2>/dev/null)	stats.serlo.local mysql.serlo.local postgres.serlo.local test.serlo.local"
 
+.PHONY: minikube_launch
+# launch the grafana dashboard in minikube
+minikube_launch:
+	xdg-open https://stats.serlo.local/login 2>/dev/null >/dev/null &
+
 .PHONY:
 # set kubectl context
 kubectl_use_context:

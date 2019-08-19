@@ -2,11 +2,6 @@
 # Makefile for local development for the serlo KPI project.
 #
 
-### Environment ###
-
-# the environment type. use minikube for development
-env_name ?=
-
 # location of the current serlo database dump
 export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 
@@ -15,10 +10,6 @@ export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 # since hte actual help recipe is quite long, it is moved
 # to the bottom of this makefile.
 _help: help
-
-ifeq ($(env_name),minikube)
-include mk/minikube.mk
-endif
 
 # forbid parallel building of prerequisites
 .NOTPARALLEL:
@@ -32,8 +23,8 @@ RESET  := $(shell tput -Txterm sgr0)
 DIM  := $(shell tput -Txterm dim)
 
 include mk/help.mk
+include mk/minikube.mk
 include mk/terraform.mk
-include mk/grafana.mk
 include mk/tools.mk
 include mk/build.mk
 include mk/project.mk

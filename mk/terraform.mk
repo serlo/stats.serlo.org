@@ -1,7 +1,3 @@
-ifneq ($(env_name),minikube)
-$(error this repo can only deploy to minikube, other deployments must be done via infrastructure!)
-endif
-
 TERRAFORM_PATH := minikube
 
 .PHONY: terraform_plan
