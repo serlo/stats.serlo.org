@@ -18,8 +18,6 @@ iftrue = $(if $(subst true,,$1),,$2)
 iffalse = $(if $(subst false,,$1),,$2)
 
 
-export env_name = minikube
-
 minikube_mem ?= 3072
 minikube_cpus ?= 2
 minikube_disksize ?= 15GB
