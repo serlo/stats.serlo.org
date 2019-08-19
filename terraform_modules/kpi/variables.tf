@@ -19,6 +19,10 @@ variable "grafana_admin_password" {
   description = "Admin password for grafana."
 }
 
+variable "grafana_serlo_password" {
+  description = "Serlo (viewer) password for grafana."
+}
+
 variable "athene2_database_name" {
   description = "Name of athene2 database name"
   default     = "serlo"

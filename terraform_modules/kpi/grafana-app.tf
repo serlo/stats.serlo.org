@@ -12,23 +12,6 @@ data "template_file" "datasources_template" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "grafana-pv-claim" {
-  metadata {
-    name      = "grafana-pv-claim"
-    namespace = var.namespace
-  }
-
-  spec {
-    resources {
-      requests = {
-        storage = "5Gi"
-      }
-    }
-
-    access_modes = ["ReadWriteOnce"]
-  }
-}
-
 
 resource "kubernetes_deployment" "grafana_deployment" {
   metadata {
@@ -98,6 +81,11 @@ resource "kubernetes_deployment" "grafana_deployment" {
             value = var.grafana_admin_password
           }
 
+          env {
+            name  = "GF_SECURITY_SERLO_PASSWORD"
+            value = var.grafana_serlo_password
+          }
+
           #grafana-clock-panel,
           env {
             name  = "GF_INSTALL_PLUGINS"
@@ -115,11 +103,6 @@ resource "kubernetes_deployment" "grafana_deployment" {
           }
 
           volume_mount {
-            mount_path = "/var/lib/grafana"
-            name       = "grafana-volume"
-          }
-
-          volume_mount {
             name       = "grafana-config-datasources"
             mount_path = "/etc/grafana/provisioning/datasources/"
           }
@@ -132,14 +115,6 @@ resource "kubernetes_deployment" "grafana_deployment" {
 
             initial_delay_seconds = 5
             period_seconds        = 30
-          }
-        }
-
-        volume {
-          name = "grafana-volume"
-
-          persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.grafana-pv-claim.metadata[0].name
           }
         }
 
