@@ -20,4 +20,3 @@ fi
 
 docker pull $image:$tag
 eval $(minikube docker-env -u)
-rm -f tmp.image
