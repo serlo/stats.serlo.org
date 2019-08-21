@@ -13,7 +13,7 @@ terraform_apply:
 .PHONY: terraform_init
 # init terraform environment
 terraform_init: 
-	cd $(TERRAFORM_PATH) && terraform init
+	cd $(TERRAFORM_PATH) && terraform get -update && terraform init
 
 .PHONY: terraform_destroy
 # destroy terraform environment

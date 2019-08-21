@@ -73,7 +73,7 @@ module "athene2_dbsetup" {
 #####################################################################
 
 module "kpi" {
-  source = "../terraform_modules/kpi/"
+  source = "github.com/serlo/infrastructure-modules-kpi.git//kpi?ref=code_p_data-analysis-and-kpi"
 
   grafana_image = "eu.gcr.io/serlo-shared/kpi-grafana:latest"
 
@@ -91,5 +91,4 @@ module "kpi" {
   kpi_database_password_default  = "admin"
   kpi_database_username_readonly = "postgres"
   kpi_database_password_readonly = "admin"
-  gcloud_ingress                 = false
 }
