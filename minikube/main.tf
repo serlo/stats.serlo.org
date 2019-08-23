@@ -4,6 +4,7 @@
 locals {
   environment = "dev"
   project     = "serlo-dev"
+  domain      = "serlo.local"
 
   ingress_tls_certificate_path = "~/.minikube/apiserver.crt"
   ingress_tls_key_path         = "~/.minikube/apiserver.key"
@@ -77,7 +78,7 @@ module "kpi" {
 
   grafana_image = "eu.gcr.io/serlo-shared/kpi-grafana:latest"
 
-  domain                 = "serlo.local"
+  domain                 = "${local.domain}"
   grafana_admin_password = "admin"
   grafana_serlo_password = "serlo"
 
@@ -91,4 +92,41 @@ module "kpi" {
   kpi_database_password_default  = "admin"
   kpi_database_username_readonly = "postgres"
   kpi_database_password_readonly = "admin"
+}
+
+#####################################################################
+# ingresses
+#####################################################################
+
+resource "kubernetes_ingress" "kpi_ingress_local" {
+  count = 1
+  metadata {
+    name      = "kpi-ingress"
+    namespace = kubernetes_namespace.kpi_namespace.metadata.0.name
+
+    annotations = {
+      "kubernetes.io/ingress.class" = "nginx"
+    }
+  }
+
+  spec {
+    tls {
+      secret_name = "minikube-ingress-secret"
+    }
+
+    rule {
+      host = "stats.${local.domain}"
+
+      http {
+        path {
+          path = "/"
+
+          backend {
+            service_name = module.kpi.grafana_service_name
+            service_port = module.kpi.grafana_service_port
+          }
+        }
+      }
+    }
+  }
 }
