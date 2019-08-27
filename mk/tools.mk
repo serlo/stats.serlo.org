@@ -49,7 +49,7 @@ tools_psql_shell: kubectl_use_context
 .PHONY: deploy_%
 # force re-deployment of {aggregator-cronjob|mqsql-importer-cronjob|grafana_deployment}
 deploy_%:
-	bash -c "cd $(env_folder) && terraform taint module.kpi.kubernetes_deployment.$*"
+	bash -c "cd minikube && terraform taint module.kpi.kubernetes_deployment.$*"
 	$(MAKE) terraform_apply
 
 .PHONY: gclound_dashboard
