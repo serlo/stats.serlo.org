@@ -31,6 +31,8 @@ check_prerequisites_linux:
 	@$(call check_dependency,dnsmasq)
 	@$(call check_dependency,qemu-io)
 	@$(call check_dependency,minikube)
+	@$(call check_dependency,virt-host-validate)
+	@virt-host-validate
 	@# ebtables and bridge-utils are needed for network setup
 	@$(call check_dependency,ebtables)
 	@$(call check_dependency,brctl)
