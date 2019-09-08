@@ -14,14 +14,7 @@ _help: help
 # forbid parallel building of prerequisites
 .NOTPARALLEL:
 
-# COLORS
-GREEN  := $(shell tput -Txterm setaf 2)
-YELLOW := $(shell tput -Txterm setaf 3)
-BLUE   := $(shell tput -Txterm setaf 4)
-WHITE  := $(shell tput -Txterm setaf 7)
-RESET  := $(shell tput -Txterm sgr0)
-DIM  := $(shell tput -Txterm dim)
-
+include mk/utils_make.mk
 include mk/help.mk
 include mk/minikube.mk
 include mk/terraform.mk

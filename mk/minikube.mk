@@ -23,10 +23,6 @@ minikube_cpus ?= 2
 minikube_disksize ?= 15GB
 minikube_args ?= --memory $(minikube_mem) --disk-size=$(minikube_disksize) --cpus=$(minikube_cpus) --vm-driver=$(virtualizer)
 
-
-bold=$(shell tput bold)
-normal=$(shell tput sgr0)
-
 # check prerequisites for kvm
 .PHONY: check_prerequisites_linux
 check_prerequisites_linux:
@@ -58,8 +54,8 @@ check_prerequisites_linux_running: check_prerequisites_linux
 minikube_wait_network:
 	@until ping -c 1 test.serlo.local > /dev/null; \
 	do \
-		echo "$(bold)could not reach serlo.local (should be $$(minikube ip))!\n\
-		Please update your DNS configuration!$(normal)"; \
+		echo "$(BOLD)could not reach serlo.local (should be $$(minikube ip))!\n\
+		Please update your DNS configuration!$(NORMAL)"; \
 	done
 
 .PHONY: minikube_create
@@ -69,8 +65,8 @@ minikube_create: check_prerequisites_linux_running
 	minikube addons enable ingress
 	minikube addons enable dashboard
 	minikube addons enable freshpod
-	@echo "$(bold)Minikube was created with ip $$(minikube ip)!$(normal)"
-	@echo "$(bold)Please add the following line to your /etc/hosts:$(normal)"
+	@echo "$(BOLD)Minikube was created with ip $$(minikube ip)!$(NORMAL)"
+	@echo "$(BOLD)Please add the following line to your /etc/hosts:$(NORMAL)"
 	@echo ""
 	@$(MAKE) --no-print-directory minikube_dns
 	@echo ""
@@ -83,7 +79,7 @@ minikube_start: $(call iffalse,$(MINIKUBE_EXISTS),minikube_create)
 	minikube start $(minikube_args)
 	@$(MAKE) --no-print-directory kubectl_use_context
 	@$(MAKE) minikube_wait_network
-	@echo "$(bold)Minikube was successfully started with ip $$(minikube ip)!$(normal)"
+	@echo "$(BOLD)Minikube was successfully started with ip $$(minikube ip)!$(NORMAL)"
 
 .PHONY: minikube_stop
 # stop the minikube cluster
