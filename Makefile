@@ -7,7 +7,7 @@ export dump_location ?= gs://serlo_dev_terraform/sql-dumps/dump-2019-05-13.zip
 
 .PHONY: _help
 # print help as the default target. 
-# since hte actual help recipe is quite long, it is moved
+# since the actual help recipe is quite long, it is moved
 # to the bottom of this makefile.
 _help: help
 
