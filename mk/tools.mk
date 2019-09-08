@@ -4,6 +4,11 @@
 
 log_arg ?= --follow
 
+.PHONY: list_pods
+# List all container images of the kubernetes cluster
+list_pods:
+	kubectl get pods --all-namespaces
+
 .PHONY: log_container_%
 # show the log for a specific container common implementation
 log_container_%:
