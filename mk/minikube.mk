@@ -58,6 +58,7 @@ minikube_wait_network:
 	do \
 		echo "$(BOLD)could not reach serlo.local (should be $$(minikube ip))!\n\
 		Please update your DNS configuration!$(NORMAL)"; \
+		sleep 10; \
 	done
 
 .PHONY: minikube_create
