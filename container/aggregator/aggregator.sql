@@ -38,7 +38,7 @@ INSERT INTO cache_active_authors (
             CASE WHEN count(actor_id) > 100 THEN actor_id END as author_very_active
         FROM event_log JOIN day ON 
             date BETWEEN day - interval '90 day' and day
-            AND event_id IN (4,5)
+            AND event_id = 5
             AND day >= '2018-01-01' 
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
@@ -207,7 +207,7 @@ INSERT INTO cache_edits_by_category (
             actor_id as actor,
             count(actor_id) as edits
         FROM event_log JOIN day ON
-            event_id IN (4,5)
+            event_id = 5
             AND date BETWEEN day - interval '90 day' AND day
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_edits_by_category)
