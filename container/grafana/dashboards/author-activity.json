@@ -12,12 +12,31 @@
       }
     ]
   },
+  "description": "Dashboards zur Serlo-Community",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1566170209745,
+  "iteration": 1568033966099,
   "links": [],
   "panels": [
+    {
+      "content": "\n# Dashboards Serlo-Community\n\nAuf dieser Seite findest du Dashboards mit Daten zur Serlo-Community. Indem du mit der Maus auf das **„i“** in der linken oberen Ecke klickst, findest du zu den jeweiligen Dashboards eine Beschreibung und Erklärungen.   \n\n\n\n",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 18,
+      "links": [],
+      "mode": "markdown",
+      "options": {},
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Serlo-Community",
+      "transparent": true,
+      "type": "text"
+    },
     {
       "aliasColors": {},
       "bars": false,
@@ -30,7 +49,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "hideTimeOverride": false,
       "id": 2,
@@ -142,7 +161,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 11
       },
       "hideTimeOverride": false,
       "id": 10,
@@ -253,7 +272,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 19
       },
       "id": 8,
       "legend": {
@@ -363,7 +382,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 26
       },
       "id": 16,
       "legend": {
@@ -481,7 +500,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 33
       },
       "heatmap": {},
       "hideZeroBuckets": false,
@@ -560,7 +579,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 41
       },
       "id": 12,
       "legend": {
@@ -782,7 +801,7 @@
     ]
   },
   "timezone": "",
-  "title": "Author Activity",
+  "title": "Community",
   "uid": "yS5BVkWZk",
-  "version": 10
+  "version": 1
 }
