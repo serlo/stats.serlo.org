@@ -16,7 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1568033966099,
+  "id": 1,
+  "iteration": 1568036895233,
   "links": [],
   "panels": [
     {
@@ -43,7 +44,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
-      "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen:\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen\n\nAls Bearbeitungen werden nur Aktionen gezählt, bei der neue Inhalte hinzugefügt oder bestehende verändert werden. Änderungen an der Taxonomie oder Review-Aktionen werden nicht beachtet.",
+      "description": "Verlauf der Gesamtzahl der Autor*innen:\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -155,7 +156,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
-      "description": "Verlauf der Gesamtzahl der aktuell aktiven Autor*innen gefiltert nach Fachbereich:\n\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen\n\nAls Bearbeitungen werden nur Aktionen gezählt, bei der neue Inhalte hinzugefügt oder bestehende verändert werden. Änderungen an der Taxonomie oder Review-Aktionen werden nicht beachtet.",
+      "description": "Verlauf der Gesamtzahl von Autor*innen gefiltert nach Fachbereich:\n\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen",
       "fill": 1,
       "gridPos": {
         "h": 8,
