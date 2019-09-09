@@ -35,7 +35,6 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Serlo-Community",
-      "transparent": true,
       "type": "text"
     },
     {
@@ -156,6 +155,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
+      "decimals": 0,
       "description": "Verlauf der Gesamtzahl von Autor*innen gefiltert nach Fachbereich:\n\n\n* Autor*innen: Mindestens eine Bearbeitung in den letzten 90 Tagen\n* Aktive Autor*innen: Mindestens 10 Bearbeitungen in den letzten 90 Tagen\n* Sehr aktive Autor*innen: Mindestens 100 Bearbeitungen in den letzten 90 Tagen",
       "fill": 1,
       "gridPos": {
@@ -278,7 +278,7 @@
       "id": 8,
       "legend": {
         "alignAsTable": true,
-        "avg": true,
+        "avg": false,
         "current": true,
         "max": true,
         "min": true,
@@ -377,6 +377,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
+      "decimals": 0,
       "description": "Verlauf der Anzahl von Reviewer*innen: Gezählt werden nur Bearbeitungen der jeweils letzten 90 Tage. Nur manuelle Reviewing-Aktionen (Annahme und Ablehung) *fremder Bearbeitungen* werden betrachtet:\n\n* Reviewer*in: Mindestens ein Reviewing in den letzten 90 Tagen\n* Aktive Reviewer*innen: Mindestens 10 Reviewing-Aktionen in den letzten 90 Tagen\n* Aktive Reviewer*innen: Mindestens 100 Reviewing-Aktionen in den letzten 90 Tagen",
       "fill": 1,
       "gridPos": {
@@ -486,17 +487,17 @@
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
+        "cardColor": "#37872D",
         "colorScale": "sqrt",
         "colorScheme": "interpolateSpectral",
         "exponent": 0.5,
         "max": null,
         "min": null,
-        "mode": "spectrum"
+        "mode": "opacity"
       },
       "dataFormat": "timeseries",
       "datasource": "serlo-kpi-postgres",
-      "description": "Dieses Dashboard zeigt den Verlauf der Verteilung der Reviewzeiten in Stunden an. Die Farbe der Zellen zeigen an, wie viele Bearbeitungen in diesem Zeitraum in dem Review-Zeitraum der Zelle liegt. Die Y-Achse ist dabei logarithmisch zur Basis 2 und in Stunden angegeben.",
+      "description": "Dieses Dashboard zeigt den Verlauf der Verteilung der Reviewzeiten in Stunden an. Zunächst wird die Zeit in verschiedene Zeiträume unterteilt. In jedem Zeitraum wird die Verteilung der Review-Zeiten durch Farben angegeben. Je transparenter ein Block ist, desto weniger Bearbeitungen in diesem Zeitraum haben entsprechende Reviewzeiten. Die Y-Achse ist dabei logarithmisch zur Basis 2 und in Stunden angegeben.",
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -560,7 +561,7 @@
         "format": "locale",
         "logBase": 2,
         "max": null,
-        "min": null,
+        "min": "0",
         "show": true,
         "splitFactor": 1
       },
@@ -574,7 +575,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
-      "description": "Dashboard, welche pro Tag die Bearbeitungen nach folgenden Kategorien sortiert:\n\n* Selbstreview: Der Autor / die Autorin hat selbst die Bearbeitung manuell oder automatisch gereviewt.\n* Fremdreview: Eine andere Person hat die Bearbeitung manuell im Reviewingverfahren gereviewt.\n* Ohne Review: Für diese Bearbeitung liegt kein Reviewing vor. Dies liegt daran, dass entweder die Bearbeitung noch offen ist oder eine darauffolgende Bearbeitung gereviewt wurde.",
+      "description": "Bearbeitungen pro Tag sortiert nach folgenden Kategorien:\n\n* Selbstreview: Beareitungen von Autor*innen mit Review-Rechten.\n* Fremdreview: Bearbeitung wurde von einer anderen Person im Reviewverfahren akzeptiert oder abgelehnt.\n* Ohne Review: Für diese Bearbeitung liegt kein Reviewing vor. Dies liegt daran, dass entweder die Bearbeitung noch offen ist oder eine darauffolgende Bearbeitung gereviewt wurde.",
       "fill": 1,
       "gridPos": {
         "h": 10,
