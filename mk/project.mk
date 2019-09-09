@@ -16,3 +16,8 @@ project_deploy: terraform_init terraform_apply
 # run smoketest for kpi project
 project_smoketest: kubectl_use_context
 	$(MAKE) -C smoketest
+
+.PHONY: provide_athene2_content
+# upload the current database dump to the content provider container
+provide_athene2_content: gcloud_login kubectl_use_context
+	scripts/setup-athene2-db.sh
