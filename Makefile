@@ -21,4 +21,3 @@ include mk/terraform.mk
 include mk/tools.mk
 include mk/build.mk
 include mk/project.mk
-include mk/gcloud.mk
