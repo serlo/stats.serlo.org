@@ -2,6 +2,12 @@
 # Targets for the KPI project
 #
 
+GCLOUD_PROJECT := serlo-dev
+
+define GCLOUD_IS_LOGGED_OUT
+	gcloud auth list 2>&1 | grep "No credentialed accounts." > /dev/null
+endef
+
 .PHONY: project_start
 # create a project minikube cluster and deploy the project resources, all in
 # one target.
@@ -16,6 +22,17 @@ project_deploy: terraform_init terraform_apply
 # run smoketest for kpi project
 project_smoketest: kubectl_use_context
 	$(MAKE) -C smoketest
+
+.PHONY: gcloud_login
+# Logs in into gcloud
+gcloud_login:
+	if $(GCLOUD_IS_LOGGED_OUT); then gcloud auth login; fi
+	gcloud config set project $(GCLOUD_PROJECT)
+
+.PHONY: gcloud_logout
+# logs out from gcloud
+gcloud_logout:
+	if ! $(GCLOUD_IS_LOGGED_OUT) ; then gcloud auth revoke; fi
 
 .PHONY: provide_athene2_content
 # upload the current database dump to the content provider container
