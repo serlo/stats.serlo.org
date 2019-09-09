@@ -267,7 +267,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
-      "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen, die manuell gereviewt werden müssen, sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
+      "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
       "fill": 1,
       "gridPos": {
         "h": 7,
