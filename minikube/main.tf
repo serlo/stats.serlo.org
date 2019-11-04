@@ -74,7 +74,7 @@ module "athene2_dbsetup" {
 #####################################################################
 
 module "kpi" {
-  source = "github.com/serlo/infrastructure-modules-kpi.git//kpi?ref=code_p_data-analysis-and-kpi"
+  source = "github.com/serlo/infrastructure-modules-kpi.git//kpi?ref=master"
 
   grafana_image = "eu.gcr.io/serlo-shared/kpi-grafana:latest"
 
