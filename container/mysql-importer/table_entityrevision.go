@@ -92,7 +92,7 @@ func (t *entityRevisionTable) save() error {
 func (t *entityRevisionTable) create() error {
 	stmts := []string{`CREATE TABLE public.entity_revision (
 		id int8 NOT NULL CONSTRAINT entity_revision_primary_key PRIMARY KEY,
-		author_id int8 NOT NULL REFERENCES user(id),
+		author_id int8 NOT NULL REFERENCES "user"(id),
 		repository_id int8 NOT NULL REFERENCES uuid(id),
 		date timestamp NOT NULL,
 		);`,
