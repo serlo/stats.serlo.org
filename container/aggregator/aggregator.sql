@@ -211,8 +211,10 @@ INSERT INTO cache_edits_by_category (
             AND date BETWEEN day - interval '90 day' AND day
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_edits_by_category)
+        JOIN entity_revision ON
+            entity_revision.id = event_log.uuid_id
         JOIN metadata ON
-            event_log.uuid_id = metadata.uuid_id
+            entity_revision.repository_id = metadata.uuid_id
             AND metadata.key_id = 1
         GROUP BY actor_id, day, metadata.value
         HAVING count(actor_id) > 0
