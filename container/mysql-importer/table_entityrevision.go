@@ -94,7 +94,7 @@ func (t *entityRevisionTable) create() error {
 		id int8 NOT NULL CONSTRAINT entity_revision_primary_key PRIMARY KEY,
 		author_id int8 NOT NULL,
 		repository_id int8 NOT NULL REFERENCES uuid(id),
-		date timestamp NOT NULL,
+		date timestamp NOT NULL
 		);`,
 		`CREATE INDEX entity_revision_author_id ON public.entity_revision USING btree (author_id);`,
 	}
