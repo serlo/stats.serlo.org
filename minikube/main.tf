@@ -61,11 +61,10 @@ module "athene2_dbsetup" {
   database_password_default = "admin"
   database_host             = "mysql.${kubernetes_namespace.kpi_namespace.metadata.0.name}"
   image_pull_policy         = "Never"
-  gcloud_bucket_url         = ""
 
   feature_minikube            = true
-  gcloud_service_account_name = ""
-  gcloud_service_account_key  = ""
+  gcloud_service_account_name = "kpi-minikube@serlo-shared.iam.gserviceaccount.com"
+  gcloud_service_account_key  = file("${path.module}/service_account.json")
 }
 
 
