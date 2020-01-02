@@ -57,7 +57,7 @@ deploy_%:
 	bash -c "cd minikube && terraform taint module.kpi.kubernetes_deployment.$*"
 	$(MAKE) terraform_apply
 
-.PHONY: gclound_dashboard
+.PHONY: gcloud_dashboard
 # open the gcloud dashboard
 gcloud_dashboard:
 	xdg-open https://console.cloud.google.com/kubernetes/workload?project=serlo-dev&workload_list_tablesize=50 2>/dev/null >/dev/null &
