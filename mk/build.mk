@@ -21,8 +21,10 @@ docker_minikube_setup:
 
 .PHONY: build_local
 # build docker images locally and copy them to minikube
-build_local:
-	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C container/grafana docker_build
-	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C container/aggregator docker_build
-	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C container/mysql-importer docker_build
+build_local: build_grafana build_aggregator build_mysql-importer
+
+.PHONY: build_%
+# build {grafana|aggregator|mysql-importer} image inside the minikube docker
+build_%:
+	@set -e ; eval "$(DOCKER_ENV)" ; $(MAKE) -C container/$* docker_build
 

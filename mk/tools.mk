@@ -43,9 +43,9 @@ log_grafana: kubectl_use_context log_container_grafana
 attach_pod_%: kubectl_use_context
 	kubectl exec -it $$(kubectl get pods --namespace kpi | grep "$*" | awk '{print $$1}') --namespace kpi /bin/sh
 
-.PHONY: tools_psql_shell
+.PHONY: psql_shell
 # open a postgres shell
-tools_psql_shell: kubectl_use_context
+psql_shell: kubectl_use_context
 	pod=
 	kubectl exec -it \
 		$$(kubectl get pods --namespace=kpi | grep postgres | awk '{ print $$1 }') \
