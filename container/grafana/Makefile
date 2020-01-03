@@ -2,8 +2,8 @@ image_name=kpi-grafana
 local_image=eu.gcr.io/serlo-shared/$(image_name)
 
 major_version=1
-minor_version=0
-patch_version=1
+minor_version=1
+patch_version=0
 version=$(major_version).$(minor_version).$(patch_version) 
 
 include ../../mk/dockerci.mk

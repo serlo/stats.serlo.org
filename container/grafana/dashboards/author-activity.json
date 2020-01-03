@@ -16,8 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1568040521001,
+  "iteration": 1578068295094,
   "links": [],
   "panels": [
     {
@@ -730,6 +729,82 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "columns": [],
+      "datasource": "serlo-kpi-postgres",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 51
+      },
+      "id": 20,
+      "links": [],
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select category as \"Fach\", username as \"Username\", edit_count as \"Bearbeitungen seit [[active_edits_since]]\" from cache_author_edits_by_category inner join cache_author_reviews on cache_author_reviews.author = cache_author_edits_by_category.author inner join \"user\" on \"user\".id = cache_author_edits_by_category.author where edit_count >= 10 and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) and cache_author_reviews.time = (select max(time) from cache_author_edits_by_category) and review_count >= 10 order by category, username;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Aktive Autoren pro Fach mit mehr als 10 Reviews in den letzten 90 Tagen",
+      "transform": "table",
+      "type": "table"
     }
   ],
   "refresh": false,
@@ -770,6 +845,31 @@
         "query": "90,7,1",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "text": "04. Oct 2019",
+          "value": "04. Oct 2019"
+        },
+        "datasource": "serlo-kpi-postgres",
+        "definition": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "active_edits_since",
+        "options": [],
+        "query": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
