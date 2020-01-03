@@ -223,6 +223,61 @@ INSERT INTO cache_edits_by_category (
 ) ON CONFLICT (time, category) DO UPDATE SET
     author_count = excluded.author_count;
 
+CREATE TABLE IF NOT EXISTS cache_author_edits_by_category (
+    time date,
+    author bigint,
+    category text,
+    edit_count int4,
+    UNIQUE (time, author, category)
+);
+
+INSERT INTO cache_author_edits_by_category (
+    SELECT
+        day as time,
+        actor_id as author,
+        metadata.value as category,
+        count(event_id) as edit_count
+    FROM event_log JOIN day ON
+        event_id = 5
+        AND date BETWEEN day - interval '90 day' AND day
+        AND day <= (SELECT MAX(date) FROM event_log)
+        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_author_edits_by_category)
+    JOIN entity_revision ON
+        entity_revision.id = event_log.uuid_id
+    JOIN metadata ON
+        entity_revision.repository_id = metadata.uuid_id
+        AND metadata.key_id = 1
+    GROUP BY day, actor_id, metadata.value
+    HAVING count(actor_id) > 0
+) ON CONFLICT (time, author, category) DO UPDATE SET
+    edit_count = excluded.edit_count;
+
+CREATE TABLE IF NOT EXISTS cache_author_reviews (
+    time date,
+    author bigint,
+    review_count int4,
+    UNIQUE (time, author)
+);
+
+INSERT INTO cache_author_reviews (
+    SELECT
+        day as time,
+        actor_id as author,
+        count(event_id) as review_count
+    FROM event_log JOIN day ON
+        (event_id = 6 OR event_id = 11)
+        AND date BETWEEN day - interval '90 day' AND day
+        AND day <= (SELECT MAX(date) FROM event_log)
+        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_author_reviews)
+    JOIN entity_revision ON
+        entity_revision.id = event_log.uuid_id
+    GROUP BY day, actor_id
+    HAVING count(actor_id) > 0
+) ON CONFLICT (time, author) DO UPDATE SET
+    review_count = excluded.review_count;
+
+/* select * from cache_author_edits_by_category inner join cache_author_reviews on cache_author_reviews.author = cache_author_edits_by_category.author inner join "user" on "user".id = cache_author_edits_by_category.author where edit_count >= 10 and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) and cache_author_reviews.time = (select max(time) from cache_author_edits_by_category) and review_count >= 10; */
+
 /* commit the aggregation transaction */
 COMMIT;
 
