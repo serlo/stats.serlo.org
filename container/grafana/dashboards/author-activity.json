@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1578068295094,
+  "iteration": 1578132667634,
   "links": [],
   "panels": [
     {
@@ -778,7 +778,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select category as \"Fach\", username as \"Username\", edit_count as \"Bearbeitungen seit [[active_edits_since]]\" from cache_author_edits_by_category inner join cache_author_reviews on cache_author_reviews.author = cache_author_edits_by_category.author inner join \"user\" on \"user\".id = cache_author_edits_by_category.author where edit_count >= 10 and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) and cache_author_reviews.time = (select max(time) from cache_author_edits_by_category) and review_count >= 10 order by category, username;",
+          "rawSql": "select category as \"Fach\", username as \"Username\", edit_count as \"Bearbeitungen seit [[active_edits_since]]\" from cache_author_edits_by_category inner join \"user\" on \"user\".id = cache_author_edits_by_category.author where edit_count >= 10 and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) order by category, username;",
           "refId": "A",
           "select": [
             [
@@ -802,7 +802,82 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Aktive Autoren pro Fach mit mehr als 10 Reviews in den letzten 90 Tagen",
+      "title": "Aktive Autoren pro Fach (mehr als 10 Edits in den letzten 90 Tagen)",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "datasource": "serlo-kpi-postgres",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 51
+      },
+      "id": 22,
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select username as \"Username\", review_count as \"Reviews seit [[active_edits_since]]\" from cache_author_reviews inner join \"user\" on \"user\".id = cache_author_reviews.author where review_count >= 10 and cache_author_reviews.time = (select max(time) from cache_author_reviews) order by username;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Aktive Reviewer pro Fach (mehr als 10 Reviews in den letzten 90 Tagen)",
       "transform": "table",
       "type": "table"
     }
