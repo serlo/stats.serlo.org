@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS cache_active_authors(
 );
 
 INSERT INTO cache_active_authors (
-    SELECT 
+    SELECT
         day as "time",
         count(author) as "authors",
         count(author_active) as "active authors",
@@ -36,15 +36,15 @@ INSERT INTO cache_active_authors (
             actor_id as author,
             CASE WHEN count(actor_id) > 10 THEN actor_id END as author_active,
             CASE WHEN count(actor_id) > 100 THEN actor_id END as author_very_active
-        FROM event_log JOIN day ON 
+        FROM event_log JOIN day ON
             date BETWEEN day - interval '90 day' and day
             AND event_id = 5
-            AND day >= '2018-01-01' 
+            AND day >= '2018-01-01'
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
         GROUP BY day, actor_id
-    ) activity 
-    GROUP BY day 
+    ) activity
+    GROUP BY day
     ORDER BY day ASC
 ) ON CONFLICT (time) DO UPDATE SET
     authors = excluded.authors,
@@ -70,13 +70,13 @@ INSERT INTO cache_active_reviewers (
             CASE WHEN count(el_review.actor_id) > 10 THEN el_review.actor_id END as reviewer_active,
             CASE WHEN count(el_review.actor_id) > 100 THEN el_review.actor_id END as reviewer_very_active
         FROM event_log AS el_review
-	JOIN day ON
+    JOIN day ON
             date BETWEEN day - interval '90 day' and day
             AND (el_review.event_id = 6 or el_review.event_id = 11)
             AND day >= '2018-01-01'
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_reviewers)
-	INNER JOIN event_log AS el_revision ON
+    INNER JOIN event_log AS el_revision ON
             el_review.uuid_id = el_revision.uuid_id
             AND el_review.date >= el_revision.date
             AND el_revision.event_id = 5
@@ -119,11 +119,11 @@ DELETE FROM cache_review_time1 WHERE true;
 INSERT INTO cache_review_time90 (
     SELECT
         day as time,
-		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
-		percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
-		percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
+        percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
+        percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
+        percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
     FROM event_log el1
-    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id 
+    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id
         AND el1.date < el2.date
     INNER JOIN event e1 ON e1.id = el1.event_id
     INNER JOIN event e2 ON e2.id = el2.event_id
@@ -143,11 +143,11 @@ INSERT INTO cache_review_time90 (
 INSERT INTO cache_review_time7 (
     SELECT
         day as time,
-		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
-		percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
-		percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
+        percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
+        percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
+        percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
     FROM event_log el1
-    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id 
+    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id
         AND el1.date < el2.date
     INNER JOIN event e1 ON e1.id = el1.event_id
     INNER JOIN event e2 ON e2.id = el2.event_id
@@ -167,11 +167,11 @@ INSERT INTO cache_review_time7 (
 INSERT INTO cache_review_time1 (
     SELECT
         day as time,
-		percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
-		percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
-		percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
+        percentile_cont(.5) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_50,
+        percentile_cont(.75) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_75,
+        percentile_cont(.95) WITHIN GROUP (ORDER BY el2.date - el1.date ASC) as perc_95
     FROM event_log el1
-    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id 
+    INNER JOIN event_log el2 ON el1.uuid_id = el2.uuid_id
         AND el1.date < el2.date
     INNER JOIN event e1 ON e1.id = el1.event_id
     INNER JOIN event e2 ON e2.id = el2.event_id
