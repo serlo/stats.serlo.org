@@ -17,5 +17,3 @@ docker_build:
 # run docker container
 docker_run:
 	docker run --network=host -e KPI_DATABASE_HOST=$(shell minikube ip) --env-file docker.env --rm $(local_image):latest
-
-	
