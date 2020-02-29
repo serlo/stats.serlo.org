@@ -169,13 +169,13 @@ eingabe2 = int(input("Wieviel Tage sollen wir zurück gehen?"))
 if eingabe == 5: #Alle Fächer
 	author_dict = dict()
 	for fach in faecher: #Ergänzt für jedes Fach den author_dict
-		print("Calculating "+fach[0+" :"])
+		print("Calculating "+fach[0]+" :")
 		list_of_pages = get_scraped_wiki_pages(fach[2])
 		list_of_names = list(map(get_name, list_of_pages)) #schöne Namen ausgehend von den Links
 		for i in range(0, len(list_of_pages)):#Geht durch jeden Artikel durch und ergänzt das author_dict
 			author_dict = get_author_dict(list_of_names[i], list_of_pages[i], author_dict)
 	author_dict_neunzig_tage = get_author_dict_timespan(author_dict, eingabe2) #falsche Bennenung. Berechnet den author_dict für die letzten xy Tage
-	print("Autor*in : Bearbeitungsanzahl in den letzten 90 Tagen") #Ausgabe
+	print("Autor*in : Bearbeitungsanzahl in den letzten xy Tagen") #Ausgabe
 	print("Alle Bearbeiter*innen:")
 	for key in author_dict_neunzig_tage:
 		if len(author_dict_neunzig_tage[key]) != 0:
@@ -187,7 +187,7 @@ if eingabe == 5: #Alle Fächer
 else:
 	author_dict = get_full_author_dict_from_wiki(faecher[eingabe][2]) #berechnet den author_dict für das Fach mit der Nummer
 	author_dict_neunzig_tage = get_author_dict_timespan(author_dict, eingabe2) #falsche Bennenung. Berechnet den author_dict für die letzten xy Tage
-	print("Autor*in : Bearbeitungsanzahl in den letzten 90 Tagen") #Ausgabe
+	print("Autor*in : Bearbeitungsanzahl in den letzten xy Tagen") #Ausgabe
 	print("Alle Bearbeiter*innen:")
 	for key in author_dict_neunzig_tage:
 		if len(author_dict_neunzig_tage[key]) != 0:
