@@ -149,13 +149,29 @@ def get_author_dict(article_name, article_file, author_dict=dict()):
 			author_dict[key].sort(key=get_second, reverse=True)
 		return author_dict			
 
-
+def actualize_sitemap():
+	urllib.request.urlretrieve('https://de.wikibooks.org/w/index.php?title=Mathe_f%C3%BCr_Nicht-Freaks:_Sitemap', "sitemap.html")
+	with open("sitemap.html") as file:
+		soup = BeautifulSoup(file, "html.parser")
+		#print(soup.body)
+		titles = soup.find_all('h2')
+		for i in range(1, 6):#Ignoriere das Inhaltsverzeichnis und die Buchanfänge
+			sitemap_links = ["sitemap_files/grund_sitemap.html", "sitemap_files/ana_sitemap.html", "sitemap_files/lina_sitemap.html", "sitemap_files/mass_sitemap.html", "sitemap_files/real_sitemap.html"]
+			with open(sitemap_links[i-1], "w+") as file2:
+				file2.write(str(titles[i]))
+				while titles[i].next_sibling != titles[i+1]: #Writing every content between two h2-titles (subjects) inside document
+					titles[i] = titles[i].next_sibling
+					file2.write(str(titles[i]))
 
 """Ausgabebefehle"""
 #Liste aller Fächer mit sitemap-files und wiki-files (Listen der gescrapten Artikel)
-faecher = [["Analysis 1", "sitemap_files/ana_sitemap.html", "index_files/ana_index.txt"], ["Lineare Algebra", "sitemap_files/lina_sitemap.html", "index_files/lina_index.txt"], ["Real Analysis", "sitemap_files/real_sitemap.html", "index_files/real_index.txt"], ["Grundlagen der Mathematik", "sitemap_files/grund_sitemap.html", "index_files/grund_index.txt"], ["Maßtheorie", "sitemap_files/mass_sitemap.html", "index_files/mass_index.txt"]]
+faecher = [["Analysis 1", "sitemap_files/ana_sitemap.html", "index_files/ana_index.txt"], ["Lineare Algebra", "sitemap_files/lina_sitemap.html", "index_files/lina_index.txt"], ["Real Analysis", "sitemap_files/real_sitemap.html", "index_files/real_index.txt"], ["Grundlagen der Mathematik", "sitemap_files/grund_sitemap.html", "index_files/grund_index.txt"], ["Maßtheorie", "sitemap_files/mass_sitemap.html", "index_files/mass_index.txt"]] #, ["Buchanfänge", "sitemap_files/buch_sitemap.html", "index_files/buch_index.txt"], ["Mitmachen für (Nicht-)Freaks", "sitemap_files/mitm_sitemap.html", "index_files/mitm_index.txt"]
 eingabe = str(input("Wollen Sie die Datenbank/Bearbeitungshistorien neu scrapen? Drücken Sie y für Ja und n für Nein\n"))
 if "y" in eingabe:
+	eingabe = str(input("Wollen sie die Sitemap neu scrapen? Drücken Sie y für Ja und n für Nein\n"))
+	if "y" in eingabe:
+		print("Scrape Sitemap:\n")
+		actualize_sitemap()
 	print("Scrape Datenbank:\n")
 	for fach in faecher: #scrapt für jedes Fach neu die history-Seiten
 		print("\n\nScrape Fach: "+fach[0]+"\n")
@@ -164,7 +180,7 @@ if "y" in eingabe:
 		storage_places = list(map(get_storage_place, articles)) #kreiert eine Liste der storage_places
 		scrape_db(links, storage_places, fach[2]) #Scrapt die Webseite
 eingabe = int(input("Wofür wollen sie die Autor*innenstatistik. Geben sie hier die Nummer ein: \n0 : Analysis 1\n1 : Lineare Algebra 1\n2: real Analysis\n3: Grundlagen der Mathematik\n4 : Maßtheorie\n5: Alle Fächer gesamt\n"))
-eingabe2 = int(input("Wieviel Tage sollen wir zurück gehen?"))
+eingabe2 = int(input("Wieviel Tage sollen wir zurück gehen?\n"))
 
 if eingabe == 5: #Alle Fächer
 	author_dict = dict()
