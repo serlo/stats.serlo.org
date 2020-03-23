@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1578132667634,
+  "iteration": 1584966379474,
   "links": [],
   "panels": [
     {
@@ -42,13 +42,119 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "serlo-kpi-postgres",
+      "description": "Als aktiv gelten Autor*innen mit mindestens 10 Bearbeitungen in den letzten 90 Tagen.",
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 24,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time,\n  (100.0 * active_teachers) / active_authors as \"Anteil in Prozent\"\nFROM cache_active_authors\nWHERE $__timeFilter(time) ORDER BY time ASC;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Anteil der Lehrpersonen an den aktiven Autor*innen (in %)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "serlo-kpi-postgres",
       "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
       "fill": 1,
       "gridPos": {
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 10
       },
       "id": 8,
       "legend": {
@@ -158,7 +264,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 17
       },
       "hideTimeOverride": false,
       "id": 2,
@@ -271,7 +377,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 24
       },
       "hideTimeOverride": false,
       "id": 10,
@@ -383,7 +489,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 32
       },
       "id": 16,
       "legend": {
@@ -501,7 +607,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 39
       },
       "heatmap": {},
       "hideZeroBuckets": false,
@@ -580,7 +686,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 47
       },
       "id": 12,
       "legend": {
@@ -738,7 +844,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 51
+        "y": 57
       },
       "id": 20,
       "links": [],
@@ -814,7 +920,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 51
+        "y": 57
       },
       "id": 22,
       "options": {},
@@ -924,8 +1030,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "04. Oct 2019",
-          "value": "04. Oct 2019"
+          "text": "24. Dec 2019",
+          "value": "24. Dec 2019"
         },
         "datasource": "serlo-kpi-postgres",
         "definition": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
