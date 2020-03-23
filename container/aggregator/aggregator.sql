@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS cache_active_authors(
     time date UNIQUE,
     authors int4,
     active_authors int4,
-    very_active_authors int4
+    very_active_authors int4,
+    active_teachers int4
 );
 
 INSERT INTO cache_active_authors (
@@ -30,26 +31,33 @@ INSERT INTO cache_active_authors (
         day as "time",
         count(author) as "authors",
         count(author_active) as "active authors",
-        count(author_very_active) as "very active authors"
+        count(author_very_active) as "very active authors",
+        count(author_active_teacher) as "active teachers"
     FROM (
         SELECT day, actor_id,
             actor_id as author,
             CASE WHEN count(actor_id) > 10 THEN actor_id END as author_active,
-            CASE WHEN count(actor_id) > 100 THEN actor_id END as author_very_active
+            CASE WHEN count(actor_id) > 100 THEN actor_id END as author_very_active,
+            CASE WHEN count(actor_id) > 10 AND value IS NOT NULL THEN actor_id END as author_active_teacher
         FROM event_log JOIN day ON
             date BETWEEN day - interval '90 day' and day
             AND event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
             AND day >= '2018-01-01'
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
-        GROUP BY day, actor_id
+            LEFT OUTER JOIN user_field ON
+            user_id = actor_id
+            AND field = 'interests'
+            AND value = 'teacher'
+        GROUP BY day, actor_id, value
     ) activity
     GROUP BY day
     ORDER BY day ASC
 ) ON CONFLICT (time) DO UPDATE SET
     authors = excluded.authors,
     active_authors = excluded.active_authors,
-    very_active_authors = excluded.very_active_authors;
+    very_active_authors = excluded.very_active_authors,
+    active_teachers = excluded.active_teachers;
 
 CREATE TABLE IF NOT EXISTS cache_active_reviewers(
     time date UNIQUE,
