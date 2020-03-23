@@ -93,6 +93,7 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB, dconfig *debugConfig) error 
 		&eventTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event"},
 		&eventLogTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event_log"},
 		&entityRevisionTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "entity_revision"},
+		&userFieldTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "user_field"},
 	}
 
 	for _, t := range tables {
