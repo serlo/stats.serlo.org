@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1585046415217,
+  "iteration": 1585062963543,
   "links": [],
   "panels": [
     {
@@ -843,10 +843,86 @@
       "datasource": "serlo-kpi-postgres",
       "fontSize": "100%",
       "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 57
+      },
+      "id": 26,
+      "links": [],
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select username as \"Username\", to_char(max(event_log.date), 'DD. Mon YYYY') as \"Letzte Bearbeitung im Fach\", edit_count as \"Bearbeitungen im Fach seit [[active_edits_since]]\", (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time = (select max(time) from cache_author_edits_by_category)) as \"Bearbeitungen insgesamt seit [[active_edits_since]]\", email as \"Kontakt\" from cache_author_edits_by_category inner join \"user\" on \"user\".id = cache_author_edits_by_category.author inner join event_log on event_log.actor_id = author where category = '[[authorview_subject]]' and edit_count >= [[authorview_threshold]] and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) group by username, edit_count, email, \"user\".id order by username;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Autor*innen im Fach [[authorview_subject]] mit mindestens [[authorview_threshold]] Bearbeitung(en)",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "datasource": "serlo-kpi-postgres",
+      "fontSize": "100%",
+      "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 57
+        "y": 63
       },
       "id": 20,
       "links": [],
@@ -922,7 +998,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 57
+        "y": 63
       },
       "id": 22,
       "options": {},
@@ -1053,6 +1129,231 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "Physik",
+          "value": "Physik"
+        },
+        "datasource": "serlo-kpi-postgres",
+        "definition": "select distinct value from metadata where key_id = 1;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Fach in Authorenübersicht",
+        "multi": false,
+        "name": "authorview_subject",
+        "options": [
+          {
+            "selected": false,
+            "text": "Latein",
+            "value": "Latein"
+          },
+          {
+            "selected": false,
+            "text": "à®µà®°à®²à®¾à®±à¯",
+            "value": "à®µà®°à®²à®¾à®±à¯"
+          },
+          {
+            "selected": true,
+            "text": "Physik",
+            "value": "Physik"
+          },
+          {
+            "selected": false,
+            "text": "Math",
+            "value": "Math"
+          },
+          {
+            "selected": false,
+            "text": "Politik",
+            "value": "Politik"
+          },
+          {
+            "selected": false,
+            "text": "mathÃ©matiques",
+            "value": "mathÃ©matiques"
+          },
+          {
+            "selected": false,
+            "text": "Chemie",
+            "value": "Chemie"
+          },
+          {
+            "selected": false,
+            "text": "nouvelles matiÃ¨res",
+            "value": "nouvelles matiÃ¨res"
+          },
+          {
+            "selected": false,
+            "text": "Biologie",
+            "value": "Biologie"
+          },
+          {
+            "selected": false,
+            "text": "Sex Education",
+            "value": "Sex Education"
+          },
+          {
+            "selected": false,
+            "text": "Permaculture",
+            "value": "Permaculture"
+          },
+          {
+            "selected": false,
+            "text": "Englisch",
+            "value": "Englisch"
+          },
+          {
+            "selected": false,
+            "text": "test area",
+            "value": "test area"
+          },
+          {
+            "selected": false,
+            "text": "Deutsch als Fremdsprache",
+            "value": "Deutsch als Fremdsprache"
+          },
+          {
+            "selected": false,
+            "text": "Testbereich",
+            "value": "Testbereich"
+          },
+          {
+            "selected": false,
+            "text": "Betriebswirtschaftslehre mit Rechnungswesen",
+            "value": "Betriebswirtschaftslehre mit Rechnungswesen"
+          },
+          {
+            "selected": false,
+            "text": "Test",
+            "value": "Test"
+          },
+          {
+            "selected": false,
+            "text": "boÃ®te Ã  mÃ©thodes",
+            "value": "boÃ®te Ã  mÃ©thodes"
+          },
+          {
+            "selected": false,
+            "text": "Hilfe zur Bearbeitung",
+            "value": "Hilfe zur Bearbeitung"
+          },
+          {
+            "selected": false,
+            "text": "Wiki",
+            "value": "Wiki"
+          },
+          {
+            "selected": false,
+            "text": "Sustainability",
+            "value": "Sustainability"
+          },
+          {
+            "selected": false,
+            "text": "Informatik",
+            "value": "Informatik"
+          },
+          {
+            "selected": false,
+            "text": "à®…à®•à®°à®¾à®¤à®¿",
+            "value": "à®…à®•à®°à®¾à®¤à®¿"
+          },
+          {
+            "selected": false,
+            "text": "Angewandte Nachhaltigkeit",
+            "value": "Angewandte Nachhaltigkeit"
+          },
+          {
+            "selected": false,
+            "text": "sexed",
+            "value": "sexed"
+          },
+          {
+            "selected": false,
+            "text": "Mathe",
+            "value": "Mathe"
+          },
+          {
+            "selected": false,
+            "text": "Nachhaltigkeit",
+            "value": "Nachhaltigkeit"
+          },
+          {
+            "selected": false,
+            "text": "à®‡à®²à®•à¯à®•à®£à®®à¯",
+            "value": "à®‡à®²à®•à¯à®•à®£à®®à¯"
+          },
+          {
+            "selected": false,
+            "text": "Musik",
+            "value": "Musik"
+          },
+          {
+            "selected": false,
+            "text": "community",
+            "value": "community"
+          },
+          {
+            "selected": false,
+            "text": "Community",
+            "value": "Community"
+          },
+          {
+            "selected": false,
+            "text": "Music",
+            "value": "Music"
+          },
+          {
+            "selected": false,
+            "text": "Permakultur",
+            "value": "Permakultur"
+          }
+        ],
+        "query": "select distinct value from metadata where key_id = 1;",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "1",
+          "value": "1"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Edit-Schwellwert in Autorenübersicht",
+        "multi": false,
+        "name": "authorview_threshold",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "1,10,100",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
