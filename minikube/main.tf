@@ -55,7 +55,7 @@ module "local_postgres" {
 }
 
 module "athene2_dbsetup" {
-  source                    = "git::https://github.com/serlo/infrastructure-modules-serlo.org//athene2_dbsetup?ref=athene2_dbsetup-cleanup"
+  source                    = "git::https://github.com/serlo/infrastructure-modules-serlo.org//athene2_dbsetup?ref=63b0112f89fb2b354d3bb63f16f77cd1233b0964"
   namespace                 = kubernetes_namespace.athene2_namespace.metadata.0.name
   database_username_default = "root"
   database_password_default = "admin"
