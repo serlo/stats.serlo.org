@@ -241,21 +241,19 @@ CREATE TABLE IF NOT EXISTS cache_author_edits_by_category (
 
 INSERT INTO cache_author_edits_by_category (
     SELECT
-        day as time,
+        date_trunc('day', event_log.date) as time,
         actor_id as author,
         metadata.value as category,
         count(event_id) as edit_count
-    FROM event_log JOIN day ON
-        event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
-        AND date BETWEEN day - interval '90 day' AND day
-        AND day <= (SELECT MAX(date) FROM event_log)
-        AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_author_edits_by_category)
+    FROM event_log
     JOIN entity_revision ON
         entity_revision.id = event_log.uuid_id
     JOIN metadata ON
         entity_revision.repository_id = metadata.uuid_id
         AND metadata.key_id = 1
-    GROUP BY day, actor_id, metadata.value
+    WHERE
+        event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
+    GROUP BY 1, actor_id, metadata.value
     HAVING count(actor_id) > 0
 ) ON CONFLICT (time, author, category) DO UPDATE SET
     edit_count = excluded.edit_count;
