@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1585062963543,
+  "iteration": 1586693086665,
   "links": [],
   "panels": [
     {
@@ -849,14 +849,15 @@
         "y": 57
       },
       "id": 26,
+      "interval": "",
       "links": [],
       "options": {},
       "pageSize": null,
       "scroll": true,
       "showHeader": true,
       "sort": {
-        "col": 0,
-        "desc": true
+        "col": null,
+        "desc": false
       },
       "styles": [
         {
@@ -873,7 +874,7 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "decimals": 2,
+          "decimals": 0,
           "pattern": "/.*/",
           "thresholds": [],
           "type": "number",
@@ -886,7 +887,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select username as \"Username\", to_char(max(event_log.date), 'DD. Mon YYYY') as \"Letzte Bearbeitung im Fach\", edit_count as \"Bearbeitungen im Fach seit [[active_edits_since]]\", (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time = (select max(time) from cache_author_edits_by_category)) as \"Bearbeitungen insgesamt seit [[active_edits_since]]\", email as \"Kontakt\" from cache_author_edits_by_category inner join \"user\" on \"user\".id = cache_author_edits_by_category.author inner join event_log on event_log.actor_id = author where category = '[[authorview_subject]]' and edit_count >= [[authorview_threshold]] and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) group by username, edit_count, email, \"user\".id order by username;",
+          "rawSql": "select username as \"Username\",\n    sum(edit_count) as \"Bearbeitungen im Fach [[authorview_subject]] seit [[authorview_time]]\",\n    last_edit as \"Letzte Bearbeitung im Fach\",\n    (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time >= now() - interval '[[authorview_time]]') as \"Bearbeitungen insgesamt seit [[authorview_time]]\",\n    email as \"Kontakt\"\nfrom cache_author_edits_by_category c\ninner join \"user\" on \"user\".id = c.author\ninner join (select max(\"time\") as last_edit, author from cache_author_edits_by_category where category = '[[authorview_subject]]' group by author) le on le.author = \"user\".id\nwhere category = '[[authorview_subject]]'\n    and edit_count >= [[authorview_threshold]]\n    and c.time >= now() - interval '[[authorview_time]]'\ngroup by username, email, \"user\".id, last_edit\norder by username;\n",
           "refId": "A",
           "select": [
             [
@@ -1075,13 +1076,12 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
           "text": "90",
           "value": "90"
         },
         "hide": 0,
         "includeAll": false,
-        "label": "Time interval in days",
+        "label": "Zeitraum für Reviewzeiten",
         "multi": false,
         "name": "cached_days",
         "options": [
@@ -1113,7 +1113,7 @@
         },
         "datasource": "serlo-kpi-postgres",
         "definition": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
@@ -1133,7 +1133,6 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
           "text": "Physik",
           "value": "Physik"
         },
@@ -1141,7 +1140,7 @@
         "definition": "select distinct value from metadata where key_id = 1;",
         "hide": 0,
         "includeAll": false,
-        "label": "Fach in Authorenübersicht",
+        "label": "Fach in Autorenübersicht",
         "multi": false,
         "name": "authorview_subject",
         "options": [
@@ -1354,6 +1353,39 @@
         "query": "1,10,100",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "text": "90d",
+          "value": "90d"
+        },
+        "hide": 0,
+        "label": "Zeitraum in Autorenübersicht",
+        "name": "authorview_time",
+        "options": [
+          {
+            "selected": true,
+            "text": "90d",
+            "value": "90d"
+          },
+          {
+            "selected": false,
+            "text": "1y",
+            "value": "1y"
+          },
+          {
+            "selected": false,
+            "text": "3y",
+            "value": "3y"
+          }
+        ],
+        "query": "90d,1y,3y",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
       }
     ]
   },
