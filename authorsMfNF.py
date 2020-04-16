@@ -163,15 +163,36 @@ def actualize_sitemap():
 					titles[i] = titles[i].next_sibling
 					file2.write(str(titles[i]))
 
+
+
+def calculate_authors_topic(fach, days_to_go_back):
+	author_dict = dict()
+	author_dict = get_full_author_dict_from_wiki(fach[2]) #berechnet den author_dict für das Fach mit der Nummer
+	author_dict_timespan = get_author_dict_timespan(author_dict, days_to_go_back) #falsche Bennenung. Berechnet den author_dict für die letzten xy Tage
+	return sorted([[author[0], len(author[1])] for author in author_dict_timespan.items() if len(author[1])>=10], key=lambda author: author[1], reverse=True)
+
+def calculate_all_authors(faecher, day_to_go_back):
+	author_dict = dict()
+	for fach in faecher:
+		print("Calculating "+fach[0])
+		list_of_pages = get_scraped_wiki_pages(fach[2])
+		list_of_names = list(map(get_name, list_of_pages)) #schöne Namen ausgehend von den Links
+		for i in range(0, len(list_of_pages)):#Geht durch jeden Artikel durch und ergänzt das author_dict
+			author_dict = get_author_dict(list_of_names[i], list_of_pages[i], author_dict)
+	author_dict_timespan = get_author_dict_timespan(author_dict, eingabe2) #falsche Bennenung. Berechnet den author_dict für die letzten xy Tage
+	return sorted([[author[0], len(author[1])] for author in author_dict_timespan.items() if len(author[1])>=10], key=lambda author: author[1], reverse=True)
+
+
+
+
 """Ausgabebefehle"""
 #Liste aller Fächer mit sitemap-files und wiki-files (Listen der gescrapten Artikel)
 faecher = [["Analysis 1", "sitemap_files/ana_sitemap.html", "index_files/ana_index.txt"], ["Lineare Algebra", "sitemap_files/lina_sitemap.html", "index_files/lina_index.txt"], ["Real Analysis", "sitemap_files/real_sitemap.html", "index_files/real_index.txt"], ["Grundlagen der Mathematik", "sitemap_files/grund_sitemap.html", "index_files/grund_index.txt"], ["Maßtheorie", "sitemap_files/mass_sitemap.html", "index_files/mass_index.txt"]] #, ["Buchanfänge", "sitemap_files/buch_sitemap.html", "index_files/buch_index.txt"], ["Mitmachen für (Nicht-)Freaks", "sitemap_files/mitm_sitemap.html", "index_files/mitm_index.txt"]
-eingabe = str(input("Wollen Sie die Datenbank/Bearbeitungshistorien neu scrapen? Drücken Sie y für Ja und n für Nein\n"))
+
+eingabe = str(input("Speedymode? y für Ja und n für Nein"))
 if "y" in eingabe:
-	eingabe = str(input("Wollen sie die Sitemap neu scrapen? Drücken Sie y für Ja und n für Nein\n"))
-	if "y" in eingabe:
-		print("Scrape Sitemap:\n")
-		actualize_sitemap()
+	print("Scrape Sitemap:\n")
+	actualize_sitemap()
 	print("Scrape Datenbank:\n")
 	for fach in faecher: #scrapt für jedes Fach neu die history-Seiten
 		print("\n\nScrape Fach: "+fach[0]+"\n")
@@ -179,39 +200,73 @@ if "y" in eingabe:
 		links = list(map(get_history_link, articles)) #generiert "echte" Links
 		storage_places = list(map(get_storage_place, articles)) #kreiert eine Liste der storage_places
 		scrape_db(links, storage_places, fach[2]) #Scrapt die Webseite
-eingabe = int(input("Wofür wollen sie die Autor*innenstatistik. Geben sie hier die Nummer ein: \n0 : Analysis 1\n1 : Lineare Algebra 1\n2: real Analysis\n3: Grundlagen der Mathematik\n4 : Maßtheorie\n5: Alle Fächer gesamt\n"))
-eingabe2 = int(input("Wieviel Tage sollen wir zurück gehen?\n"))
+	eingabe2 = 90
+	authors = calculate_all_authors(faecher, eingabe2)
+	print("\nAnzahl Autor*innen: %s"%len(authors))
+	print("Autor*innen:")
+	for author in authors:
+		print(author[0]+": "+str(author[1]))
+	print("\n")
 
-if eingabe == 5: #Alle Fächer
-	author_dict = dict()
-	for fach in faecher: #Ergänzt für jedes Fach den author_dict
-		print("Calculating "+fach[0]+" :")
-		list_of_pages = get_scraped_wiki_pages(fach[2])
-		list_of_names = list(map(get_name, list_of_pages)) #schöne Namen ausgehend von den Links
-		for i in range(0, len(list_of_pages)):#Geht durch jeden Artikel durch und ergänzt das author_dict
-			author_dict = get_author_dict(list_of_names[i], list_of_pages[i], author_dict)
-	author_dict_neunzig_tage = get_author_dict_timespan(author_dict, eingabe2) #falsche Bennenung. Berechnet den author_dict für die letzten xy Tage
-	print("Autor*in : Bearbeitungsanzahl in den letzten xy Tagen") #Ausgabe
-	print("Alle Bearbeiter*innen:")
-	for key in author_dict_neunzig_tage:
-		if len(author_dict_neunzig_tage[key]) != 0:
-			print(key + ": "+ str(len(author_dict_neunzig_tage[key])))
-	print("\nAktive Autor*innen:")
-	for key in author_dict_neunzig_tage:
-		if len(author_dict_neunzig_tage[key]) > 9:
-			print(key + ": "+ str(len(author_dict_neunzig_tage[key])))
+	for fach in faecher:
+		print(fach[0])
+		authors = calculate_authors_topic(fach, eingabe2)
+		print("Autor*innen %s"%fach[0])
+		print("\nAnzahl Autor*innen: %s"%len(authors))
+		print("Autor*innen:")
+		for author in authors:
+			print(author[0]+": "+str(author[1]))
+		print("\n \n")
 else:
-	author_dict = get_full_author_dict_from_wiki(faecher[eingabe][2]) #berechnet den author_dict für das Fach mit der Nummer
-	author_dict_neunzig_tage = get_author_dict_timespan(author_dict, eingabe2) #falsche Bennenung. Berechnet den author_dict für die letzten xy Tage
-	print("Autor*in : Bearbeitungsanzahl in den letzten xy Tagen") #Ausgabe
-	print("Alle Bearbeiter*innen:")
-	for key in author_dict_neunzig_tage:
-		if len(author_dict_neunzig_tage[key]) != 0:
-			print(key + ": "+ str(len(author_dict_neunzig_tage[key])))
-	print("\nAktive Autor*innen:")
-	for key in author_dict_neunzig_tage:
-		if len(author_dict_neunzig_tage[key]) > 9:
-			print(key + ": "+ str(len(author_dict_neunzig_tage[key])))
+	eingabe = str(input("Wollen Sie die Datenbank/Bearbeitungshistorien neu scrapen? Drücken Sie y für Ja und n für Nein\n"))
+	if "y" in eingabe:
+		eingabe = str(input("Wollen sie die Sitemap neu scrapen? Drücken Sie y für Ja und n für Nein\n"))
+		if "y" in eingabe:
+			print("Scrape Sitemap:\n")
+			actualize_sitemap()
+		print("Scrape Datenbank:\n")
+		for fach in faecher: #scrapt für jedes Fach neu die history-Seiten
+			print("\n\nScrape Fach: "+fach[0]+"\n")
+			articles = extract_links(fach[1]) #liest verlinkte Artikel ein
+			links = list(map(get_history_link, articles)) #generiert "echte" Links
+			storage_places = list(map(get_storage_place, articles)) #kreiert eine Liste der storage_places
+			scrape_db(links, storage_places, fach[2]) #Scrapt die Webseite
+
+
+	eingabe2 = int(input("Wieviel Tage sollen wir zurück gehen?"))
+
+	eingabe = input("Wollen Sie die Gesamtstatistik? Drücken Sie y für Ja und n für Nein:")
+
+	if "y" in eingabe:
+		authors = calculate_all_authors(faecher, eingabe2)
+		print("\nAnzahl Autor*innen: %s"%len(authors))
+		print("Autor*innen:")
+		for author in authors:
+			print(author[0]+": "+str(author[1]))
+		print("\n")
+
+	eingabe = int(input("Wofür wollen sie die Autor*innenstatistik pro Fach? Geben sie hier die Nummer ein: \n0 : Analysis 1\n1 : Lineare Algebra 1\n2: real Analysis\n3: Grundlagen der Mathematik\n4 : Maßtheorie\n5: Alle Fächer"))
+
+
+	if eingabe == 5:
+		for fach in faecher:
+			print(fach[0])
+			authors = calculate_authors_topic(fach, eingabe2)
+			print("Autor*innen %s"%fach[0])
+			print("\nAnzahl Autor*innen: %s"%len(authors))
+			print("Autor*innen:")
+			for author in authors:
+				print(author[0]+": "+str(author[1]))
+			print("\n \n")
+		
+	else:
+		fach = faecher[eingabe]
+		authors = calculate_authors_topic(fach, eingabe2)
+		print("Autor*innen %s"%faecher[eingabe][0])
+		print("\nAnzahl Autor*innen: %s"%len(authors))
+		print("Autor*innen:")
+		for author in authors:
+			print(author[0]+": "+str(author[1]))
 
 
 
