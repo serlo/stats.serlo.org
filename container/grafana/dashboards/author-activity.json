@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1586693086665,
+  "iteration": 1587292208782,
   "links": [],
   "panels": [
     {
@@ -1057,11 +1057,11 @@
       {
         "allValue": null,
         "current": {
-          "text": "Physik",
-          "value": "Physik"
+          "text": "Mathe",
+          "value": "Mathe"
         },
         "datasource": "serlo-kpi-postgres",
-        "definition": "select distinct value from metadata where key_id = 1;",
+        "definition": "select value from metadata where key_id = 1 group by value order by (case value when 'Mathe' then '1' when 'Chemie' then '2' when 'Informatik' then '3' when 'Physik' then '4' when 'Biologie' then '5' else \"value\" end) asc;",
         "hide": 0,
         "includeAll": false,
         "label": "Fach in Autorenübersicht",
@@ -1069,34 +1069,9 @@
         "name": "authorview_subject",
         "options": [
           {
-            "selected": false,
-            "text": "Latein",
-            "value": "Latein"
-          },
-          {
-            "selected": false,
-            "text": "à®µà®°à®²à®¾à®±à¯",
-            "value": "à®µà®°à®²à®¾à®±à¯"
-          },
-          {
             "selected": true,
-            "text": "Physik",
-            "value": "Physik"
-          },
-          {
-            "selected": false,
-            "text": "Math",
-            "value": "Math"
-          },
-          {
-            "selected": false,
-            "text": "Politik",
-            "value": "Politik"
-          },
-          {
-            "selected": false,
-            "text": "mathÃ©matiques",
-            "value": "mathÃ©matiques"
+            "text": "Mathe",
+            "value": "Mathe"
           },
           {
             "selected": false,
@@ -1105,8 +1080,13 @@
           },
           {
             "selected": false,
-            "text": "nouvelles matiÃ¨res",
-            "value": "nouvelles matiÃ¨res"
+            "text": "Informatik",
+            "value": "Informatik"
+          },
+          {
+            "selected": false,
+            "text": "Physik",
+            "value": "Physik"
           },
           {
             "selected": false,
@@ -1115,68 +1095,13 @@
           },
           {
             "selected": false,
-            "text": "Sex Education",
-            "value": "Sex Education"
+            "text": "à®‡à®²à®•à¯à®•à®£à®®à¯",
+            "value": "à®‡à®²à®•à¯à®•à®£à®®à¯"
           },
           {
             "selected": false,
-            "text": "Permaculture",
-            "value": "Permaculture"
-          },
-          {
-            "selected": false,
-            "text": "Englisch",
-            "value": "Englisch"
-          },
-          {
-            "selected": false,
-            "text": "test area",
-            "value": "test area"
-          },
-          {
-            "selected": false,
-            "text": "Deutsch als Fremdsprache",
-            "value": "Deutsch als Fremdsprache"
-          },
-          {
-            "selected": false,
-            "text": "Testbereich",
-            "value": "Testbereich"
-          },
-          {
-            "selected": false,
-            "text": "Betriebswirtschaftslehre mit Rechnungswesen",
-            "value": "Betriebswirtschaftslehre mit Rechnungswesen"
-          },
-          {
-            "selected": false,
-            "text": "Test",
-            "value": "Test"
-          },
-          {
-            "selected": false,
-            "text": "boÃ®te Ã  mÃ©thodes",
-            "value": "boÃ®te Ã  mÃ©thodes"
-          },
-          {
-            "selected": false,
-            "text": "Hilfe zur Bearbeitung",
-            "value": "Hilfe zur Bearbeitung"
-          },
-          {
-            "selected": false,
-            "text": "Wiki",
-            "value": "Wiki"
-          },
-          {
-            "selected": false,
-            "text": "Sustainability",
-            "value": "Sustainability"
-          },
-          {
-            "selected": false,
-            "text": "Informatik",
-            "value": "Informatik"
+            "text": "à®µà®°à®²à®¾à®±à¯",
+            "value": "à®µà®°à®²à®¾à®±à¯"
           },
           {
             "selected": false,
@@ -1190,28 +1115,13 @@
           },
           {
             "selected": false,
-            "text": "sexed",
-            "value": "sexed"
+            "text": "Betriebswirtschaftslehre mit Rechnungswesen",
+            "value": "Betriebswirtschaftslehre mit Rechnungswesen"
           },
           {
             "selected": false,
-            "text": "Mathe",
-            "value": "Mathe"
-          },
-          {
-            "selected": false,
-            "text": "Nachhaltigkeit",
-            "value": "Nachhaltigkeit"
-          },
-          {
-            "selected": false,
-            "text": "à®‡à®²à®•à¯à®•à®£à®®à¯",
-            "value": "à®‡à®²à®•à¯à®•à®£à®®à¯"
-          },
-          {
-            "selected": false,
-            "text": "Musik",
-            "value": "Musik"
+            "text": "boÃ®te Ã  mÃ©thodes",
+            "value": "boÃ®te Ã  mÃ©thodes"
           },
           {
             "selected": false,
@@ -1225,16 +1135,106 @@
           },
           {
             "selected": false,
+            "text": "Deutsch als Fremdsprache",
+            "value": "Deutsch als Fremdsprache"
+          },
+          {
+            "selected": false,
+            "text": "Englisch",
+            "value": "Englisch"
+          },
+          {
+            "selected": false,
+            "text": "Hilfe zur Bearbeitung",
+            "value": "Hilfe zur Bearbeitung"
+          },
+          {
+            "selected": false,
+            "text": "Latein",
+            "value": "Latein"
+          },
+          {
+            "selected": false,
+            "text": "Math",
+            "value": "Math"
+          },
+          {
+            "selected": false,
+            "text": "mathÃ©matiques",
+            "value": "mathÃ©matiques"
+          },
+          {
+            "selected": false,
             "text": "Music",
             "value": "Music"
           },
           {
             "selected": false,
+            "text": "Musik",
+            "value": "Musik"
+          },
+          {
+            "selected": false,
+            "text": "Nachhaltigkeit",
+            "value": "Nachhaltigkeit"
+          },
+          {
+            "selected": false,
+            "text": "nouvelles matiÃ¨res",
+            "value": "nouvelles matiÃ¨res"
+          },
+          {
+            "selected": false,
+            "text": "Permaculture",
+            "value": "Permaculture"
+          },
+          {
+            "selected": false,
             "text": "Permakultur",
             "value": "Permakultur"
+          },
+          {
+            "selected": false,
+            "text": "Politik",
+            "value": "Politik"
+          },
+          {
+            "selected": false,
+            "text": "sexed",
+            "value": "sexed"
+          },
+          {
+            "selected": false,
+            "text": "Sex Education",
+            "value": "Sex Education"
+          },
+          {
+            "selected": false,
+            "text": "Sustainability",
+            "value": "Sustainability"
+          },
+          {
+            "selected": false,
+            "text": "Test",
+            "value": "Test"
+          },
+          {
+            "selected": false,
+            "text": "test area",
+            "value": "test area"
+          },
+          {
+            "selected": false,
+            "text": "Testbereich",
+            "value": "Testbereich"
+          },
+          {
+            "selected": false,
+            "text": "Wiki",
+            "value": "Wiki"
           }
         ],
-        "query": "select distinct value from metadata where key_id = 1;",
+        "query": "select value from metadata where key_id = 1 group by value order by (case value when 'Mathe' then '1' when 'Chemie' then '2' when 'Informatik' then '3' when 'Physik' then '4' when 'Biologie' then '5' else \"value\" end) asc;",
         "refresh": 0,
         "regex": "",
         "skipUrlSync": false,
