@@ -2,6 +2,13 @@
 /* Start a transaction */
 BEGIN;
 
+/* Create a version table for handling program updates */
+CREATE TABLE IF NOT EXISTS version (version text PRIMARY KEY);
+/* Add a default minimum version */
+INSERT INTO version (version) SELECT '1.6.1' WHERE NOT EXISTS (SELECT * FROM version);
+/* Next version */
+CREATE OR REPLACE FUNCTION public.next_version() RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE AS 'SELECT ''1.6.2''::text';
+
 /* Create a day table for day aggregation. */
 CREATE TABLE IF NOT EXISTS day (day date);
 INSERT INTO day
@@ -239,6 +246,13 @@ CREATE TABLE IF NOT EXISTS cache_author_edits_by_category (
     UNIQUE (time, author, category)
 );
 
+DO $$
+BEGIN
+    IF (SELECT * FROM version) < (SELECT public.next_version()) THEN
+        DELETE FROM cache_author_edits_by_category;
+    END IF;
+END $$;
+
 INSERT INTO cache_author_edits_by_category (
     SELECT
         date_trunc('day', event_log.date) as time,
@@ -248,8 +262,11 @@ INSERT INTO cache_author_edits_by_category (
     FROM event_log
     JOIN entity_revision ON
         entity_revision.id = event_log.uuid_id
+    LEFT JOIN entity_link ON
+        entity_link.child_id = entity_revision.repository_id
     JOIN metadata ON
-        entity_revision.repository_id = metadata.uuid_id
+        (entity_revision.repository_id = metadata.uuid_id
+            OR entity_link.parent_id = metadata.uuid_id)
         AND metadata.key_id = 1
     WHERE
         event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
@@ -257,6 +274,7 @@ INSERT INTO cache_author_edits_by_category (
     HAVING count(actor_id) > 0
 ) ON CONFLICT (time, author, category) DO UPDATE SET
     edit_count = excluded.edit_count;
+/* TODO check this ON CONFLICT, it's always true */
 
 CREATE TABLE IF NOT EXISTS cache_author_reviews (
     time date,
@@ -282,7 +300,9 @@ INSERT INTO cache_author_reviews (
 ) ON CONFLICT (time, author) DO UPDATE SET
     review_count = excluded.review_count;
 
-/* select * from cache_author_edits_by_category inner join cache_author_reviews on cache_author_reviews.author = cache_author_edits_by_category.author inner join "user" on "user".id = cache_author_edits_by_category.author where edit_count >= 10 and cache_author_edits_by_category.time = (select max(time) from cache_author_edits_by_category) and cache_author_reviews.time = (select max(time) from cache_author_edits_by_category) and review_count >= 10; */
+/* Update the version and clean up */
+UPDATE version SET version = (SELECT public.next_version());
+DROP FUNCTION public.next_version();
 
 /* commit the aggregation transaction */
 COMMIT;
