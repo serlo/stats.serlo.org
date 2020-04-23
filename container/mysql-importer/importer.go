@@ -92,6 +92,7 @@ func importTables(athene2DB *sql.DB, kpiDB *sql.DB, dconfig *debugConfig) error 
 		&userTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "user"},
 		&eventTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event"},
 		&eventLogTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "event_log"},
+		&entityLinkTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "entity_link"},
 		&entityRevisionTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "entity_revision"},
 		&userFieldTable{SourceDB: athene2DB, TargetDB: kpiDB, Name: "user_field"},
 	}
