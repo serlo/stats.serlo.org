@@ -1,0 +1,665 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "iteration": 1587677929259,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "serlo-kpi-postgres",
+      "description": "Dieses Dashboard zeigt die Reviewzeiten in Stunden an. Gezählt werden alle Bearbeitungen der letzten 90 Tagen sowie alle ungereviewten Bearbeitungen. Bearbeitungen von Autor*innen mit Review-Rechten werden nicht gezählt:\n\n* Median: 50% der Bearbeitungen wurden schneller gereviewt\n* 75%-Perzentil: 75% der Bearbeitungen wurden schneller gereviewt\n* 95%-Perzentil: 95% der Bearbeitungen wurden schneller gereviewt",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  time,\n  EXTRACT(epoch FROM perc_50)/3600 as \"Median (h)\",\n  EXTRACT(epoch FROM perc_75)/3600 as \"75%-Perzentil (h)\",\n  EXTRACT(epoch FROM perc_95)/3600 as \"95%-Perzentil (h)\"\nFROM\n  cache_review_time[[cached_days]]\nWHERE\n  $__timeFilter(time)\nORDER BY time ASC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Reviewzeiten in den jeweils letzten [[cached_days]] Tagen",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "short",
+          "label": "Stunden",
+          "logBase": 1,
+          "max": "504",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "serlo-kpi-postgres",
+      "decimals": 0,
+      "description": "Verlauf der Anzahl von Reviewer*innen: Gezählt werden nur Bearbeitungen der jeweils letzten 90 Tage. Nur manuelle Reviewing-Aktionen (Annahme und Ablehung) *fremder Bearbeitungen* werden betrachtet:\n\n* Reviewer*in: Mindestens ein Reviewing in den letzten 90 Tagen\n* Aktive Reviewer*innen: Mindestens 10 Reviewing-Aktionen in den letzten 90 Tagen\n* Aktive Reviewer*innen: Mindestens 100 Reviewing-Aktionen in den letzten 90 Tagen",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 16,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time,\n  reviewers as \"Reviewer*innen\",\n  active_reviewers as \"Aktive Reviewer*innen\",\n  very_active_reviewers as \"Sehr aktive Reviewer*innen\"\nFROM cache_active_reviewers\nWHERE $__timeFilter(time) ORDER BY time ASC;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Anzahl Reviewer*innen",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Anzahl",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "datasource": "serlo-kpi-postgres",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 22,
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select username as \"Username\", review_count as \"Reviews seit [[active_edits_since]]\" from cache_author_reviews inner join \"user\" on \"user\".id = cache_author_reviews.author where review_count >= 10 and cache_author_reviews.time = (select max(time) from cache_author_reviews) order by username;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Aktive Reviewer pro Fach (mehr als 10 Reviews in den letzten 90 Tagen)",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "cardColor": "#37872D",
+        "colorScale": "sqrt",
+        "colorScheme": "interpolateSpectral",
+        "exponent": 0.5,
+        "max": null,
+        "min": null,
+        "mode": "opacity"
+      },
+      "dataFormat": "timeseries",
+      "datasource": "serlo-kpi-postgres",
+      "description": "Dieses Dashboard zeigt den Verlauf der Verteilung der Reviewzeiten in Stunden an. Zunächst wird die Zeit in verschiedene Zeiträume unterteilt. In jedem Zeitraum wird die Verteilung der Review-Zeiten durch Farben angegeben. Je transparenter ein Block ist, desto weniger Bearbeitungen in diesem Zeitraum haben entsprechende Reviewzeiten. Die Y-Achse ist dabei logarithmisch zur Basis 2 und in Stunden angegeben.",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "heatmap": {},
+      "hideZeroBuckets": false,
+      "highlightCards": true,
+      "id": 14,
+      "legend": {
+        "show": true
+      },
+      "links": [],
+      "options": {},
+      "pluginVersion": "6.2.2",
+      "reverseYBuckets": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE(el1.date) AS time,\n  ceiling(EXTRACT(epoch FROM el2.date - el1.date) / 3600) AS \"Reviewzeit\"\nFROM event_log el1\nINNER JOIN event_log el2 \nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date >= el1.date AND\n  (el2.event_id = 6 OR el2.event_id = 11) AND\n  $__timeFilter(el1.date) AND\n  el1.event_id = 5\nWHERE\n  el1.actor_id != el2.actor_id;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Verlauf Reviewzeiten (in Stunden)",
+      "tooltip": {
+        "show": true,
+        "showHistogram": true
+      },
+      "type": "heatmap",
+      "xAxis": {
+        "show": true
+      },
+      "xBucketNumber": 20,
+      "xBucketSize": "",
+      "yAxis": {
+        "decimals": null,
+        "format": "locale",
+        "logBase": 2,
+        "max": null,
+        "min": "0",
+        "show": true,
+        "splitFactor": 1
+      },
+      "yBucketBound": "auto",
+      "yBucketNumber": null,
+      "yBucketSize": 5
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "serlo-kpi-postgres",
+      "description": "Bearbeitungen pro Tag sortiert nach folgenden Kategorien:\n\n* Selbstreview: Beareitungen von Autor*innen mit Review-Rechten.\n* Fremdreview: Bearbeitung wurde von einer anderen Person im Reviewverfahren akzeptiert oder abgelehnt.\n* Ohne Review: Für diese Bearbeitung liegt kein Reviewing vor. Dies liegt daran, dass entweder die Bearbeitung noch offen ist oder eine darauffolgende Bearbeitung gereviewt wurde.",
+      "fill": 1,
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 12,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE(el1.date) AS time,\n  count(el1.id) AS \"Selbstreview\"\nFROM event_log el1\nLEFT OUTER JOIN event_log el2\nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date >= el1.date AND\n  el1.event_id = 5 AND\n  (el2.event_id = 6 OR el2.event_id = 11) AND\n  $__timeFilter(el1.date)\nWHERE\n  el1.actor_id = el2.actor_id AND\n  $__timeFilter(el1.date)\nGROUP BY DATE(el1.date)\nORDER BY DATE(el1.date);",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE(el1.date) AS time,\n  count(el1.id) AS \"Fremdreview\"\nFROM event_log el1\nINNER JOIN event_log el2\nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date >= el1.date AND\n  el1.event_id = 5 AND\n  (el2.event_id = 6 or el2.event_id = 11) AND\n  $__timeFilter(el1.date)\nWHERE\n  el1.actor_id != el2.actor_id AND\n  $__timeFilter(el1.date)\nGROUP BY DATE(el1.date) ORDER BY DATE(el1.date);",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE(el1.date) as time,\n  count(el1.id) as \"Ohne Review\"\nFROM event_log el1\nLEFT OUTER JOIN event_log el2\nON\n  el1.uuid_id = el2.uuid_id AND\n  el2.date > el1.date AND\n  el1.event_id = 5 AND\n  el1.date > '2015-01-01'\nWHERE\n  el2.event_id is null AND\n  $__timeFilter(el1.date)\nGROUP BY DATE(el1.date) ORDER BY DATE(el1.date);\n",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Bearbeitungen pro Tag",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "short",
+          "label": "Anzahl",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "90",
+          "value": "90"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Zeitraum für Reviewzeiten",
+        "multi": false,
+        "name": "cached_days",
+        "options": [
+          {
+            "selected": true,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "7",
+            "value": "7"
+          },
+          {
+            "selected": false,
+            "text": "1",
+            "value": "1"
+          }
+        ],
+        "query": "90,7,1",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "text": "19. Jan 2020",
+          "value": "19. Jan 2020"
+        },
+        "datasource": "serlo-kpi-postgres",
+        "definition": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "active_edits_since",
+        "options": [],
+        "query": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6M",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Reviewing",
+  "uid": "vXZaVsqZz",
+  "version": 1
+}
