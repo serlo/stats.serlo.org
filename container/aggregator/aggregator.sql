@@ -48,7 +48,7 @@ INSERT INTO cache_active_authors (
             CASE WHEN count(actor_id) > 10 AND value IS NOT NULL THEN actor_id END as author_active_teacher
         FROM event_log JOIN day ON
             date BETWEEN day - interval '90 day' and day
-            AND event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
+            AND event_id = 5
             AND day >= '2018-01-01'
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_active_authors)
@@ -222,7 +222,7 @@ INSERT INTO cache_edits_by_category (
             actor_id as actor,
             count(actor_id) as edits
         FROM event_log JOIN day ON
-            event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
+            event_id = 5
             AND date BETWEEN day - interval '90 day' AND day
             AND day <= (SELECT MAX(date) FROM event_log)
             AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_edits_by_category)
@@ -269,7 +269,7 @@ INSERT INTO cache_author_edits_by_category (
             OR entity_link.parent_id = metadata.uuid_id)
         AND metadata.key_id = 1
     WHERE
-        event_id IN (5, 3, 10, 13, 1, 2, 12, 15, 17, 4, 7, 18)
+        event_id = 5
     GROUP BY 1, actor_id, metadata.value
     HAVING count(actor_id) > 0
 ) ON CONFLICT (time, author, category) DO UPDATE SET
