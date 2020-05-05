@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1587677796280,
+  "iteration": 1588707958621,
   "links": [],
   "panels": [
     {
@@ -85,7 +85,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select username as \"Username\",\n    sum(edit_count) as \"Bearbeitungen im Fach [[authorview_subject]] seit [[authorview_time]]\",\n    last_edit as \"Letzte Bearbeitung im Fach\",\n    (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time >= now() - interval '[[authorview_time]]') as \"Bearbeitungen insgesamt seit [[authorview_time]]\",\n    email as \"Kontakt\"\nfrom cache_author_edits_by_category c\ninner join \"user\" on \"user\".id = c.author\ninner join (select max(\"time\") as last_edit, author from cache_author_edits_by_category where category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' group by author) le on le.author = \"user\".id\nwhere (category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer')\n    and c.time >= now() - interval '[[authorview_time]]'\ngroup by username, email, \"user\".id, last_edit\nhaving sum(edit_count) >= [[authorview_threshold]]\norder by username;\n",
+          "rawSql": "select username as \"Username\",\n    sum(edit_count) as \"Bearbeitungen im Fach [[authorview_subject]] seit [[authorview_time]]\",\n    last_edit as \"Letzte Bearbeitung im Fach\",\n    (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time >= now() - interval '[[authorview_time]]') as \"Bearbeitungen insgesamt seit [[authorview_time]]\",\n    email as \"Kontakt\"\nfrom cache_author_edits_by_category c\ninner join \"user\" on \"user\".id = c.author\ninner join (select max(\"time\") as last_edit, author from cache_author_edits_by_category where category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' or '[[authorview_subject]]' = 'MINT' and category in ('Mathe', 'Chemie', 'Informatik', 'Physik', 'Biologie') group by author) le on le.author = \"user\".id\nwhere (category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' or '[[authorview_subject]]' = 'MINT' and category in ('Mathe', 'Chemie', 'Informatik', 'Physik', 'Biologie'))\n    and c.time >= now() - interval '[[authorview_time]]'\ngroup by username, email, \"user\".id, last_edit\nhaving sum(edit_count) >= [[authorview_threshold]]\norder by username;\n",
           "refId": "A",
           "select": [
             [
@@ -485,7 +485,7 @@
           "value": "Mathe"
         },
         "datasource": "serlo-kpi-postgres",
-        "definition": "(select 'Alle Fächer'::text as value) union all (select value from metadata where key_id = 1 group by value order by (case value when 'Mathe' then '1' when 'Chemie' then '2' when 'Informatik' then '3' when 'Physik' then '4' when 'Biologie' then '5' else \"value\" end) asc);",
+        "definition": "(select 'Alle Fächer'::text as value) union all (select 'MINT'::text as value) union all (select value from metadata where key_id = 1 group by value order by (case value when 'Mathe' then '1' when 'Chemie' then '2' when 'Informatik' then '3' when 'Physik' then '4' when 'Biologie' then '5' else \"value\" end) asc);",
         "hide": 0,
         "includeAll": false,
         "label": "Fach in Autorenübersicht",
@@ -496,6 +496,11 @@
             "selected": false,
             "text": "Alle Fächer",
             "value": "Alle Fächer"
+          },
+          {
+            "selected": false,
+            "text": "MINT",
+            "value": "MINT"
           },
           {
             "selected": true,
@@ -663,7 +668,7 @@
             "value": "Wiki"
           }
         ],
-        "query": "(select 'Alle Fächer'::text as value) union all (select value from metadata where key_id = 1 group by value order by (case value when 'Mathe' then '1' when 'Chemie' then '2' when 'Informatik' then '3' when 'Physik' then '4' when 'Biologie' then '5' else \"value\" end) asc);",
+        "query": "(select 'Alle Fächer'::text as value) union all (select 'MINT'::text as value) union all (select value from metadata where key_id = 1 group by value order by (case value when 'Mathe' then '1' when 'Chemie' then '2' when 'Informatik' then '3' when 'Physik' then '4' when 'Biologie' then '5' else \"value\" end) asc);",
         "refresh": 0,
         "regex": "",
         "skipUrlSync": false,
@@ -678,6 +683,7 @@
         "allValue": null,
         "current": {
           "selected": true,
+          "tags": [],
           "text": "1",
           "value": "1"
         },
