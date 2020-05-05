@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS version (version text PRIMARY KEY);
 /* Add a default minimum version */
 INSERT INTO version (version) SELECT '1.6.1' WHERE NOT EXISTS (SELECT * FROM version);
 /* Next version */
-CREATE OR REPLACE FUNCTION public.next_version() RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE AS 'SELECT ''1.6.2''::text';
+CREATE OR REPLACE FUNCTION public.next_version() RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE AS 'SELECT ''1.6.4''::text';
 
 /* Create a day table for day aggregation. */
 CREATE TABLE IF NOT EXISTS day (day date);
@@ -24,6 +24,19 @@ SELECT i::date FROM GENERATE_SERIES((SELECT COALESCE(MAX(week), '2013-12-31')FRO
                                     '1 week'::interval) i;
 
 CREATE INDEX IF NOT EXISTS date_idx ON event_log(date);
+
+/* Entities come in hierarchies, find all ancestors of an entity. */
+/* TODO if community dashboard is too slow, materialize */
+CREATE OR REPLACE VIEW entity_ancestor AS
+WITH recursive ea AS (
+    SELECT repository_id AS entity_id, entity_link.parent_id AS ancestor_id
+    FROM entity_revision
+    LEFT JOIN entity_link ON entity_link.child_id = repository_id
+    UNION
+    SELECT entity_id, el.parent_id
+    FROM entity_link el
+    INNER JOIN ea ON ea.ancestor_id = el.child_id)
+SELECT * FROM ea;
 
 CREATE TABLE IF NOT EXISTS cache_active_authors(
     time date UNIQUE,
@@ -264,9 +277,10 @@ INSERT INTO cache_author_edits_by_category (
         entity_revision.id = event_log.uuid_id
     LEFT JOIN entity_link ON
         entity_link.child_id = entity_revision.repository_id
+    JOIN entity_ancestor ON
+        entity_ancestor.entity_id = entity_revision.repository_id
     JOIN metadata ON
-        (entity_revision.repository_id = metadata.uuid_id
-            OR entity_link.parent_id = metadata.uuid_id)
+        (metadata.uuid_id = entity_ancestor.entity_id AND entity_ancestor.ancestor_id IS NULL OR metadata.uuid_id = entity_ancestor.ancestor_id)
         AND metadata.key_id = 1
     WHERE
         event_id = 5
