@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1588707958621,
+  "iteration": 1591817877537,
   "links": [],
   "panels": [
     {
@@ -72,10 +72,47 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
-          "decimals": 0,
-          "pattern": "/.*/",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
           "thresholds": [],
           "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 0,
+          "link": true,
+          "linkTargetBlank": false,
+          "linkTooltip": "",
+          "linkUrl": "https://de.serlo.org/user/profile/${__cell_5}",
+          "pattern": "Username",
+          "preserveFormat": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "User-ID",
+          "thresholds": [],
+          "type": "hidden",
           "unit": "short"
         }
       ],
@@ -85,7 +122,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select username as \"Username\",\n    sum(edit_count) as \"Bearbeitungen im Fach [[authorview_subject]] seit [[authorview_time]]\",\n    last_edit as \"Letzte Bearbeitung im Fach\",\n    (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time >= now() - interval '[[authorview_time]]') as \"Bearbeitungen insgesamt seit [[authorview_time]]\",\n    email as \"Kontakt\"\nfrom cache_author_edits_by_category c\ninner join \"user\" on \"user\".id = c.author\ninner join (select max(\"time\") as last_edit, author from cache_author_edits_by_category where category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' or '[[authorview_subject]]' = 'MINT' and category in ('Mathe', 'Chemie', 'Informatik', 'Physik', 'Biologie') group by author) le on le.author = \"user\".id\nwhere (category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' or '[[authorview_subject]]' = 'MINT' and category in ('Mathe', 'Chemie', 'Informatik', 'Physik', 'Biologie'))\n    and c.time >= now() - interval '[[authorview_time]]'\ngroup by username, email, \"user\".id, last_edit\nhaving sum(edit_count) >= [[authorview_threshold]]\norder by username;\n",
+          "rawSql": "select username as \"Username\",\n    sum(edit_count) as \"Bearbeitungen im Fach [[authorview_subject]] seit [[authorview_time]]\",\n    last_edit as \"Letzte Bearbeitung im Fach\",\n    (select sum(edit_count) from cache_author_edits_by_category where author = \"user\".id and time >= now() - interval '[[authorview_time]]') as \"Bearbeitungen insgesamt seit [[authorview_time]]\",\n    email as \"Kontakt\",\n    c.author as \"User-ID\"\nfrom cache_author_edits_by_category c\ninner join \"user\" on \"user\".id = c.author\ninner join (select max(\"time\") as last_edit, author from cache_author_edits_by_category where category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' or '[[authorview_subject]]' = 'MINT' and category in ('Mathe', 'Chemie', 'Informatik', 'Physik', 'Biologie') group by author) le on le.author = \"user\".id\nwhere (category = '[[authorview_subject]]' or '[[authorview_subject]]' = 'Alle Fächer' or '[[authorview_subject]]' = 'MINT' and category in ('Mathe', 'Chemie', 'Informatik', 'Physik', 'Biologie'))\n    and c.time >= now() - interval '[[authorview_time]]'\ngroup by username, email, \"user\".id, last_edit, c.author\nhaving sum(edit_count) >= [[authorview_threshold]]\norder by username;\n",
           "refId": "A",
           "select": [
             [
@@ -455,8 +492,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "19. Jan 2020",
-          "value": "19. Jan 2020"
+          "text": "11. Mar 2020",
+          "value": "11. Mar 2020"
         },
         "datasource": "serlo-kpi-postgres",
         "definition": " select to_char(max(time) - interval '90 day', 'DD. Mon YYYY') from cache_author_edits_by_category;",
