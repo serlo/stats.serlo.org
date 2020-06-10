@@ -10,6 +10,8 @@ jobs:
             echo CIRCLE_SHA1=$CIRCLE_SHA1
       - run:
           command: |
+            curl https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            curl https://cli-assets.heroku.com/apt/release.key | sudo apt-key add -
             sudo apt update -y
             sudo apt install -y lsb-release curl gnupg2 build-essential software-properties-common apt-transport-https
             export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
