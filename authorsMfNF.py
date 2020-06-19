@@ -322,7 +322,6 @@ PARAMS = {
 }
 """
 #todo: überlegen was ich visualierien kann und ausgeben --> kathi fragen
-#legenden
+#todo: legenden
 #todo: cronjob und wann ausführen/wann aktualisieren
-
 #todo: requests von aussen
