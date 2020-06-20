@@ -10,26 +10,6 @@ from docx import Document
 import matplotlib.pyplot as plt
 from docx.shared import Inches
 
-#was ist das ziel_-° am ende struktur mit csv datei aus der author-dict eingelesen
-#brauche write author-dict, read author-dict, initialize-function mit initialem schreiben und funktion die das returnt, sowie funktion, die anhang von liste fon seiten das erweitert (get_full_author_dict: dort nicht initialisierung)
-
-#class/file for sitemap imports
-#wenn import: wie verhindern dass alle alten werte nciht stärker 
-#last data definieren, wenn gleich: dann überschreiben, sonst ergänzen
-
-#Generiert das vollen author_dict ausgehend von einer Liste an gescrapten Seiten (eingetragen in wiki_index.txt)
-"""
-def get_full_author_dict_from_wiki(index_file):
-	list_of_pages = get_scraped_wiki_pages(index_file)
-	list_of_names = list(map(get_name, list_of_pages)) #schöne Namen ausgehend von den Links
-	author_dict = dict()
-	for i in range(0, len(list_of_pages)):#Geht durch jeden Artikel durch und ergänzt das author_dict
-		author_dict = get_author_frame(list_of_names[i], list_of_pages[i], author_dict)
-	return author_dict
-"""
-
-#Generiert ein author_dict neu anhand eines gescrapten Artikels, oder updated ein bestehendes
-#=dict() rausnemhen, kriegt dataframe direct übergebe
 def get_author_frame_article(revision_json, author_frame):
 	for edit in revision_json:
 		actualize_cell_value(edit["user"], pd.to_datetime(edit["timestamp"]).normalize().tz_localize(tz=None), author_frame)
@@ -89,6 +69,7 @@ def create_from_zero(*topics, request_session=None):
 def create_mfnf_frame(topic_frames):
 	return functools.reduce(lambda a,b: a.add(b, fill_value=0), topic_frames.values())
 
+
 #Annahme topic_frames auf selben zeitlichen Stand wie mfnf frame
 def actualize_author_frames(topic_frames, mfnf_frame=None, request_session=None):
 	if request_session is None:
@@ -118,6 +99,14 @@ def actualize_author_frames(topic_frames, mfnf_frame=None, request_session=None)
 def write_author_frame(author_frame, filename):
 	author_frame.to_csv(filename, mode="w+")
 
+def write(topic_frames, mfnf=None):
+	os.makedirs("topic_frames", exist_ok=True)
+	for topic in topic_frames.keys():	
+		write_author_frame(topic_frames[topic], "topic_frames/"+topic.replace(" ", "_")+".csv")
+	if mfnf is not None:
+		write_author_frame(mfnf, "topic_frames/author_frame.csv")
+
+
 def import_author_frame(filename="topic_frames/author_frame.csv"):
 	df = pd.read_csv(filename, na_values=[" "], parse_dates=["date"], index_col="date")
 	return df
@@ -140,13 +129,6 @@ def read(*topics, mfnf_frame=True):
 		return topic_frames, mfnf_frame
 	else:
 		return topic_frames
-
-def write(topic_frames, mfnf=None):
-	os.makedirs("topic_frames", exist_ok=True)
-	for topic in topic_frames.keys():	
-		write_author_frame(topic_frames[topic], "topic_frames/"+topic.replace(" ", "_")+".csv")
-	if mfnf is not None:
-		write_author_frame(mfnf, "topic_frames/author_frame.csv")
 
 def create_accumulation(topic_frame, days=90):
 	#topic_frame.sort_index(inplace=True)
@@ -279,13 +261,13 @@ def report(topics, request_session=None, initialize=False, actualize=True):
 			document.add_paragraph("%s: %s"%(author, authors[author]), style='List Bullet')
 
 	document.add_page_break()
-
+	os.remove("report.docx")
 	document.save('report.docx')
 
 
 if __name__ == "__main__":
 	topics = ["Grundlagen der Mathematik", "Analysis 1", "Lineare Algebra 1","Maßtheorie","Real Analysis", "Mitmachen für (Nicht-)Freaks"] #, ["Buchanfänge", "sitemap_files/buch_sitemap.html", "index_files/buch_index.txt"], ["Mitmachen für (Nicht-)Freaks", "sitemap_files/mitm_sitemap.html", "index_files/mitm_index.txt"]
-	S = requests.Session()
+	"""S = requests.Session()
 
 	create_from_zero(*topics)
 	topic_frames, mfnf = read(*topics)
@@ -294,7 +276,12 @@ if __name__ == "__main__":
 
 	limit_date = pd.to_datetime(date.today()-timedelta(days=365))
 	mfnf = mfnf[mfnf.index>limit_date]
-	accumulation  = create_accumulation(mfnf)
+	accumulation  = create_accumulation(mfnf)"""
+
+	if not os.path.isdir("topic_frames"):
+		report(topics, initialize=True, actualize=False)
+	else:
+		report(topics)
 
 
 
