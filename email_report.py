@@ -7,7 +7,7 @@ from email.mime.base import MIMEBase
 from email import encoders 
 from datetime import date
 
-import authorsMfNF as am
+import docx_report as dr
 
 
 def main():
@@ -24,9 +24,9 @@ def main():
 
    topics = ["Grundlagen der Mathematik", "Analysis 1", "Lineare Algebra 1","Maßtheorie","Real Analysis", "Mitmachen für (Nicht-)Freaks"] #, ["Buchanfänge", "sitemap_files/buch_sitemap.html", "index_files/buch_index.txt"], ["Mitmachen für (Nicht-)Freaks", "sitemap_files/mitm_sitemap.html", "index_files/mitm_index.txt"]
    if not os.path.isdir("topic_frames"):
-      am.report(topics, initialize=True, actualize=False)
+      dr.report(topics, initialize=True, actualize=False)
    else:
-      am.report(topics)
+      dr.report(topics)
 
 
    msg = MIMEMultipart() 
