@@ -6,7 +6,7 @@ conda env create --file authors_MfNF.yml
 conda activate authorsMfNF
 ```
 
-Create a `credentials.json` in your main-folder with:
+To mail the report create a `credentials.json` in your main-folder with:
 
 ```json
 {
