@@ -1,4 +1,4 @@
-import database as db
+import mediawiki_api as db
 import urllib.request
 from datetime import date
 from datetime import timedelta
