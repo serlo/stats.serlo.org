@@ -6,8 +6,8 @@ dependencies:
   - _libgcc_mutex=0.1=main
   - blas=1.0=mkl
   - brotlipy=0.7.0=py37h7b6447c_1000
-  - ca-certificates=2020.4.5.2=hecda079_0
-  - certifi=2020.4.5.2=py37hc8dfbb8_0
+  - ca-certificates=2020.6.24=0
+  - certifi=2020.6.20=py37_0
   - cffi=1.14.0=py37he30daa8_1
   - chardet=3.0.4=py37_1003
   - cryptography=2.9.2=py37h1ba5d50_0
@@ -45,11 +45,12 @@ dependencies:
   - ncurses=6.2=he6710b0_1
   - numpy=1.18.1=py37h4f9e942_0
   - numpy-base=1.18.1=py37hde5b4d6_1
-  - openssl=1.1.1g=h516909a_0
+  - openssl=1.1.1g=h7b6447c_0
   - pandas=1.0.4=py37h0573a6f_0
   - pcre=8.43=he6710b0_0
   - pip=20.1.1=py37_1
   - pycparser=2.20=py_0
+  - pymysql=0.9.3=py37_0
   - pyopenssl=19.1.0=py37_0
   - pyparsing=2.4.7=py_0
   - pyqt=5.9.2=py37h05f1152_2

@@ -5,17 +5,6 @@ import pandas as pd
 import os
 import json
 
-
-
-#schreibe den code so, dass ich einen data-bucket generieren kann und dann nutze teilfunktionen so, dass auch run bei laufzeit mögich ist. Optionen für request history
-#actualize with api
-#speichern in files nach fächern geordnet und dann als json mit artikelname immer vorher
-#aus scrape sitemap: sitemap nach fächern
-
-#--> scrape sections, checke in welcher section der name (gehe durch json-liste durch), nehme section-id, suche mit der
-#abbruch nach bestimmter zeit
-
-
 def get_section_id(request_session, topic):
 	#in try-catch
 	PARAMS = {
