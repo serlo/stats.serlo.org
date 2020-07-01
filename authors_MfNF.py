@@ -40,6 +40,18 @@ def actualize_cell_value(author_name, topic, date):
 		connection.close()
 
 
+def sql_update(value_list):
+	q = "INSERT INTO MFNF_EDITS (date, name, topic, number_of_edits) VALUES {} ON DUPLICATE KEY UPDATE number_of_edits = number_of_edits +1".format(', '.join(map(str, value_list)))
+	#try:
+	connection = connect()
+	with connection.cursor() as cur:
+			cur.execute(q)
+			connection.commit()
+	"""except:
+		print("Error insert value_list")
+	finally:
+		connection.close()"""
+
 def actualize(topics, request_session=None):
 	if request_session is None:
 		request_session = requests.Session()
@@ -63,6 +75,8 @@ def actualize(topics, request_session=None):
 	finally:
 		connection.close()
 
+	actualization_list = []
+
 	for topic in topics:
 		if last_date is None:
 			print("Generating author-frame for topic: %s"%topic)
@@ -70,7 +84,10 @@ def actualize(topics, request_session=None):
 			print("Actualizing topic %s"%topic)
 		for page in sitemap_pages[topic]:
 			for edit in db.get_article_revisions(page, request_session, start_date=last_date):
-				actualize_cell_value(edit["user"], topic, str(pd.to_datetime(edit["timestamp"]).normalize().tz_localize(tz=None).date()))
+				actualization_list.append(str((str(pd.to_datetime(edit["timestamp"]).normalize().tz_localize(tz=None).date()),edit["user"], topic,"1")))
+
+	sql_update(actualization_list)
+
 
 def table_exists():
 	q = f"""SELECT * 
