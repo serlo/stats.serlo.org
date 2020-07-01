@@ -42,15 +42,15 @@ def actualize_cell_value(author_name, topic, date):
 
 def sql_update(value_list):
 	q = "INSERT INTO MFNF_EDITS (date, name, topic, number_of_edits) VALUES {} ON DUPLICATE KEY UPDATE number_of_edits = number_of_edits +1".format(', '.join(map(str, value_list)))
-	#try:
+	try:
 	connection = connect()
 	with connection.cursor() as cur:
 			cur.execute(q)
 			connection.commit()
-	"""except:
+	except:
 		print("Error insert value_list")
 	finally:
-		connection.close()"""
+		connection.close()
 
 def actualize(topics, request_session=None):
 	if request_session is None:
