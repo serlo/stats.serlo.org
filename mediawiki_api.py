@@ -1,9 +1,9 @@
 import urllib.request
 import requests
-from datetime import date
-import pandas as pd
+import datetime
 import os
 import json
+
 
 def get_section_id(request_session, topic):
 	#in try-catch
@@ -59,7 +59,7 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 	if options is None:
 		options = dict()
 	if end_date is None:
-		end_date = date.today()
+		end_date = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 	if start_date is None:
 		PARAMS = {
@@ -69,7 +69,7 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 			"rvlimit": "max",
 			"rvprop": "timestamp|user",
 			"rvdir": "newer",
-			"rvend": str(pd.to_datetime(end_date)),
+			"rvend": str(end_date),
 			"rvslots": "main",
 			"formatversion": "2",
 			"format": "json",
@@ -83,8 +83,8 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 			"rvlimit": "max",
 			"rvprop": "timestamp|user",
 			"rvdir": "newer",
-			"rvstart": str(pd.to_datetime(start_date)),
-			"rvend": str(pd.to_datetime(end_date)),
+			"rvstart": str(start_date),
+			"rvend": str(end_date),
 			"rvslots": "main",
 			"formatversion": "2",
 			"format": "json",
