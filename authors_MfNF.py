@@ -70,7 +70,7 @@ def create_mfnf_frame(topic_frames):
 
 def delete_up_to_date(topic_frame, date):
 	while topic_frame.index.max()>=pd.to_datetime(date):
-		topic_frame.drop(pd.to_datetime(date), inplace=True)
+		topic_frame.drop(topic_frame.index.max(), inplace=True)
 
 #Annahme topic_frames auf selben zeitlichen Stand wie mfnf frame
 def actualize_author_frames(topic_frames, mfnf_frame=None, request_session=None):
