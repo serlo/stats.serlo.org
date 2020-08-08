@@ -33,5 +33,7 @@ workflows:
           context: serlo-shared
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - import-mfnf
 
