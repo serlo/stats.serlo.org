@@ -41,23 +41,19 @@ log_info "kpi database ready"
 
 time=$(date +"%Y-%m-%dT%H:%M:%SZ")
 psql -v ON_ERROR_STOP=1 $connect <<EOF
+CREATE SEQUENCE IF NOT EXISTS mfnf_edits_seq;
 CREATE TABLE IF NOT EXISTS mfnf_edits (
-	id INT(11) NOT NULL AUTO_INCREMENT,
-	date DATE,
-	name CHAR(255),
-	topic CHAR(255),
-	number_of_edits INT(11),
-	PRIMARY KEY ( id ),
+        id int PRIMARY KEY NOT NULL DEFAULT nextval('mfnf_edits_seq'),
+	date date,
+	name text,
+	topic text,
+	number_of_edits int,
 	UNIQUE (date, name, topic)
 );
 EOF
 
-if [[ $? != 0 ]] ; then
-    log_fatal "failed to create mfnf_edits table"
-    exit 1
-else
-    log_info "table mfnf_edits created (or it did already exist)"
-    exit 0
-fi
+[[ $? != 0 ]] && { log_fatal "failed to create mfnf_edits table"; exit 1; }
 
-python3 src/authors_MfNF.py | psql $connect
+log_info "table mfnf_edits created (or it did already exist)"
+
+cd /tmp && python3 src/authors_MfNF.py | psql $connect

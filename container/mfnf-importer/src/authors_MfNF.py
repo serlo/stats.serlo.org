@@ -6,7 +6,6 @@ import pandas as pd
 import os
 import functools
 import requests
-from docx import Document
 
 
 def get_author_frame_article(revision_json, author_frame):
