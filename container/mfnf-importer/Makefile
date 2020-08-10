@@ -3,7 +3,7 @@ local_image=eu.gcr.io/serlo-shared/$(image_name)
 
 major_version=0
 minor_version=1
-patch_version=9
+patch_version=13
 version=$(major_version).$(minor_version).$(patch_version) 
 
 include ../../mk/dockerci.mk

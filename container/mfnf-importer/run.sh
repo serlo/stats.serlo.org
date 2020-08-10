@@ -56,4 +56,4 @@ EOF
 
 log_info "table mfnf_edits created (or it did already exist)"
 
-cd /tmp && python3 src/authors_MfNF.py | psql $connect
+cd /tmp/src && python3 authors_MfNF.py | psql $connect
