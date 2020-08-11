@@ -1,9 +1,9 @@
 image_name=kpi-mfnf-importer
 local_image=eu.gcr.io/serlo-shared/$(image_name)
 
-major_version=0
-minor_version=1
-patch_version=9
+major_version=1
+minor_version=0
+patch_version=0
 version=$(major_version).$(minor_version).$(patch_version) 
 
 include ../../mk/dockerci.mk
