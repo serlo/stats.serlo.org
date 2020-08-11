@@ -1,19 +1,10 @@
+from sys import stderr
+
 import urllib.request
 import requests
-from datetime import date
-import pandas as pd
+import datetime
 import os
 import json
-
-
-
-#schreibe den code so, dass ich einen data-bucket generieren kann und dann nutze teilfunktionen so, dass auch run bei laufzeit mögich ist. Optionen für request history
-#actualize with api
-#speichern in files nach fächern geordnet und dann als json mit artikelname immer vorher
-#aus scrape sitemap: sitemap nach fächern
-
-#--> scrape sections, checke in welcher section der name (gehe durch json-liste durch), nehme section-id, suche mit der
-#abbruch nach bestimmter zeit
 
 
 def get_section_id(request_session, topic):
@@ -70,7 +61,7 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 	if options is None:
 		options = dict()
 	if end_date is None:
-		end_date = date.today()
+		end_date = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 	if start_date is None:
 		PARAMS = {
@@ -80,7 +71,7 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 			"rvlimit": "max",
 			"rvprop": "timestamp|user",
 			"rvdir": "newer",
-			"rvend": str(pd.to_datetime(end_date)),
+			"rvend": str(end_date),
 			"rvslots": "main",
 			"formatversion": "2",
 			"format": "json",
@@ -94,8 +85,8 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 			"rvlimit": "max",
 			"rvprop": "timestamp|user",
 			"rvdir": "newer",
-			"rvstart": str(pd.to_datetime(start_date)),
-			"rvend": str(pd.to_datetime(end_date)),
+			"rvstart": str(start_date),
+			"rvend": str(end_date),
 			"rvslots": "main",
 			"formatversion": "2",
 			"format": "json",
@@ -105,17 +96,17 @@ def get_article_revisions(title, request_session, options= None, start_date=None
 	R = request_session.get(url="https://de.wikibooks.org/w/api.php", params=PARAMS)
 	data = R.json()
 	if "error" in data.keys():
-		print("\033[91m Failed to generate history for article %s \033[0m"%title)
+		print("\033[91m Failed to generate history for article %s \033[0m"%title, file=stderr)
 	if "continue" in data.keys():
 		#important if limit of 500 edits is reached
 		options["rvcontinue"] = data["continue"]["rvcontinue"]
 		return data["query"]["pages"][0]["revisions"] + get_article_revisions(title, request_session, options)
 	else:
 		if "revisions" in data["query"]["pages"][0].keys():
-			print("\033[92m History successfully generated for article %s \033[0m"%title)
+			print("\033[92m History successfully generated for article %s \033[0m"%title, file=stderr)
 			return data["query"]["pages"][0]["revisions"]
 		else:
-			print("\033[94m History successfully generated for article %s - no new edits\033[0m"%title)
+			print("\033[94m History successfully generated for article %s - no new edits\033[0m"%title, file=stderr)
 			return []
 
 
@@ -140,5 +131,5 @@ def main():
 
 if __name__ == "__main__":
 	S = requests.Session()
-	print(get_article_revisions("Mathe_für_Nicht-Freaks:_Sitemap", S, end_date="2020-05-14"))
+	print(get_article_revisions("Mathe_für_Nicht-Freaks:_Sitemap", S, end_date="2020-05-14"), file=stderr)
 	#main()
