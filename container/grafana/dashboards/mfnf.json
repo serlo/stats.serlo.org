@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 4,
-  "iteration": 1597260875042,
+  "id": 1,
+  "iteration": 1597352169205,
   "links": [],
   "panels": [
     {
@@ -25,7 +25,7 @@
       "fontSize": "100%",
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -110,8 +110,116 @@
       "title": "Autor*innen im Fach [[authorview_subject]] mit mindestens [[authorview_threshold]] Bearbeitungen in den letzten [[authorview_time]]",
       "transform": "table",
       "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "serlo-kpi-postgres",
+      "fill": 1,
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "(SELECT\n  $__time(time),\n  CASE WHEN '[[authorview_threshold]]' = '1' then authors else case when '[[authorview_threshold]]' = '10' then active_authors else very_active_authors end end as value1\nFROM\n  cache_mfnf_author_edits_by_category\nWHERE\n  topic = '[[authorview_subject]]' and\n  $__timeFilter(time))\nunion\n(SELECT\n  $__time(time),\n  CASE WHEN '[[authorview_threshold]]' = '1' then sum(authors) else case when '[[authorview_threshold]]' = '10' then sum(active_authors) else sum(very_active_authors) end end as value1\nFROM\n  cache_mfnf_author_edits_by_category\nWHERE\n  'Alle Fächer' = '[[authorview_subject]]' and\n  $__timeFilter(time)\nGROUP BY time)\norder by time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Anzahl der Autor*innen mit mindestens [[authorview_threshold]] Bearbeitungen im Fach [[authorview_subject]] in den letzten 90 Tagen",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
+  "refresh": false,
   "schemaVersion": 18,
   "style": "dark",
   "tags": [],
@@ -120,6 +228,7 @@
       {
         "allValue": null,
         "current": {
+          "selected": false,
           "tags": [],
           "text": "Alle Fächer",
           "value": "Alle Fächer"
@@ -182,7 +291,7 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
+          "selected": true,
           "text": "10",
           "value": "10"
         },
@@ -248,8 +357,8 @@
     ]
   },
   "time": {
-    "from": "now-6h",
-    "to": "now"
+    "from": "2019-07-01T23:00:00.000Z",
+    "to": "2021-07-02T22:59:59.998Z"
   },
   "timepicker": {
     "refresh_intervals": [
