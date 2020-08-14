@@ -333,8 +333,8 @@ INSERT INTO cache_mfnf_author_edits_by_category (
     FROM (
         SELECT day, name, topic,
             name as author,
-            CASE WHEN sum(number_of_edits) > 10 THEN name END as author_active,
-            CASE WHEN sum(number_of_edits) > 100 THEN name END as author_very_active
+            CASE WHEN sum(number_of_edits) >= 10 THEN name END as author_active,
+            CASE WHEN sum(number_of_edits) >= 100 THEN name END as author_very_active
         FROM mfnf_edits JOIN day ON
             date BETWEEN day - interval '90 day' and day
             AND day >= '2018-01-01'
@@ -345,6 +345,38 @@ INSERT INTO cache_mfnf_author_edits_by_category (
     GROUP BY day, topic
     ORDER BY day ASC
 ) ON CONFLICT (time, topic) DO UPDATE SET
+    authors = excluded.authors,
+    active_authors = excluded.active_authors,
+    very_active_authors = excluded.very_active_authors;
+
+CREATE TABLE IF NOT EXISTS cache_mfnf_author_edits (
+    time date UNIQUE,
+    authors int4,
+    active_authors int4,
+    very_active_authors int4
+);
+
+INSERT INTO cache_mfnf_author_edits (
+    SELECT
+        day as "time",
+        count(author) as authors,
+        count(author_active) as active_authors,
+        count(author_very_active) as very_active_authors
+    FROM (
+        SELECT day, name,
+            name as author,
+            CASE WHEN sum(number_of_edits) >= 10 THEN name END as author_active,
+            CASE WHEN sum(number_of_edits) >= 100 THEN name END as author_very_active
+        FROM mfnf_edits JOIN day ON
+            date BETWEEN day - interval '90 day' and day
+            AND day >= '2018-01-01'
+            AND day <= (SELECT MAX(date) FROM mfnf_edits)
+            AND day >= (SELECT COALESCE(MAX(time), '2013-12-31') FROM cache_mfnf_author_edits)
+        GROUP BY day, name
+    ) activity
+    GROUP BY day
+    ORDER BY day ASC
+) ON CONFLICT (time) DO UPDATE SET
     authors = excluded.authors,
     active_authors = excluded.active_authors,
     very_active_authors = excluded.very_active_authors;
