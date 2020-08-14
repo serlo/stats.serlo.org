@@ -15,8 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1597352169205,
+  "iteration": 1597433001062,
   "links": [],
   "panels": [
     {
@@ -153,7 +152,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  $__time(time),\n  CASE WHEN '[[authorview_threshold]]' = '1' then authors else case when '[[authorview_threshold]]' = '10' then active_authors else very_active_authors end end as value1\nFROM\n  cache_mfnf_author_edits_by_category\nWHERE\n  topic = '[[authorview_subject]]' and\n  $__timeFilter(time))\nunion\n(SELECT\n  $__time(time),\n  CASE WHEN '[[authorview_threshold]]' = '1' then sum(authors) else case when '[[authorview_threshold]]' = '10' then sum(active_authors) else sum(very_active_authors) end end as value1\nFROM\n  cache_mfnf_author_edits_by_category\nWHERE\n  'Alle Fächer' = '[[authorview_subject]]' and\n  $__timeFilter(time)\nGROUP BY time)\norder by time ASC",
+          "rawSql": "(SELECT\n  $__time(time),\n  CASE WHEN '[[authorview_threshold]]' = '1' then authors else case when '[[authorview_threshold]]' = '10' then active_authors else very_active_authors end end as value1\nFROM\n  cache_mfnf_author_edits_by_category\nWHERE\n  topic = '[[authorview_subject]]' and\n  $__timeFilter(time))\nunion\n(SELECT\n  $__time(time),\n  CASE WHEN '[[authorview_threshold]]' = '1' then authors else case when '[[authorview_threshold]]' = '10' then active_authors else very_active_authors end end as value1\nFROM\n  cache_mfnf_author_edits\nWHERE\n  'Alle Fächer' = '[[authorview_subject]]' and\n  $__timeFilter(time))\norder by time ASC",
           "refId": "A",
           "select": [
             [
@@ -357,8 +356,8 @@
     ]
   },
   "time": {
-    "from": "2019-07-01T23:00:00.000Z",
-    "to": "2021-07-02T22:59:59.998Z"
+    "from": "now-6M",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
