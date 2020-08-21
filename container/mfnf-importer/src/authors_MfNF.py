@@ -34,7 +34,7 @@ def actualize(topics, request_session=None, last_date=None):
 		#return "INSERT INTO MFNF_EDITS (date, name, topic, number_of_edits) VALUES {} ON DUPLICATE KEY UPDATE number_of_edits = number_of_edits +1".format(', '.join(actualization_list)), str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")) #Mediawiki assumes utc-timezone
 		
 		#postgres: 
-		return "INSERT INTO MFNF_EDITS (date, name, topic, number_of_edits) VALUES {} ON CONFLICT (date, name, topic) DO UPDATE SET number_of_edits = MFNF_EDITS.number_of_edits +1;".format(', '.join(actualization_list)), str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")) #Mediawiki assumes utc-timezone
+		return "INSERT INTO MFNF_EDITS (date, name, topic, number_of_edits) VALUES {} ON CONFLICT (date, name, topic) DO UPDATE SET number_of_edits = excluded.number_of_edits;".format(', '.join(actualization_list)), str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")) #Mediawiki assumes utc-timezone
 	else:
 		return "", str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
 
