@@ -1,3 +1,6 @@
+# Obscolescence Notice: stats.serlo.org
+Serlo statistics are now moved to Jupyter notebooks in https://github.com/serlo/evaluations, making this repository obsolete.
+
 # Data Analysis and KPI Monitoring
 
 Repository contains the current grafana dashboard sources used to develop the KPI project as well as future scripts which are required to setup the mysql importer or other functionality.
